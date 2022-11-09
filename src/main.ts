@@ -16,14 +16,10 @@ import {
 	createDailyNote,
 } from "obsidian-daily-notes-interface";
 import type { Moment } from "moment";
-import { Parameters, ObsidianClipperSettings } from "./types";
+import { Parameters } from "./types";
+import { ObsidianClipperSettings, DEFAULT_SETTINGS } from "./settings";
 import { DailyNoteEntry } from "./daily_note_entry";
-
-const DEFAULT_SETTINGS: ObsidianClipperSettings = {
-	heading: "",
-	tags: "",
-	openFileOnWrite: true,
-};
+import { BookmarketlGenerator } from "./bookmarkletgenerator";
 
 export default class ObsidianClipperPlugin extends Plugin {
 	settings: ObsidianClipperSettings;
@@ -31,6 +27,12 @@ export default class ObsidianClipperPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 		this.addSettingTab(new SettingTab(this.app, this));
+
+		this.addCommand({
+			id: "copy-bookmarklet-address",
+			name: "copy the Obsidian Clipper bookmarklet for this vault",
+			callback: () => this.handleCopyBookmarkletCommand(),
+		});
 
 		this.registerObsidianProtocolHandler("obsidian-clipper", async (e) => {
 			const parameters = e as unknown as Parameters;
@@ -208,6 +210,15 @@ export default class ObsidianClipperPlugin extends Plugin {
 			throw Error("No Cache");
 		}
 	}
+
+	handleCopyBookmarkletCommand() {
+		navigator.clipboard.writeText(
+			new BookmarketlGenerator(
+				this.app.vault.getName()
+			).generateBookmarklet()
+		);
+		new Notice("Obsidian Clipper Bookmarklet copied to clipboard.");
+	}
 }
 
 class SettingTab extends PluginSettingTab {
@@ -223,7 +234,7 @@ class SettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl("h2", { text: "Settings for my awesome plugin." });
+		containerEl.createEl("h2", { text: "Obsidian Clipper Settings" });
 
 		new Setting(containerEl)
 			.setName("Header")
@@ -253,5 +264,20 @@ class SettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					})
 			);
+
+		containerEl.appendChild(
+			createEl("div", {
+				text: "You can drag or copy the link below to your browser bookmark bar. This bookmarklet will allow you to highlight information on the web and send it to obsidian",
+			})
+		);
+
+		containerEl.appendChild(
+			createEl("a", {
+				text: "Obsidian Clipper - Daily Note",
+				href: new BookmarketlGenerator(
+					this.app.vault.getName()
+				).generateBookmarklet(), //TODO: How do I get this vaults name?
+			})
+		);
 	}
 }

@@ -9,9 +9,3 @@ export interface Parameters {
 	title: string;
 	highlightdata?: string;
 }
-
-export interface ObsidianClipperSettings {
-	heading: string;
-	tags: string;
-	openFileOnWrite: boolean;
-}
