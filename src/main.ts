@@ -41,10 +41,6 @@ export default class ObsidianClipperPlugin extends Plugin {
 			let title = parameters.title;
 			let highlightData = parameters.highlightdata;
 
-			console.log("Url: ", url);
-			console.log("Title: ", title);
-			console.log("Highlight Data: ", highlightData);
-			console.log("Settings", this.settings);
 			let dailyNoteFilePath: string;
 			if (!appHasDailyNotesPluginLoaded()) {
 				new Notice("Daily notes plugin is not loaded");
@@ -54,7 +50,8 @@ export default class ObsidianClipperPlugin extends Plugin {
 			const allDailyNotes = getAllDailyNotes();
 			let dailyNote = getDailyNote(moment, allDailyNotes);
 			if (!dailyNote) {
-				dailyNote = await createDailyNote(moment);
+				dailyNote = await this.waitForDailyNoteCreation(moment);
+				await new Promise((r) => setTimeout(r, 50));
 			}
 
 			dailyNoteFilePath = dailyNote.path;
@@ -91,10 +88,8 @@ export default class ObsidianClipperPlugin extends Plugin {
 		file = this.app.vault.getAbstractFileByPath(dailyNoteFilePath);
 
 		if (dailyNoteFilePath) {
-			let outFile: TFile;
-
 			if (file instanceof TFile && highlightData) {
-				outFile = await this.prepend(file, highlightData);
+				await this.prepend(file, highlightData);
 			}
 		}
 	}
@@ -219,6 +214,12 @@ export default class ObsidianClipperPlugin extends Plugin {
 		);
 		new Notice("Obsidian Clipper Bookmarklet copied to clipboard.");
 	}
+
+	async waitForDailyNoteCreation(moment: Moment): Promise<TFile> {
+		let dailyNote = await createDailyNote(moment);
+		await new Promise((r) => setTimeout(r, 50));
+		return dailyNote;
+	}
 }
 
 class SettingTab extends PluginSettingTab {
@@ -273,7 +274,7 @@ class SettingTab extends PluginSettingTab {
 
 		containerEl.appendChild(
 			createEl("a", {
-				text: "Obsidian Clipper - Daily Note",
+				text: `Obsidian Clipper (${this.app.vault.getName()})`,
 				href: new BookmarketlGenerator(
 					this.app.vault.getName()
 				).generateBookmarklet(), //TODO: How do I get this vaults name?
