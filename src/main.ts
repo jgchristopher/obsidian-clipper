@@ -238,6 +238,17 @@ class SettingTab extends PluginSettingTab {
 		containerEl.createEl("h2", { text: "Obsidian Clipper Settings" });
 
 		new Setting(containerEl)
+			.setName("Add Daily Note Entry?")
+			.addToggle((cb) =>
+				cb
+					.onChange((value) => {
+						this.plugin.settings.useDailyNote = value;
+						this.plugin.saveSettings();
+					})
+					.setValue(this.plugin.settings.useDailyNote)
+			);
+
+		new Setting(containerEl)
 			.setName("Header")
 			.setDesc(
 				"What header should highlight data be prepended under in your daily note?"

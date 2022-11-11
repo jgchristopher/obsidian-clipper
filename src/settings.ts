@@ -2,11 +2,12 @@ export interface ObsidianClipperSettings {
 	heading: string;
 	tags: string;
 	openFileOnWrite: boolean;
-	staticBookmarkletTemplate: string;
+	useDailyNote: boolean;
 }
 
 export const DEFAULT_SETTINGS: ObsidianClipperSettings = {
 	heading: "",
 	tags: "",
 	openFileOnWrite: true,
+	useDailyNote: true,
 };
