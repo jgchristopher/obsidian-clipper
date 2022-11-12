@@ -59,12 +59,13 @@ export default class ObsidianClipperPlugin extends Plugin {
 				title,
 				url,
 				this.settings,
+				this.app,
 				highlightData
 			);
 
 			this.handleWrite(
 				dailyNoteFilePath,
-				dailyNoteEntry.formattedEntry()
+				await dailyNoteEntry.formattedEntry()
 			);
 		});
 	}
@@ -277,6 +278,20 @@ class SettingTab extends PluginSettingTab {
 					})
 			);
 
+		new Setting(containerEl)
+			.setName("Clipped Entry Template")
+			.setDesc(
+				"Choose the file to use as a template for the clipped entry"
+			)
+			.addText((text) =>
+				text
+					.setValue(this.plugin.settings.dailyEntryTemplateLocation)
+					.onChange(async (value) => {
+						this.plugin.settings.dailyEntryTemplateLocation = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
 		containerEl.appendChild(
 			createEl("div", {
 				text: "You can drag or copy the link below to your browser bookmark bar. This bookmarklet will allow you to highlight information on the web and send it to obsidian",
@@ -288,7 +303,7 @@ class SettingTab extends PluginSettingTab {
 				text: `Obsidian Clipper (${this.app.vault.getName()})`,
 				href: new BookmarketlGenerator(
 					this.app.vault.getName()
-				).generateBookmarklet(), //TODO: How do I get this vaults name?
+				).generateBookmarklet(),
 			})
 		);
 	}

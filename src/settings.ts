@@ -3,6 +3,7 @@ export interface ObsidianClipperSettings {
 	tags: string;
 	openFileOnWrite: boolean;
 	useDailyNote: boolean;
+	dailyEntryTemplateLocation: string;
 }
 
 export const DEFAULT_SETTINGS: ObsidianClipperSettings = {
@@ -10,4 +11,5 @@ export const DEFAULT_SETTINGS: ObsidianClipperSettings = {
 	tags: "",
 	openFileOnWrite: true,
 	useDailyNote: true,
+	dailyEntryTemplateLocation: "",
 };
