@@ -65,7 +65,8 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 			this.handleWrite(
 				dailyNoteFilePath,
-				await dailyNoteEntry.formattedEntry()
+				await dailyNoteEntry.formattedEntry(),
+				this.settings.heading
 			);
 		});
 	}
@@ -84,24 +85,33 @@ export default class ObsidianClipperPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	async handleWrite(dailyNoteFilePath: string, highlightData?: string) {
+	async handleWrite(
+		dailyNoteFilePath: string,
+		data: string,
+		heading?: string
+	) {
 		let file: TAbstractFile | null;
 		file = this.app.vault.getAbstractFileByPath(dailyNoteFilePath);
 
 		if (dailyNoteFilePath) {
-			if (file instanceof TFile && highlightData) {
-				await this.prepend(file, highlightData);
+			if (file instanceof TFile) {
+				if (heading) {
+					await this.prepend(file, heading, data);
+				} else {
+					await this.append(file, data);
+				}
 			}
 		}
 	}
 
-	async prepend(file: TFile, highlightData: string): Promise<TFile> {
+	async prepend(
+		file: TFile,
+		heading: string,
+		highlightData: string
+	): Promise<TFile> {
 		let dataToWrite: string;
 		let path = file.path;
-		const line = this.getEndAndBeginningOfHeading(
-			file,
-			this.settings.heading
-		)?.firstLine;
+		const line = this.getEndAndBeginningOfHeading(file, heading)?.firstLine;
 		if (line === undefined) throw Error("Missing Expected Heading");
 
 		const data = await this.app.vault.read(file);
@@ -111,6 +121,13 @@ export default class ObsidianClipperPlugin extends Plugin {
 		dataToWrite = lines.join("\n");
 
 		return this.writeAndOpenFile(path, dataToWrite);
+	}
+
+	async append(file: TFile, data: string): Promise<TFile> {
+		let dataToWrite: string;
+		let fileData = await this.app.vault.read(file);
+		dataToWrite = fileData + "\n" + data;
+		return this.writeAndOpenFile(file.path, dataToWrite);
 	}
 
 	async writeAndOpenFile(
@@ -238,16 +255,16 @@ class SettingTab extends PluginSettingTab {
 
 		containerEl.createEl("h2", { text: "Obsidian Clipper Settings" });
 
-		new Setting(containerEl)
-			.setName("Add Daily Note Entry?")
-			.addToggle((cb) =>
-				cb
-					.onChange((value) => {
-						this.plugin.settings.useDailyNote = value;
-						this.plugin.saveSettings();
-					})
-					.setValue(this.plugin.settings.useDailyNote)
-			);
+		// new Setting(containerEl)
+		// 	.setName("Add Daily Note Entry?")
+		// 	.addToggle((cb) =>
+		// 		cb
+		// 			.onChange((value) => {
+		// 				this.plugin.settings.useDailyNote = value;
+		// 				this.plugin.saveSettings();
+		// 			})
+		// 			.setValue(this.plugin.settings.useDailyNote)
+		// 	);
 
 		new Setting(containerEl)
 			.setName("Header")

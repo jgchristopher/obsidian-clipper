@@ -10,12 +10,15 @@ export async function getTemplateContents(
 		return Promise.resolve("");
 	}
 
+	let templateContents = "";
 	try {
 		const templateFile = metadataCache.getFirstLinkpathDest(
 			normalizedTemplatePath,
 			""
 		);
-		return templateFile ? vault.cachedRead(templateFile) : "";
+		if (templateFile) {
+			templateContents = await vault.cachedRead(templateFile);
+		}
 	} catch (err) {
 		console.error(
 			`Failed to read the clipper entry template '${normalizedTemplatePath}'`,
@@ -24,7 +27,8 @@ export async function getTemplateContents(
 		new Notice(
 			"Failed to read the Obsidian Clipper daily note entry template configured in Settings"
 		);
-		return "";
+	} finally {
+		return templateContents;
 	}
 }
 

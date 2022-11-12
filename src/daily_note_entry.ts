@@ -3,15 +3,13 @@ import { ObsidianClipperSettings } from "./settings";
 import { getTemplateContents, applyTemplateTransformations } from "./utils";
 
 export class DailyNoteEntry {
-	title: string;
-	url: string;
-	data?: string | undefined;
-	tags: string;
-	settings: ObsidianClipperSettings;
-	app: App;
+	private tags: string;
+	private data?: string | undefined;
+	private settings: ObsidianClipperSettings;
+	private app: App;
 	constructor(
-		title: string,
-		url: string,
+		private title: string,
+		private url: string,
 		settings: ObsidianClipperSettings,
 		app: App,
 		data: string = ""
