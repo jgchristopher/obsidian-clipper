@@ -43,7 +43,9 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 			let dailyNoteFilePath: string;
 			if (!appHasDailyNotesPluginLoaded()) {
-				new Notice("Daily notes plugin is not loaded");
+				new Notice(
+					"Obsidian Clipper currently requires the Daily Notes plugin"
+				);
 				return;
 			}
 			const moment = window.moment(Date.now());
@@ -101,6 +103,8 @@ export default class ObsidianClipperPlugin extends Plugin {
 					await this.append(file, data);
 				}
 			}
+		} else {
+			new Notice("Obsidian Clipper currently requires Daily notes");
 		}
 	}
 
