@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-clipper",
-	"version": "0.1",
+	"version": "0.0.1",
 	"description": "This plugin helps you capture highlights from the web.",
 	"main": "main.js",
 	"scripts": {
@@ -9,7 +9,7 @@
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "jgchristopher",
 	"license": "MIT",
 	"devDependencies": {
 		"@types/node": "^16.11.6",
