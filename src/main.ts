@@ -43,7 +43,9 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 			let dailyNoteFilePath: string;
 			if (!appHasDailyNotesPluginLoaded()) {
-				new Notice("Daily notes plugin is not loaded");
+				new Notice(
+					"Obsidian Clipper currently requires the Daily Notes plugin"
+				);
 				return;
 			}
 			const moment = window.moment(Date.now());
@@ -59,12 +61,14 @@ export default class ObsidianClipperPlugin extends Plugin {
 				title,
 				url,
 				this.settings,
+				this.app,
 				highlightData
 			);
 
 			this.handleWrite(
 				dailyNoteFilePath,
-				dailyNoteEntry.formattedEntry()
+				await dailyNoteEntry.formattedEntry(),
+				this.settings.heading
 			);
 		});
 	}
@@ -83,24 +87,35 @@ export default class ObsidianClipperPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	async handleWrite(dailyNoteFilePath: string, highlightData?: string) {
+	async handleWrite(
+		dailyNoteFilePath: string,
+		data: string,
+		heading?: string
+	) {
 		let file: TAbstractFile | null;
 		file = this.app.vault.getAbstractFileByPath(dailyNoteFilePath);
 
 		if (dailyNoteFilePath) {
-			if (file instanceof TFile && highlightData) {
-				await this.prepend(file, highlightData);
+			if (file instanceof TFile) {
+				if (heading) {
+					await this.prepend(file, heading, data);
+				} else {
+					await this.append(file, data);
+				}
 			}
+		} else {
+			new Notice("Obsidian Clipper currently requires Daily notes");
 		}
 	}
 
-	async prepend(file: TFile, highlightData: string): Promise<TFile> {
+	async prepend(
+		file: TFile,
+		heading: string,
+		highlightData: string
+	): Promise<TFile> {
 		let dataToWrite: string;
 		let path = file.path;
-		const line = this.getEndAndBeginningOfHeading(
-			file,
-			this.settings.heading
-		)?.firstLine;
+		const line = this.getEndAndBeginningOfHeading(file, heading)?.firstLine;
 		if (line === undefined) throw Error("Missing Expected Heading");
 
 		const data = await this.app.vault.read(file);
@@ -110,6 +125,13 @@ export default class ObsidianClipperPlugin extends Plugin {
 		dataToWrite = lines.join("\n");
 
 		return this.writeAndOpenFile(path, dataToWrite);
+	}
+
+	async append(file: TFile, data: string): Promise<TFile> {
+		let dataToWrite: string;
+		let fileData = await this.app.vault.read(file);
+		dataToWrite = fileData + "\n" + data;
+		return this.writeAndOpenFile(file.path, dataToWrite);
 	}
 
 	async writeAndOpenFile(
@@ -237,6 +259,17 @@ class SettingTab extends PluginSettingTab {
 
 		containerEl.createEl("h2", { text: "Obsidian Clipper Settings" });
 
+		// new Setting(containerEl)
+		// 	.setName("Add Daily Note Entry?")
+		// 	.addToggle((cb) =>
+		// 		cb
+		// 			.onChange((value) => {
+		// 				this.plugin.settings.useDailyNote = value;
+		// 				this.plugin.saveSettings();
+		// 			})
+		// 			.setValue(this.plugin.settings.useDailyNote)
+		// 	);
+
 		new Setting(containerEl)
 			.setName("Header")
 			.setDesc(
@@ -266,6 +299,20 @@ class SettingTab extends PluginSettingTab {
 					})
 			);
 
+		new Setting(containerEl)
+			.setName("Clipped Entry Template")
+			.setDesc(
+				"Choose the file to use as a template for the clipped entry"
+			)
+			.addText((text) =>
+				text
+					.setValue(this.plugin.settings.dailyEntryTemplateLocation)
+					.onChange(async (value) => {
+						this.plugin.settings.dailyEntryTemplateLocation = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
 		containerEl.appendChild(
 			createEl("div", {
 				text: "You can drag or copy the link below to your browser bookmark bar. This bookmarklet will allow you to highlight information on the web and send it to obsidian",
@@ -277,7 +324,7 @@ class SettingTab extends PluginSettingTab {
 				text: `Obsidian Clipper (${this.app.vault.getName()})`,
 				href: new BookmarketlGenerator(
 					this.app.vault.getName()
-				).generateBookmarklet(), //TODO: How do I get this vaults name?
+				).generateBookmarklet(),
 			})
 		);
 	}

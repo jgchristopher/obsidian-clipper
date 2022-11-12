@@ -1,39 +1,57 @@
-import { ObsidianClipperSettings } from "./types";
+import { App } from "obsidian";
+import { ObsidianClipperSettings } from "./settings";
+import { getTemplateContents, applyTemplateTransformations } from "./utils";
+
 export class DailyNoteEntry {
-	title?: string;
-	url: string;
-	data?: string | undefined;
-	tags: string;
+	private tags: string;
+	private data?: string | undefined;
+	private settings: ObsidianClipperSettings;
+	private app: App;
 	constructor(
-		title: string,
-		url: string,
+		private title: string,
+		private url: string,
 		settings: ObsidianClipperSettings,
-		data?: string
+		app: App,
+		data: string = ""
 	) {
 		this.title = title;
 		this.url = url;
-		if (data) {
+		if (data !== "") {
 			this.data = data;
-		} else {
-			this.data = "";
 		}
-
 		let tag_joins: string[] = [];
 		settings.tags.split(",").forEach((t) => {
 			tag_joins.push(`#${t}`);
 		});
 		this.tags = tag_joins.join(" ");
+		this.settings = settings;
+		this.app = app;
 	}
 
-	public formattedEntry(): string {
+	public async formattedEntry(): Promise<string> {
 		let formattedData = "";
-		if (!this.data) {
-			formattedData = `- [ ] [${this.title}](${this.url}) ${this.tags}\n\n---`;
+
+		if (this.settings.dailyEntryTemplateLocation) {
+			let rawTemplateContents = await getTemplateContents(
+				this.app,
+				this.settings.dailyEntryTemplateLocation
+			);
+			formattedData = applyTemplateTransformations(
+				this.title,
+				this.url,
+				this.tags,
+				this.data,
+				rawTemplateContents
+			);
 		} else {
-			formattedData =
-				`- [ ] [${this.title}](${this.url}) ${this.tags}\n` +
-				this.data +
-				"\n\n---";
+			if (!this.data) {
+				formattedData = `- [ ] [${this.title}](${this.url}) ${this.tags}\n\n---`;
+			} else {
+				formattedData =
+					`- [ ] [${this.title}](${this.url}) ${this.tags}\n` +
+					this.data +
+					"\n\n---";
+			}
 		}
 		return formattedData;
 	}
