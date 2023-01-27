@@ -36,6 +36,7 @@ export function applyTemplateTransformations(
 	title: string,
 	url: string,
 	tags: string,
+	time: string,
 	content: string = "",
 	rawTemplateContents: string
 ): string {
@@ -43,7 +44,8 @@ export function applyTemplateTransformations(
 		.replace(/{{\s*title\s*}}/gi, title)
 		.replace(/{{\s*url\s*}}/gi, url)
 		.replace(/{{\s*tags\s*}}/gi, tags)
-		.replace(/{{\s*content\s*}}/gi, content);
+		.replace(/{{\s*content\s*}}/gi, content)
+		.replace(/{{\s*time\s*}}/gi, time);
 
 	return templateContents;
 }

@@ -2,11 +2,13 @@ import { App } from "obsidian";
 import { ObsidianClipperSettings } from "./settings";
 import { getTemplateContents, applyTemplateTransformations } from "./utils";
 
-export class DailyNoteEntry {
+export class ClippedNoteEntry {
 	private tags: string;
 	private data?: string | undefined;
 	private settings: ObsidianClipperSettings;
 	private app: App;
+	private timeStamp: string;
+
 	constructor(
 		private title: string,
 		private url: string,
@@ -26,6 +28,7 @@ export class DailyNoteEntry {
 		this.tags = tag_joins.join(" ");
 		this.settings = settings;
 		this.app = app;
+		this.timeStamp = window.moment().format(this.settings.timestampFormat);
 	}
 
 	public async formattedEntry(): Promise<string> {
@@ -40,6 +43,7 @@ export class DailyNoteEntry {
 				this.title,
 				this.url,
 				this.tags,
+				this.timeStamp,
 				this.data,
 				rawTemplateContents
 			);
