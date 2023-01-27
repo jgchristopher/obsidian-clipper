@@ -1,15 +1,21 @@
 export interface ObsidianClipperSettings {
-	heading: string;
 	tags: string;
+	timestampFormat: string;
+	dailyNoteHeading: string;
+	weeklyNoteHeading: string;
 	openFileOnWrite: boolean;
 	useDailyNote: boolean;
+	useWeeklyNote: boolean;
 	dailyEntryTemplateLocation: string;
 }
 
 export const DEFAULT_SETTINGS: ObsidianClipperSettings = {
-	heading: "",
+	dailyNoteHeading: "",
+	weeklyNoteHeading: "",
 	tags: "",
+	timestampFormat: "HH:mm",
 	openFileOnWrite: true,
 	useDailyNote: true,
+	useWeeklyNote: false,
 	dailyEntryTemplateLocation: "",
 };

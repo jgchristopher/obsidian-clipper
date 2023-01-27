@@ -6,3 +6,7 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+
+div.clp_section_margin {
+  margin: 0 0 20px 0 !important;
+}
