@@ -4,8 +4,9 @@ import { Parameters } from "./types";
 import { ObsidianClipperSettings, DEFAULT_SETTINGS } from "./settings";
 import { ClippedNoteEntry } from "./clippednoteentry";
 import { BookmarketlGenerator } from "./bookmarkletgenerator";
-import { DailyPeriodicNoteEntry } from "./dailyperiodicnoteentry";
-import { WeeklyPeriodicNoteEntry } from "./weeklyperiodicnoteentry";
+import { DailyPeriodicNoteEntry } from "./periodicnotes/dailyperiodicnoteentry";
+import { WeeklyPeriodicNoteEntry } from "./periodicnotes/weeklyperiodicnoteentry";
+import { Position } from "./periodicnotes/periodicnoteentry";
 
 export default class ObsidianClipperPlugin extends Plugin {
 	settings: ObsidianClipperSettings;
@@ -38,7 +39,8 @@ export default class ObsidianClipperPlugin extends Plugin {
 			if (this.settings.useDailyNote) {
 				new DailyPeriodicNoteEntry(
 					this.app,
-					this.settings.openFileOnWrite
+					this.settings.openFileOnWrite,
+					this.settings.dailyPosition
 				).writeToPeriodicNote(
 					noteEntry,
 					this.settings.dailyNoteHeading
@@ -48,7 +50,8 @@ export default class ObsidianClipperPlugin extends Plugin {
 			if (this.settings.useWeeklyNote) {
 				new WeeklyPeriodicNoteEntry(
 					this.app,
-					this.settings.openFileOnWrite
+					this.settings.openFileOnWrite,
+					this.settings.weeklyPosition
 				).writeToPeriodicNote(
 					noteEntry,
 					this.settings.weeklyNoteHeading
@@ -145,6 +148,22 @@ class SettingTab extends PluginSettingTab {
 					})
 			);
 
+		new Setting(dailySection)
+			.setName("Daily Note Position")
+			.setDesc(
+				"Would you like to prepend clippings to the top of the section or append them to the bottom of the section?"
+			)
+			.addDropdown((select) =>
+				select
+					.addOption(Position.PREPEND, Position.PREPEND)
+					.addOption(Position.APPEND, Position.APPEND)
+					.setValue(this.plugin.settings.dailyPosition)
+					.onChange(async (value) => {
+						this.plugin.settings.dailyPosition = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
 		new Setting(weeklySection)
 			.setName("Add Weekly Note Entry?")
 			.addToggle((cb) =>
@@ -167,6 +186,22 @@ class SettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.weeklyNoteHeading)
 					.onChange(async (value) => {
 						this.plugin.settings.weeklyNoteHeading = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(weeklySection)
+			.setName("Weekly Note Position")
+			.setDesc(
+				"Would you like to prepend clippings to the top of the section or append them to the bottom of the section?"
+			)
+			.addDropdown((select) =>
+				select
+					.addOption(Position.PREPEND, Position.PREPEND)
+					.addOption(Position.APPEND, Position.APPEND)
+					.setValue(this.plugin.settings.weeklyPosition)
+					.onChange(async (value) => {
+						this.plugin.settings.weeklyPosition = value;
 						await this.plugin.saveSettings();
 					})
 			);

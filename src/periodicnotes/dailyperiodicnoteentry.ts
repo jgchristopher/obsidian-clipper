@@ -5,14 +5,12 @@ import {
 	getDailyNote,
 	createDailyNote,
 } from "obsidian-daily-notes-interface";
-import { PeriodicNoteEntry } from "./periodicnoteentry";
+import { PeriodicNoteEntry, Position } from "./periodicnoteentry";
 import type { Moment } from "moment";
 
 export class DailyPeriodicNoteEntry extends PeriodicNoteEntry {
-	constructor(app: App, openFileOnWrite: boolean) {
-		super();
-		this.app = app;
-		this.openFileOnWrite = openFileOnWrite;
+	constructor(app: App, openFileOnWrite: boolean, position: Position) {
+		super(app, openFileOnWrite, position);
 		this.notice =
 			"To use a daily note with Obsidian Clipper the daily note needs to be enabled from the periodic-notes plugin";
 	}
