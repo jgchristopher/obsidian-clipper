@@ -6,30 +6,35 @@ import {
 	getAllWeeklyNotes,
 	getWeeklyNote,
 } from "obsidian-daily-notes-interface";
-import { PeriodicNoteEntry, Position } from "./periodicnoteentry";
+import { PeriodicNoteEntry } from "./periodicnoteentry";
+import { SectionPosition } from "./sectionposition";
 
 export class WeeklyPeriodicNoteEntry extends PeriodicNoteEntry {
-	constructor(app: App, openFileOnWrite: boolean, position: Position) {
-		super(app, openFileOnWrite, position);
+	constructor(
+		app: App,
+		openFileOnWrite: boolean,
+		sectionPosition: SectionPosition
+	) {
+		super(app, openFileOnWrite, sectionPosition);
 		this.notice =
 			"To use a weekly note with Obsidian Clipper the weekly note needs to be enabled from the periodic-notes plugin";
 	}
 
-	getAllNotes() {
-		return getAllWeeklyNotes();
+	protected getPeriodicNote(moment: Moment, allNotes: Record<string, TFile>) {
+		return getWeeklyNote(moment, allNotes);
 	}
 
-	getNote(allNotes: Record<string, TFile>) {
-		return getWeeklyNote(window.moment(), allNotes);
-	}
-
-	hasPeriodicNoteEnabled() {
+	protected hasPeriodicNoteEnabled() {
 		return appHasWeeklyNotesPluginLoaded();
 	}
 
-	async waitForNoteCreation(moment: Moment) {
+	protected async waitForNoteCreation(moment: Moment) {
 		let weeklyNote = await createWeeklyNote(moment);
 		await new Promise((r) => setTimeout(r, 50));
 		return weeklyNote;
+	}
+
+	protected getAllNotes() {
+		return getAllWeeklyNotes();
 	}
 }

@@ -5,31 +5,36 @@ import {
 	getDailyNote,
 	createDailyNote,
 } from "obsidian-daily-notes-interface";
-import { PeriodicNoteEntry, Position } from "./periodicnoteentry";
+import { PeriodicNoteEntry } from "./periodicnoteentry";
+import { SectionPosition } from "./sectionposition";
 import type { Moment } from "moment";
 
 export class DailyPeriodicNoteEntry extends PeriodicNoteEntry {
-	constructor(app: App, openFileOnWrite: boolean, position: Position) {
-		super(app, openFileOnWrite, position);
+	constructor(
+		app: App,
+		openFileOnWrite: boolean,
+		sectionPosition: SectionPosition
+	) {
+		super(app, openFileOnWrite, sectionPosition);
 		this.notice =
 			"To use a daily note with Obsidian Clipper the daily note needs to be enabled from the periodic-notes plugin";
 	}
 
-	getAllNotes() {
-		return getAllDailyNotes();
+	protected getPeriodicNote(moment: Moment, allNotes: Record<string, TFile>) {
+		return getDailyNote(moment, allNotes);
 	}
 
-	getNote(allNotes: Record<string, TFile>) {
-		return getDailyNote(window.moment(), allNotes);
-	}
-
-	hasPeriodicNoteEnabled() {
+	protected hasPeriodicNoteEnabled() {
 		return appHasDailyNotesPluginLoaded();
 	}
 
-	async waitForNoteCreation(moment: Moment) {
+	protected async waitForNoteCreation(moment: Moment) {
 		let dailyNote = await createDailyNote(moment);
 		await new Promise((r) => setTimeout(r, 50));
 		return dailyNote;
+	}
+
+	protected getAllNotes() {
+		return getAllDailyNotes();
 	}
 }

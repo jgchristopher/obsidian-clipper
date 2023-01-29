@@ -1,4 +1,4 @@
-import { Position } from "./periodicnotes/periodicnoteentry";
+import { SectionPosition } from "./periodicnotes/sectionposition";
 
 export interface ObsidianClipperSettings {
 	tags: string;
@@ -7,9 +7,9 @@ export interface ObsidianClipperSettings {
 	weeklyNoteHeading: string;
 	openFileOnWrite: boolean;
 	useDailyNote: boolean;
-	dailyPosition: Position;
+	dailyPosition: SectionPosition;
 	useWeeklyNote: boolean;
-	weeklyPosition: Position;
+	weeklyPosition: SectionPosition;
 	dailyEntryTemplateLocation: string;
 }
 
@@ -20,8 +20,8 @@ export const DEFAULT_SETTINGS: ObsidianClipperSettings = {
 	timestampFormat: "HH:mm",
 	openFileOnWrite: true,
 	useDailyNote: true,
-	dailyPosition: Position.APPEND,
+	dailyPosition: SectionPosition.APPEND,
 	useWeeklyNote: false,
-	weeklyPosition: Position.APPEND,
+	weeklyPosition: SectionPosition.APPEND,
 	dailyEntryTemplateLocation: "",
 };

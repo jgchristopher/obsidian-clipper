@@ -6,7 +6,7 @@ import { ClippedNoteEntry } from "./clippednoteentry";
 import { BookmarketlGenerator } from "./bookmarkletgenerator";
 import { DailyPeriodicNoteEntry } from "./periodicnotes/dailyperiodicnoteentry";
 import { WeeklyPeriodicNoteEntry } from "./periodicnotes/weeklyperiodicnoteentry";
-import { Position } from "./periodicnotes/periodicnoteentry";
+import { SectionPosition } from "./periodicnotes/sectionposition";
 
 export default class ObsidianClipperPlugin extends Plugin {
 	settings: ObsidianClipperSettings;
@@ -155,8 +155,8 @@ class SettingTab extends PluginSettingTab {
 			)
 			.addDropdown((select) =>
 				select
-					.addOption(Position.PREPEND, Position.PREPEND)
-					.addOption(Position.APPEND, Position.APPEND)
+					.addOption(SectionPosition.PREPEND, SectionPosition.PREPEND)
+					.addOption(SectionPosition.APPEND, SectionPosition.APPEND)
 					.setValue(this.plugin.settings.dailyPosition)
 					.onChange(async (value) => {
 						this.plugin.settings.dailyPosition = value;
@@ -197,8 +197,8 @@ class SettingTab extends PluginSettingTab {
 			)
 			.addDropdown((select) =>
 				select
-					.addOption(Position.PREPEND, Position.PREPEND)
-					.addOption(Position.APPEND, Position.APPEND)
+					.addOption(SectionPosition.PREPEND, SectionPosition.PREPEND)
+					.addOption(SectionPosition.APPEND, SectionPosition.APPEND)
 					.setValue(this.plugin.settings.weeklyPosition)
 					.onChange(async (value) => {
 						this.plugin.settings.weeklyPosition = value;
