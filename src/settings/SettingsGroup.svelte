@@ -1,6 +1,18 @@
 <script lang="ts">
   import { slide } from "svelte/transition";
-  import {settingsStore} from "./store.ts"
+  import { type Writable } from "svelte/store";
+  import { type ObsidianClipperSettings, DEFAULT_SETTINGS } from "../settings"
+  import writableDerived from "svelte-writable-derived";
+  
+  export let settings: Writable<ObsidianClipperSettings>;
+  
+  let configs = writableDerived(
+    settings,
+    (settings) => settings,
+    (newSettings) => newSettings
+  );
+
+  
 </script>
 
 
@@ -8,22 +20,22 @@
 	<div class="setting-item mod-toggle">
 		<div class="setting-item-info">
       <h1 class="setting-item-name">
-        {sectionTitle} 
+        Daily Note Entry 
       </h1>
     </div>
     <div class="setting-item-control">
       <label
         class="checkbox-container"
-        class:is-enabled={$settingsStore.useDailyNote}
+        class:is-enabled={$configs.useDailyNote}
       >
         <input
           type="checkbox"
-          bind:checked={$settingsStore.useDailyNote}
+          bind:checked={$configs.useDailyNote}
         />
       </label>
     </div>
 	</div>
-  {#if $settingsStore.useDailyNote}
+  {#if $configs.useDailyNote}
   <div
       in:slide|local={{ duration: 300 }}
       out:slide|local={{ duration: 300 }}
@@ -38,7 +50,7 @@
 			</div>
 		</div>
 		<div class="setting-item-control">
-			<input type="text" bind:value={$settingsStore.dailyNoteHeading} spellcheck="false" placeholder="" />
+			<input type="text" bind:value={$configs.dailyNoteHeading} spellcheck="false" placeholder="" />
 		</div>
 	</div>
 	<div class="setting-item">
@@ -50,7 +62,65 @@
 			</div>
 		</div>
 		<div class="setting-item-control">
-			<select class="dropdown" bind:value={$settingsStore.dailyPosition}>
+			<select class="dropdown" bind:value={$configs.dailyPosition}>
+				<option value="prepend">prepend</option>
+				<option value="append">append</option>
+			</select>
+		</div>
+	</div>
+  </div>
+  {/if}
+</div>
+
+
+
+<div class="clp_section_margin">
+	<div class="setting-item mod-toggle">
+		<div class="setting-item-info">
+      <h1 class="setting-item-name">
+        Weekly Note Entry 
+      </h1>
+    </div>
+    <div class="setting-item-control">
+      <label
+        class="checkbox-container"
+        class:is-enabled={$configs.useWeeklyNote}
+      >
+        <input
+          type="checkbox"
+          bind:checked={$configs.useWeeklyNote}
+        />
+      </label>
+    </div>
+	</div>
+  {#if $configs.useWeeklyNote}
+  <div
+      in:slide|local={{ duration: 300 }}
+      out:slide|local={{ duration: 300 }}
+    >
+
+	<div class="setting-item">
+		<div class="setting-item-info">
+			<div class="setting-item-name">Weekly Note Header</div>
+			<div class="setting-item-description">
+				What header should highlight data be prepended/appended under in your
+  daily note?
+			</div>
+		</div>
+		<div class="setting-item-control">
+			<input type="text" bind:value={$configs.weeklyNoteHeading} spellcheck="false" placeholder="" />
+		</div>
+	</div>
+	<div class="setting-item">
+		<div class="setting-item-info">
+			<div class="setting-item-name">Weekly Note Position</div>
+			<div class="setting-item-description">
+				Would you like to prepend clippings to the top of the section or
+				append them to the bottom of the section?
+			</div>
+		</div>
+		<div class="setting-item-control">
+			<select class="dropdown" bind:value={$configs.weeklyPosition}>
 				<option value="prepend">prepend</option>
 				<option value="append">append</option>
 			</select>
