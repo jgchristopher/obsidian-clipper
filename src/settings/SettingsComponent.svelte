@@ -3,7 +3,6 @@
   import { slide } from "svelte/transition";
   import { type Writable } from "svelte/store";
   import type {ObsidianClipperSettings} from "../settings"
-  import SettingsGroup from "./SettingsGroup.svelte"
   import { BookmarketlGenerator } from "../bookmarkletgenerator";
   
   export let settings: Writable<ObsidianClipperSettings>;
