@@ -109,8 +109,9 @@ class SettingTab extends PluginSettingTab {
 		});
 	}
 
-	hide() {
+	async hide() {
 		super.hide();
+		await this.plugin.saveSettings();
 		this.view.$destroy();
 	}
 }
