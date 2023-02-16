@@ -7,7 +7,7 @@ import { BookmarketlGenerator } from "./bookmarkletgenerator";
 import { DailyPeriodicNoteEntry } from "./periodicnotes/dailyperiodicnoteentry";
 import { WeeklyPeriodicNoteEntry } from "./periodicnotes/weeklyperiodicnoteentry";
 import SettingsComponent from "./settings/SettingsComponent.svelte";
-import { writable } from "svelte/store";
+import { init } from "./settings/settingsstore";
 import type { SvelteComponent } from "svelte";
 
 export default class ObsidianClipperPlugin extends Plugin {
@@ -93,6 +93,7 @@ class SettingTab extends PluginSettingTab {
   constructor(app: App, plugin: ObsidianClipperPlugin) {
     super(app, plugin);
     this.plugin = plugin;
+    init(this.plugin);
   }
 
   display(): void {
@@ -100,22 +101,13 @@ class SettingTab extends PluginSettingTab {
 
     containerEl.empty();
 
-    const { subscribe, set, update } = writable(this.plugin.settings);
-    let _this = this;
+    //const { subscribe, set, update } = writable(this.plugin.settings);
+    //let _this = this;
 
     this.view = new SettingsComponent({
       target: containerEl,
       props: {
-        settings: {
-          subscribe,
-          update,
-          // save the plugin values when setting the store
-          set: (value: ObsidianClipperSettings) => {
-            set(value);
-            _this.plugin.saveSettings();
-          },
-        },
-        app: this.app,
+        vaultName: this.app.vault.getName(),
       },
     });
   }

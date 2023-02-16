@@ -1,13 +1,9 @@
 <script lang="ts">
-  import {App} from "obsidian";
   import { slide } from "svelte/transition";
-  import { type Writable } from "svelte/store";
-  import type {ObsidianClipperSettings} from "../settings"
   import { BookmarketlGenerator } from "../bookmarkletgenerator";
-  
-  export let settings: Writable<ObsidianClipperSettings>;
-  export let app: App;
-  let vaultName = app.vault.getName();
+  import {settings} from "./settingsstore"
+ 
+  export let vaultName: string;
   let clipperHref = new BookmarketlGenerator(vaultName).generateBookmarklet();
 </script>
 
