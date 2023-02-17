@@ -101,9 +101,6 @@ class SettingTab extends PluginSettingTab {
 
     containerEl.empty();
 
-    //const { subscribe, set, update } = writable(this.plugin.settings);
-    //let _this = this;
-
     this.view = new SettingsComponent({
       target: containerEl,
       props: {
