@@ -145,14 +145,10 @@ export abstract class FileWriter {
           // We need to see if the configured heading exists in the document
           const foundHeadingIndex = cachedHeadings.findIndex(
             (cachedHeading) => {
-              if (
+              return (
                 cachedHeading.heading === heading &&
                 cachedHeading.level === 1
-              ) {
-                return true;
-              } else {
-                return false;
-              }
+              );
             }
           );
 
