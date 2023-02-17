@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { BookmarketlGenerator } from "src/bookmarkletgenerator";
 
-  export let vaultName: string;
-  let clipperHref = new BookmarketlGenerator(vaultName).generateBookmarklet();
+	export let vaultName: string;
+	let clipperHref = new BookmarketlGenerator(vaultName).generateBookmarklet();
 </script>
 
 <div>
