@@ -9,7 +9,13 @@
       "eslint:recommended",
       "plugin:@typescript-eslint/eslint-recommended",
       "plugin:@typescript-eslint/recommended"
-    ], 
+    ],
+    "overrides": [
+        {
+            "files": ["*.svelte"],
+            "parser": "svelte-eslint-parser"
+        }
+    ],
     "parserOptions": {
         "sourceType": "module"
     },
