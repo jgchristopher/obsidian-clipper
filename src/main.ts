@@ -9,6 +9,7 @@ import { WeeklyPeriodicNoteEntry } from "./periodicnotes/weeklyperiodicnoteentry
 import SettingsComponent from "./settings/SettingsComponent.svelte";
 import { init } from "./settings/settingsstore";
 import type { SvelteComponent } from "svelte";
+import { MarkdownProcessor } from "./markdown/markdownprocessor";
 
 export default class ObsidianClipperPlugin extends Plugin {
   settings: ObsidianClipperSettings;
@@ -28,8 +29,12 @@ export default class ObsidianClipperPlugin extends Plugin {
 
       const url = parameters.url;
       const title = parameters.title;
-      const highlightData = parameters.highlightdata;
+      const format = parameters.format;
+      let highlightData = parameters.highlightdata;
 
+      if (format === "html") {
+        highlightData = new MarkdownProcessor(parameters.highlightdata).process();
+      }
       const noteEntry = new ClippedNoteEntry(
         title,
         url,
