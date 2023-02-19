@@ -19,6 +19,7 @@ export async function getTemplateContents(
     if (templateFile) {
       templateContents = await vault.cachedRead(templateFile);
     }
+    return templateContents;
   } catch (err) {
     console.error(
       `Failed to read the clipper entry template '${normalizedTemplatePath}'`,
@@ -27,8 +28,7 @@ export async function getTemplateContents(
     new Notice(
       "Failed to read the Obsidian Clipper daily note entry template configured in Settings"
     );
-  } finally {
-    return templateContents;
+    throw Error("Template File Missing")
   }
 }
 
@@ -37,10 +37,10 @@ export function applyTemplateTransformations(
   url: string,
   tags: string,
   time: string,
-  content: string = "",
+  content = "",
   rawTemplateContents: string
 ): string {
-  let templateContents = rawTemplateContents
+  const templateContents = rawTemplateContents
     .replace(/{{\s*title\s*}}/gi, title)
     .replace(/{{\s*url\s*}}/gi, url)
     .replace(/{{\s*tags\s*}}/gi, tags)
