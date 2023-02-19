@@ -9,9 +9,19 @@
       "eslint:recommended",
       "plugin:@typescript-eslint/eslint-recommended",
       "plugin:@typescript-eslint/recommended"
-    ], 
+    ],
+    "overrides": [
+      {
+        "files": ["*.svelte"],
+        "parser": "svelte-eslint-parser",
+        "parserOptions": {
+          "parser": "@typescript-eslint/parser", 
+        }
+      }
+    ],
     "parserOptions": {
-        "sourceType": "module"
+      "sourceType": "module",
+      "extraFileExtension": [".svelte"], 
     },
     "rules": {
       "no-unused-vars": "off",
