@@ -12,20 +12,20 @@
 	"author": "jgchristopher",
 	"license": "MIT",
 	"devDependencies": {
-		"@tsconfig/svelte": "^3.0.0",
-		"@types/node": "^16.11.6",
+		"@tsconfig/svelte": "3.0.0",
+		"@types/node": "16.11.6",
 		"@typescript-eslint/eslint-plugin": "5.29.0",
 		"@typescript-eslint/parser": "5.29.0",
 		"builtin-modules": "3.3.0",
 		"esbuild": "0.14.47",
 		"esbuild-svelte": "^0.7.3",
 		"obsidian": "latest",
-		"svelte": "^3.55.1",
-		"svelte-preprocess": "^5.0.1",
+		"svelte": "3.55.1",
+		"svelte-preprocess": "5.0.1",
 		"tslib": "2.4.0",
 		"typescript": "4.7.4"
 	},
 	"dependencies": {
-		"obsidian-daily-notes-interface": "^0.9.4"
+		"obsidian-daily-notes-interface": "0.9.4"
 	}
 }
