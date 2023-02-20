@@ -26,7 +26,7 @@
 	</div>
 	<div class="setting-item">
 		<div class="setting-item-info">
-			<div class="setting-item-name">H1</div>
+			<div class="setting-item-name">H2</div>
 			<div class="setting-item-description">
 				What should replace H2 elements found in the highlight data?
 			</div>

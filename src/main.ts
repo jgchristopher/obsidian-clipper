@@ -1,4 +1,5 @@
 import { App, Notice, PluginSettingTab, Plugin } from 'obsidian';
+import { deepmerge } from 'deepmerge-ts';
 
 import type { Parameters } from './types';
 import { type ObsidianClipperSettings, DEFAULT_SETTINGS } from './settings';
@@ -64,7 +65,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = deepmerge(DEFAULT_SETTINGS, await this.loadData());
 	}
 
 	async saveSettings() {
