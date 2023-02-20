@@ -1,3 +1,4 @@
+import type { ObsidianClipperMarkdownSettings } from 'src/settings';
 import TurndownService from 'turndown';
 import { MarkdownTables } from './tables';
 
@@ -7,7 +8,9 @@ export class MarkdownProcessor {
 		this.data = data;
 	}
 
-	public process(markdownSettings: any): string | undefined {
+	public process(
+		markdownSettings: ObsidianClipperMarkdownSettings
+	): string | undefined {
 		let markdownData = this.data;
 		if (this.data) {
 			const markdownService = new TurndownService({
