@@ -1,5 +1,5 @@
 {
-j"extends": "@tsconfig/svelte/tsconfig.json",
+"extends": "@tsconfig/svelte/tsconfig.json",
 	"compilerOptions": {
 		"baseUrl": ".",
 		"inlineSources": true,
