@@ -21,7 +21,7 @@ export class MarkdownProcessor {
       markdownService.use(tables.tables);
       markdownService.addRule('heading_1_to_2', {
         filter: ['h1'],
-        replacement: function(content: any) {
+        replacement: function(content: string) {
           console.log('Moving H1 to H2 Markdown');
           return `## ${content}`;
         },
