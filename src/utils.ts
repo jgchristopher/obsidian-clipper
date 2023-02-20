@@ -1,20 +1,20 @@
-import { App, Notice, normalizePath } from "obsidian";
+import { App, Notice, normalizePath } from 'obsidian';
 
 export async function getTemplateContents(
   app: App,
   templatePath: string | undefined
 ): Promise<string> {
   const { metadataCache, vault } = app;
-  const normalizedTemplatePath = normalizePath(templatePath ?? "");
-  if (templatePath === "/") {
-    return Promise.resolve("");
+  const normalizedTemplatePath = normalizePath(templatePath ?? '');
+  if (templatePath === '/') {
+    return Promise.resolve('');
   }
 
-  let templateContents = "";
+  let templateContents = '';
   try {
     const templateFile = metadataCache.getFirstLinkpathDest(
       normalizedTemplatePath,
-      ""
+      ''
     );
     if (templateFile) {
       templateContents = await vault.cachedRead(templateFile);
@@ -26,9 +26,9 @@ export async function getTemplateContents(
       err
     );
     new Notice(
-      "Failed to read the Obsidian Clipper daily note entry template configured in Settings"
+      'Failed to read the Obsidian Clipper daily note entry template configured in Settings'
     );
-    throw Error("Template File Missing")
+    throw Error('Template File Missing');
   }
 }
 
@@ -37,7 +37,7 @@ export function applyTemplateTransformations(
   url: string,
   tags: string,
   time: string,
-  content = "",
+  content = '',
   rawTemplateContents: string
 ): string {
   const templateContents = rawTemplateContents

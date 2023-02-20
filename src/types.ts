@@ -1,4 +1,4 @@
-declare module "obsidian" {
+declare module 'obsidian' {
   interface View {
     file: TFile;
   }

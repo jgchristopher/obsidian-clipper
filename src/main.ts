@@ -1,15 +1,15 @@
-import { App, Notice, PluginSettingTab, Plugin } from "obsidian";
+import { App, Notice, PluginSettingTab, Plugin } from 'obsidian';
 
-import type { Parameters } from "./types";
-import { type ObsidianClipperSettings, DEFAULT_SETTINGS } from "./settings";
-import { ClippedNoteEntry } from "./clippednoteentry";
-import { BookmarketlGenerator } from "./bookmarkletgenerator";
-import { DailyPeriodicNoteEntry } from "./periodicnotes/dailyperiodicnoteentry";
-import { WeeklyPeriodicNoteEntry } from "./periodicnotes/weeklyperiodicnoteentry";
-import SettingsComponent from "./settings/SettingsComponent.svelte";
-import { init } from "./settings/settingsstore";
-import type { SvelteComponent } from "svelte";
-import { MarkdownProcessor } from "./markdown/markdownprocessor";
+import type { Parameters } from './types';
+import { type ObsidianClipperSettings, DEFAULT_SETTINGS } from './settings';
+import { ClippedNoteEntry } from './clippednoteentry';
+import { BookmarketlGenerator } from './bookmarkletgenerator';
+import { DailyPeriodicNoteEntry } from './periodicnotes/dailyperiodicnoteentry';
+import { WeeklyPeriodicNoteEntry } from './periodicnotes/weeklyperiodicnoteentry';
+import SettingsComponent from './settings/SettingsComponent.svelte';
+import { init } from './settings/settingsstore';
+import type { SvelteComponent } from 'svelte';
+import { MarkdownProcessor } from './markdown/markdownprocessor';
 
 export default class ObsidianClipperPlugin extends Plugin {
   settings: ObsidianClipperSettings;
@@ -19,12 +19,12 @@ export default class ObsidianClipperPlugin extends Plugin {
     this.addSettingTab(new SettingTab(this.app, this));
 
     this.addCommand({
-      id: "copy-bookmarklet-address",
-      name: "copy the Obsidian Clipper bookmarklet for this vault",
+      id: 'copy-bookmarklet-address',
+      name: 'copy the Obsidian Clipper bookmarklet for this vault',
       callback: () => this.handleCopyBookmarkletCommand(),
     });
 
-    this.registerObsidianProtocolHandler("obsidian-clipper", async (e) => {
+    this.registerObsidianProtocolHandler('obsidian-clipper', async (e) => {
       const parameters = e as unknown as Parameters;
 
       const url = parameters.url;
@@ -32,8 +32,10 @@ export default class ObsidianClipperPlugin extends Plugin {
       const format = parameters.format;
       let highlightData = parameters.highlightdata;
 
-      if (format === "html") {
-        highlightData = new MarkdownProcessor(parameters.highlightdata).process();
+      if (format === 'html') {
+        highlightData = new MarkdownProcessor(
+          parameters.highlightdata
+        ).process();
       }
       const noteEntry = new ClippedNoteEntry(
         title,
@@ -48,10 +50,7 @@ export default class ObsidianClipperPlugin extends Plugin {
           this.app,
           this.settings.openFileOnWrite,
           this.settings.dailyPosition
-        ).writeToPeriodicNote(
-          noteEntry,
-          this.settings.dailyNoteHeading
-        );
+        ).writeToPeriodicNote(noteEntry, this.settings.dailyNoteHeading);
       }
 
       if (this.settings.useWeeklyNote) {
@@ -59,20 +58,13 @@ export default class ObsidianClipperPlugin extends Plugin {
           this.app,
           this.settings.openFileOnWrite,
           this.settings.weeklyPosition
-        ).writeToPeriodicNote(
-          noteEntry,
-          this.settings.weeklyNoteHeading
-        );
+        ).writeToPeriodicNote(noteEntry, this.settings.weeklyNoteHeading);
       }
     });
   }
 
   async loadSettings() {
-    this.settings = Object.assign(
-      {},
-      DEFAULT_SETTINGS,
-      await this.loadData()
-    );
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
   }
 
   async saveSettings() {
@@ -81,11 +73,9 @@ export default class ObsidianClipperPlugin extends Plugin {
 
   handleCopyBookmarkletCommand() {
     navigator.clipboard.writeText(
-      new BookmarketlGenerator(
-        this.app.vault.getName()
-      ).generateBookmarklet()
+      new BookmarketlGenerator(this.app.vault.getName()).generateBookmarklet()
     );
-    new Notice("Obsidian Clipper Bookmarklet copied to clipboard.");
+    new Notice('Obsidian Clipper Bookmarklet copied to clipboard.');
   }
 }
 

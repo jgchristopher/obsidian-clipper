@@ -1,11 +1,11 @@
-import { FileWriter } from "./filewriter";
+import { FileWriter } from './filewriter';
 
 export class AppendWriter extends FileWriter {
   protected positionDataWithNoHeader(
     fileData: string,
     clippedData: string
   ): string {
-    return fileData + "\n" + clippedData;
+    return fileData + '\n' + clippedData;
   }
 
   protected positionDataWithHeader(

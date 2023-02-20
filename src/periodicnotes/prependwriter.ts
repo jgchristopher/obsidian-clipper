@@ -1,8 +1,8 @@
-import { FileWriter } from "./filewriter";
+import { FileWriter } from './filewriter';
 
 export class PrependWriter extends FileWriter {
   positionDataWithNoHeader(fileData: string, clippedData: string): string {
-    return clippedData + "\n" + fileData;
+    return clippedData + '\n' + fileData;
   }
 
   positionDataWithHeader(
