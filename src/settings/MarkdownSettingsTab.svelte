@@ -40,7 +40,7 @@
 			/>
 		</div>
 	</div>
-  <div class="setting-item">
+	<div class="setting-item">
 		<div class="setting-item-info">
 			<div class="setting-item-name">H3</div>
 			<div class="setting-item-description">
@@ -56,7 +56,7 @@
 			/>
 		</div>
 	</div>
-    <div class="setting-item">
+	<div class="setting-item">
 		<div class="setting-item-info">
 			<div class="setting-item-name">H4</div>
 			<div class="setting-item-description">
@@ -72,7 +72,7 @@
 			/>
 		</div>
 	</div>
-    <div class="setting-item">
+	<div class="setting-item">
 		<div class="setting-item-info">
 			<div class="setting-item-name">H5</div>
 			<div class="setting-item-description">
@@ -88,7 +88,7 @@
 			/>
 		</div>
 	</div>
-    <div class="setting-item">
+	<div class="setting-item">
 		<div class="setting-item-info">
 			<div class="setting-item-name">H6</div>
 			<div class="setting-item-description">
