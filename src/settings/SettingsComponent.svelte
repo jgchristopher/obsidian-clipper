@@ -3,6 +3,7 @@
 	import MarkdownSettingsTab from './MarkdownSettingsTab.svelte';
 	import type { TabItem } from './settingstypes';
 	import Tabs from './Tabs.svelte';
+	import Notice from './Notice.svelte';
 
 	export let vaultName: string;
 
@@ -23,4 +24,6 @@
 	];
 </script>
 
+<Notice />
+<br />
 <Tabs {tabs} />

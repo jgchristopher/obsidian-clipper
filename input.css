@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+a {
+	color: var(--link-color);
+}
+
+div.clp_section_margin {
+	margin: 0 0 20px 0 !important;
+}

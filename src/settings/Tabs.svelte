@@ -10,7 +10,7 @@
 <ul>
 {#each tabs as tab}
 	<li class={activeTabValue === tab.value ? 'active' : ''}>
-		<span on:click={() => handleClick(tab.value)}>{tab.label}</span>
+		<span on:keypress={() => handleClick(tab.value)} on:click={() => handleClick(tab.value)}>{tab.label}</span>
 	</li>
 {/each}
 </ul>
