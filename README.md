@@ -1,5 +1,9 @@
 # Obsidian Clipper
 
+##**Notice:** 
+**Please reinstall the BookMarketlet** link found in the plugin settings. Significant changes were made to this plugin and the updated bookmarklet takes advantage of these changes.
+
+
 This plugin allows you to capture highlights from the web as Markdown entries in Obsidian.
 
 ## Requirements

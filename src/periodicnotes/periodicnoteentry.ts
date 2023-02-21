@@ -1,9 +1,9 @@
-import { App, TFile, Notice } from "obsidian";
-import type { Moment } from "moment";
-import type { ClippedNoteEntry } from "../clippednoteentry";
-import { SectionPosition } from "./sectionposition";
-import { PrependWriter } from "./prependwriter";
-import { AppendWriter } from "./appendwriter";
+import { App, TFile, Notice } from 'obsidian';
+import type { Moment } from 'moment';
+import type { ClippedNoteEntry } from '../clippednoteentry';
+import { SectionPosition } from './sectionposition';
+import { PrependWriter } from './prependwriter';
+import { AppendWriter } from './appendwriter';
 
 export abstract class PeriodicNoteEntry {
   protected app: App;

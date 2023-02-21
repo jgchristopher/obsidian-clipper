@@ -1,13 +1,13 @@
-import type { Moment } from "moment";
-import type { App, TFile } from "obsidian";
+import type { Moment } from 'moment';
+import type { App, TFile } from 'obsidian';
 import {
   appHasWeeklyNotesPluginLoaded,
   createWeeklyNote,
   getAllWeeklyNotes,
   getWeeklyNote,
-} from "obsidian-daily-notes-interface";
-import { PeriodicNoteEntry } from "./periodicnoteentry";
-import type { SectionPosition } from "./sectionposition";
+} from 'obsidian-daily-notes-interface';
+import { PeriodicNoteEntry } from './periodicnoteentry';
+import type { SectionPosition } from './sectionposition';
 
 export class WeeklyPeriodicNoteEntry extends PeriodicNoteEntry {
   constructor(
@@ -17,7 +17,7 @@ export class WeeklyPeriodicNoteEntry extends PeriodicNoteEntry {
   ) {
     super(app, openFileOnWrite, sectionPosition);
     this.notice =
-      "To use a weekly note with Obsidian Clipper the weekly note needs to be enabled from the periodic-notes plugin";
+      'To use a weekly note with Obsidian Clipper the weekly note needs to be enabled from the periodic-notes plugin';
   }
 
   protected getPeriodicNote(moment: Moment, allNotes: Record<string, TFile>) {

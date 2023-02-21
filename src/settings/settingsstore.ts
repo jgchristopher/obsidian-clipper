@@ -1,6 +1,6 @@
-import type ObsidianClipperPlugin from "src/main";
-import type { ObsidianClipperSettings } from "src/settings";
-import { type Writable, writable } from "svelte/store";
+import type ObsidianClipperPlugin from 'src/main';
+import type { ObsidianClipperSettings } from 'src/settings';
+import { type Writable, writable } from 'svelte/store';
 
 export let settings: Writable<ObsidianClipperSettings>;
 

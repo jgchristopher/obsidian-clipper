@@ -5,11 +5,11 @@ import {
   TFolder,
   base64ToArrayBuffer,
   type HeadingCache,
-} from "obsidian";
+} from 'obsidian';
 
 function assertNotNull<T>(value: T | null | undefined): asserts value is T {
   if (!value) {
-    throw new Error("Value is null");
+    throw new Error('Value is null');
   }
 }
 
@@ -51,42 +51,30 @@ export abstract class FileWriter {
       try {
         insertSection = this.getEndAndBeginningOfHeading(file, heading);
       } catch (e) {
-        throw Error("Missing Expected Heading");
+        throw Error('Missing Expected Heading');
       }
 
       const fileData = await this.app.vault.read(file);
-      const fileLines = fileData.split("\n");
+      const fileLines = fileData.split('\n');
 
-      const preSectionContent = fileLines.slice(
-        0,
-        insertSection.firstLine
-      );
+      const preSectionContent = fileLines.slice(0, insertSection.firstLine);
       let targetSection = fileLines.slice(
         insertSection.firstLine,
         insertSection.lastLine
       );
 
-      targetSection = this.positionDataWithHeader(
-        targetSection,
-        clippedData
-      );
+      targetSection = this.positionDataWithHeader(targetSection, clippedData);
       let lines: string[] = [];
 
       if (insertSection.lastLine !== -1) {
-        const postSectionContent = fileLines.slice(
-          insertSection.lastLine
-        );
+        const postSectionContent = fileLines.slice(insertSection.lastLine);
         // now merge all of the section back together
-        lines = [
-          ...preSectionContent,
-          ...targetSection,
-          ...postSectionContent,
-        ];
+        lines = [...preSectionContent, ...targetSection, ...postSectionContent];
       } else {
         // We should append to the end of the file
         lines = [...preSectionContent, ...targetSection];
       }
-      return this.writeAndOpenFile(file.path, lines.join("\n"));
+      return this.writeAndOpenFile(file.path, lines.join('\n'));
     }
   }
 
@@ -99,8 +87,8 @@ export abstract class FileWriter {
     if (file instanceof TFile) {
       await this.app.vault.modify(file, text);
     } else {
-      const parts = outputFileName.split("/");
-      const dir = parts.slice(0, parts.length - 1).join("/");
+      const parts = outputFileName.split('/');
+      const dir = parts.slice(0, parts.length - 1).join('/');
       if (
         parts.length > 1 &&
         !(this.app.vault.getAbstractFileByPath(dir) instanceof TFolder)
@@ -129,11 +117,7 @@ export abstract class FileWriter {
       });
 
       if (!fileIsAlreadyOpened)
-        await this.app.workspace.openLinkText(
-          outputFileName,
-          "",
-          false
-        );
+        await this.app.workspace.openLinkText(outputFileName, '', false);
     }
 
     return this.app.vault.getAbstractFileByPath(outputFileName) as TFile;
@@ -150,24 +134,15 @@ export abstract class FileWriter {
       const cachedHeadings = cache.headings;
       assertNotNull(cachedHeadings);
       // We need to see if the configured heading exists in the document
-      const foundHeadingIndex = cachedHeadings.findIndex(
-        (cachedHeading) => {
-          return (
-            cachedHeading.heading === heading &&
-            cachedHeading.level === 1
-          );
-        }
-      );
+      const foundHeadingIndex = cachedHeadings.findIndex((cachedHeading) => {
+        return cachedHeading.heading === heading && cachedHeading.level === 1;
+      });
 
       if (foundHeadingIndex) {
         const foundHeading = cachedHeadings[foundHeadingIndex];
         let nextHeading: HeadingCache | null = null;
         // Need to find the next level 1 heading, if any
-        for (
-          let i = foundHeadingIndex + 1;
-          i < cachedHeadings?.length;
-          i++
-        ) {
+        for (let i = foundHeadingIndex + 1; i < cachedHeadings?.length; i++) {
           const cachedHeading = cachedHeadings[i];
           if (cachedHeading.level === 1) {
             nextHeading = cachedHeading;
@@ -183,11 +158,11 @@ export abstract class FileWriter {
         }
         return { lastLine: appendLine, firstLine: prependLine };
       } else {
-        throw Error("Heading not found");
+        throw Error('Heading not found');
       }
     } catch (e) {
       new Notice("Can't find heading");
-      throw Error("Heading not found");
+      throw Error('Heading not found');
     }
   }
 }

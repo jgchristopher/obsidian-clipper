@@ -1,6 +1,6 @@
-import type { App } from "obsidian";
-import type { ObsidianClipperSettings } from "./settings";
-import { getTemplateContents, applyTemplateTransformations } from "./utils";
+import type { App } from 'obsidian';
+import type { ObsidianClipperSettings } from './settings';
+import { getTemplateContents, applyTemplateTransformations } from './utils';
 
 export class ClippedNoteEntry {
   private tags: string;
@@ -14,25 +14,25 @@ export class ClippedNoteEntry {
     private url: string,
     settings: ObsidianClipperSettings,
     app: App,
-    data = ""
+    data = ''
   ) {
     this.title = title;
     this.url = url;
-    if (data !== "") {
+    if (data !== '') {
       this.data = data;
     }
     const tagJoins: string[] = [];
-    settings.tags.split(",").forEach((t) => {
+    settings.tags.split(',').forEach((t) => {
       tagJoins.push(`#${t}`);
     });
-    this.tags = tagJoins.join(" ");
+    this.tags = tagJoins.join(' ');
     this.settings = settings;
     this.app = app;
     this.timeStamp = window.moment().format(this.settings.timestampFormat);
   }
 
   public async formattedEntry(): Promise<string> {
-    let formattedData = "";
+    let formattedData = '';
 
     if (this.settings.dailyEntryTemplateLocation) {
       const rawTemplateContents = await getTemplateContents(
