@@ -1,6 +1,40 @@
 <script lang="ts">
+	import type { App } from 'obsidian';
 	import { slide } from 'svelte/transition';
 	import { settings } from './settingsstore';
+	import TemplateOption from './TemplateOption.svelte';
+
+	export let app: App;
+
+	let templateOptions: string[] = [];
+
+	let searchInput; // use with bind:this to focus element
+
+	$: if (!$settings.weeklyEntryTemplateLocation) {
+		templateOptions = [];
+	}
+
+	const filterFiles = () => {
+		let storageArr: string[] = [];
+		if ($settings.weeklyEntryTemplateLocation) {
+			app.vault.getMarkdownFiles().forEach((file) => {
+				if (
+					file.path
+						.toLowerCase()
+						.startsWith($settings.weeklyEntryTemplateLocation.toLowerCase())
+				) {
+					storageArr = [...storageArr, file.path.toLowerCase()];
+				}
+			});
+		}
+		templateOptions = storageArr;
+	};
+
+	const setInputVal = (templateOption: string) => {
+		debugger;
+		templateOptions = [];
+		$settings.weeklyEntryTemplateLocation = templateOption;
+	};
 </script>
 
 <div class="clp_section_margin">
@@ -52,5 +86,53 @@
 				</div>
 			</div>
 		</div>
+		<div class="setting-item">
+			<div class="setting-item-info">
+				<div class="setting-item-name">Clipped Entry Template - Weekly</div>
+				<div class="setting-item-description">
+					Choose the file to use as a template for the clipped entry in the
+					weekly periodic note
+				</div>
+			</div>
+			<div class="setting-item-control autocomplete">
+				<input
+					type="text"
+					bind:this={searchInput}
+					bind:value={$settings.weeklyEntryTemplateLocation}
+					on:input={filterFiles}
+					spellcheck="false"
+				/>
+				<!--FILTERED LIST OF COUNTRIES -->
+				{#if templateOptions.length > 0}
+					<ul id="autocomplete-items-list">
+						{#each templateOptions as templateOption, i}
+							<TemplateOption
+								itemLabel={templateOption}
+								on:click={() => setInputVal(templateOption)}
+							/>
+						{/each}
+					</ul>
+				{/if}
+			</div>
+		</div>
 	{/if}
 </div>
+
+<style>
+	div.autocomplete {
+		/*the container must be positioned relative:*/
+		position: relative;
+		display: inline-block;
+		width: 300px;
+	}
+
+	#autocomplete-items-list {
+		position: relative;
+		margin: 0;
+		padding: 0;
+		top: 0;
+		width: 297px;
+		border: 1px solid #ddd;
+		background-color: #ddd;
+	}
+</style>

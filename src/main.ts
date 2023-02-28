@@ -50,7 +50,8 @@ export default class ObsidianClipperPlugin extends Plugin {
 				new DailyPeriodicNoteEntry(
 					this.app,
 					this.settings.openFileOnWrite,
-					this.settings.dailyPosition
+					this.settings.dailyPosition,
+					this.settings.dailyEntryTemplateLocation
 				).writeToPeriodicNote(noteEntry, this.settings.dailyNoteHeading);
 			}
 
@@ -58,7 +59,8 @@ export default class ObsidianClipperPlugin extends Plugin {
 				new WeeklyPeriodicNoteEntry(
 					this.app,
 					this.settings.openFileOnWrite,
-					this.settings.weeklyPosition
+					this.settings.weeklyPosition,
+					this.settings.weeklyEntryTemplateLocation
 				).writeToPeriodicNote(noteEntry, this.settings.weeklyNoteHeading);
 			}
 		});
@@ -103,7 +105,7 @@ class SettingTab extends PluginSettingTab {
 		this.view = new SettingsComponent({
 			target: containerEl,
 			props: {
-				vaultName: this.app.vault.getName(),
+				app: this.app,
 			},
 		});
 	}
