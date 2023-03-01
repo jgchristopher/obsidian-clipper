@@ -5,8 +5,9 @@
 	export let description: string;
 	export let initialValue: string;
 	//export let dataSet: TFile[];
-	export let onChange;
-	export let dataProvider;
+	export let onChange: (string: string) => void;
+
+	export let dataProvider: () => any[];
 
 	const [popperRef, popperContent] = createPopperActions({
 		placement: 'bottom',
