@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { createPopperActions } from 'svelte-popperjs';
 
+	export let name: string;
+	export let description: string;
 	export let initialValue: string;
 	//export let dataSet: TFile[];
 	export let onChange;
@@ -55,10 +57,9 @@
 
 <div class="setting-item align-start">
 	<div class="setting-item-info">
-		<div class="setting-item-name">Clipped Entry Template - Weekly</div>
+		<div class="setting-item-name">{name}</div>
 		<div class="setting-item-description">
-			Choose the file to use as a template for the clipped entry in the weekly
-			periodic note
+			{description}
 		</div>
 	</div>
 	<div class="setting-item-control">

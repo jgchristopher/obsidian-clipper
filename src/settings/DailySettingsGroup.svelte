@@ -1,6 +1,10 @@
 <script lang="ts">
+	import type { App } from 'obsidian';
 	import { slide } from 'svelte/transition';
+	import Suggest from './components/Suggest.svelte';
 	import { settings } from './settingsstore';
+
+	export let app: App;
 </script>
 
 <div class="clp_section_margin">
@@ -51,22 +55,14 @@
 					</select>
 				</div>
 			</div>
-			<div class="setting-item">
-				<div class="setting-item-info">
-					<div class="setting-item-name">Clipped Entry Template - Daily</div>
-					<div class="setting-item-description">
-						Choose the file to use as a template for the clipped entry in the
-						daily periodic note
-					</div>
-				</div>
-				<div class="setting-item-control">
-					<input
-						type="text"
-						bind:value={$settings.dailyEntryTemplateLocation}
-						spellcheck="false"
-					/>
-				</div>
-			</div>
+			<Suggest
+				name="Clipped Entry Template - Daily"
+				description="Choose the file to use as a template for the clipped entry in the daily 
+			periodic note"
+				initialValue={$settings.dailyEntryTemplateLocation}
+				dataProvider={() => app.vault.getMarkdownFiles()}
+				onChange={(entry) => ($settings.dailyEntryTemplateLocation = entry)}
+			/>
 		</div>
 	{/if}
 </div>

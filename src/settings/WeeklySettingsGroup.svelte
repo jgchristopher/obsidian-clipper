@@ -56,6 +56,9 @@
 				</div>
 			</div>
 			<Suggest
+				name="Clipped Entry Template - Weekly"
+				description="Choose the file to use as a template for the clipped entry in the weekly
+			periodic note"
 				initialValue={$settings.weeklyEntryTemplateLocation}
 				dataProvider={() => app.vault.getMarkdownFiles()}
 				onChange={(entry) => ($settings.weeklyEntryTemplateLocation = entry)}
