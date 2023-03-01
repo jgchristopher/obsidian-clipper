@@ -5,6 +5,7 @@
 	import { settings } from './settingsstore';
 
 	export let app: App;
+	const onChange = (entry) => ($settings.weeklyEntryTemplateLocation = entry);
 </script>
 
 <div class="clp_section_margin">
@@ -61,7 +62,7 @@
 			periodic note"
 				initialValue={$settings.weeklyEntryTemplateLocation}
 				dataProvider={() => app.vault.getMarkdownFiles()}
-				onChange={(entry) => ($settings.weeklyEntryTemplateLocation = entry)}
+				{onChange}
 			/>
 		</div>
 	{/if}
