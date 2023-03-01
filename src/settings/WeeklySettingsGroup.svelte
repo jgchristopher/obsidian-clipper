@@ -3,8 +3,17 @@
 	import { slide } from 'svelte/transition';
 	import { settings } from './settingsstore';
 	import TemplateOption from './TemplateOption.svelte';
+	import { createPopperActions } from 'svelte-popperjs';
 
 	export let app: App;
+
+	const [popperRef, popperContent] = createPopperActions({
+		placement: 'bottom',
+		strategy: 'fixed',
+	});
+	const extraOpts = {
+		modifiers: [{ name: 'offset', options: { offset: [0, 0] } }],
+	};
 
 	let templateOptions: string[] = [];
 
@@ -31,9 +40,16 @@
 	};
 
 	const setInputVal = (templateOption: string) => {
-		debugger;
 		templateOptions = [];
 		$settings.weeklyEntryTemplateLocation = templateOption;
+	};
+
+	const handleMouseOver = (e: Event) => {
+		console.log(e);
+	};
+
+	const handleMouseOut = (e: Event) => {
+		console.log(e);
 	};
 </script>
 
@@ -94,47 +110,34 @@
 					weekly periodic note
 				</div>
 			</div>
-			<div class="setting-item-control autocomplete">
+			<div class="setting-item-control">
 				<input
 					type="text"
+					use:popperRef
 					bind:this={searchInput}
 					bind:value={$settings.weeklyEntryTemplateLocation}
 					on:input={filterFiles}
 					spellcheck="false"
 				/>
-				<!--FILTERED LIST OF COUNTRIES -->
 				{#if templateOptions.length > 0}
-					<ul id="autocomplete-items-list">
-						{#each templateOptions as templateOption, i}
-							<TemplateOption
-								itemLabel={templateOption}
-								on:click={() => setInputVal(templateOption)}
-							/>
-						{/each}
-					</ul>
+					<div
+						id="autocomplete-items-list"
+						class="suggestion-container"
+						use:popperContent={extraOpts}
+					>
+						<div class="suggestion">
+							{#each templateOptions as templateOption, i}
+								<TemplateOption
+									itemLabel={templateOption}
+									on:click={() => setInputVal(templateOption)}
+									on:mouseover={handleMouseOver}
+									on:mouseout={handleMouseOut}
+								/>
+							{/each}
+						</div>
+					</div>
 				{/if}
 			</div>
 		</div>
 	{/if}
 </div>
-
-<style>
-	div.autocomplete {
-		/*the container must be positioned relative:*/
-		position: relative;
-		display: inline-block;
-		/*width: 300px;*/
-	}
-
-	#autocomplete-items-list {
-		position: relative;
-		margin: 0;
-		padding: 0;
-		top: 0;
-		border: 1px solid #ddd;
-		background-color: #ddd;
-		text-align: left;
-		margin-top: 5px;
-		width: calc(100% - 20px);
-	}
-</style>
