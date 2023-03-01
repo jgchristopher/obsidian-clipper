@@ -51,21 +51,21 @@
 					</select>
 				</div>
 			</div>
-		</div>
-		<div class="setting-item">
-			<div class="setting-item-info">
-				<div class="setting-item-name">Clipped Entry Template - Daily</div>
-				<div class="setting-item-description">
-					Choose the file to use as a template for the clipped entry in the
-					daily periodic note
+			<div class="setting-item">
+				<div class="setting-item-info">
+					<div class="setting-item-name">Clipped Entry Template - Daily</div>
+					<div class="setting-item-description">
+						Choose the file to use as a template for the clipped entry in the
+						daily periodic note
+					</div>
 				</div>
-			</div>
-			<div class="setting-item-control">
-				<input
-					type="text"
-					bind:value={$settings.dailyEntryTemplateLocation}
-					spellcheck="false"
-				/>
+				<div class="setting-item-control">
+					<input
+						type="text"
+						bind:value={$settings.dailyEntryTemplateLocation}
+						spellcheck="false"
+					/>
+				</div>
 			</div>
 		</div>
 	{/if}

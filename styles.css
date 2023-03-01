@@ -1,7 +1,3 @@
-.fixed {
-  position: fixed;
-}
-
 .ml-3 {
   margin-left: 0.75rem;
 }
@@ -36,10 +32,6 @@
 
 .flex-wrap {
   flex-wrap: wrap;
-}
-
-.items-start {
-  align-items: flex-start;
 }
 
 .whitespace-nowrap {

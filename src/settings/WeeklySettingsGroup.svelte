@@ -1,56 +1,10 @@
 <script lang="ts">
 	import type { App } from 'obsidian';
 	import { slide } from 'svelte/transition';
+	import Suggest from './components/Suggest.svelte';
 	import { settings } from './settingsstore';
-	import TemplateOption from './TemplateOption.svelte';
-	import { createPopperActions } from 'svelte-popperjs';
 
 	export let app: App;
-
-	const [popperRef, popperContent] = createPopperActions({
-		placement: 'bottom',
-		strategy: 'fixed',
-	});
-	const extraOpts = {
-		modifiers: [{ name: 'offset', options: { offset: [0, 0] } }],
-	};
-
-	let templateOptions: string[] = [];
-
-	let searchInput; // use with bind:this to focus element
-
-	$: if (!$settings.weeklyEntryTemplateLocation) {
-		templateOptions = [];
-	}
-
-	const filterFiles = () => {
-		let storageArr: string[] = [];
-		if ($settings.weeklyEntryTemplateLocation) {
-			app.vault.getMarkdownFiles().forEach((file) => {
-				if (
-					file.path
-						.toLowerCase()
-						.startsWith($settings.weeklyEntryTemplateLocation.toLowerCase())
-				) {
-					storageArr = [...storageArr, file.path.toLowerCase()];
-				}
-			});
-		}
-		templateOptions = storageArr;
-	};
-
-	const setInputVal = (templateOption: string) => {
-		templateOptions = [];
-		$settings.weeklyEntryTemplateLocation = templateOption;
-	};
-
-	const handleMouseOver = (e: Event) => {
-		console.log(e);
-	};
-
-	const handleMouseOut = (e: Event) => {
-		console.log(e);
-	};
 </script>
 
 <div class="clp_section_margin">
@@ -101,43 +55,11 @@
 					</select>
 				</div>
 			</div>
-		</div>
-		<div class="setting-item items-start">
-			<div class="setting-item-info">
-				<div class="setting-item-name">Clipped Entry Template - Weekly</div>
-				<div class="setting-item-description">
-					Choose the file to use as a template for the clipped entry in the
-					weekly periodic note
-				</div>
-			</div>
-			<div class="setting-item-control">
-				<input
-					type="text"
-					use:popperRef
-					bind:this={searchInput}
-					bind:value={$settings.weeklyEntryTemplateLocation}
-					on:input={filterFiles}
-					spellcheck="false"
-				/>
-				{#if templateOptions.length > 0}
-					<div
-						id="autocomplete-items-list"
-						class="suggestion-container"
-						use:popperContent={extraOpts}
-					>
-						<div class="suggestion">
-							{#each templateOptions as templateOption, i}
-								<TemplateOption
-									itemLabel={templateOption}
-									on:click={() => setInputVal(templateOption)}
-									on:mouseover={handleMouseOver}
-									on:mouseout={handleMouseOut}
-								/>
-							{/each}
-						</div>
-					</div>
-				{/if}
-			</div>
+			<Suggest
+				initialValue={$settings.weeklyEntryTemplateLocation}
+				dataProvider={() => app.vault.getMarkdownFiles()}
+				onChange={(entry) => ($settings.weeklyEntryTemplateLocation = entry)}
+			/>
 		</div>
 	{/if}
 </div>
