@@ -86,7 +86,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="setting-item">
+		<div class="setting-item items-start">
 			<div class="setting-item-info">
 				<div class="setting-item-name">Clipped Entry Template - Weekly</div>
 				<div class="setting-item-description">
@@ -123,7 +123,7 @@
 		/*the container must be positioned relative:*/
 		position: relative;
 		display: inline-block;
-		width: 300px;
+		/*width: 300px;*/
 	}
 
 	#autocomplete-items-list {
@@ -131,8 +131,10 @@
 		margin: 0;
 		padding: 0;
 		top: 0;
-		width: 297px;
 		border: 1px solid #ddd;
 		background-color: #ddd;
+		text-align: left;
+		margin-top: 5px;
+		width: calc(100% - 20px);
 	}
 </style>

@@ -72,6 +72,10 @@
   flex-wrap: wrap;
 }
 
+.items-start {
+  align-items: flex-start;
+}
+
 .whitespace-nowrap {
   white-space: nowrap;
 }
