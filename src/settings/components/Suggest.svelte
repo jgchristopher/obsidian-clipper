@@ -10,11 +10,27 @@
 	export let dataProvider: () => any[];
 
 	const [popperRef, popperContent] = createPopperActions({
-		placement: 'bottom',
+		placement: 'bottom-start',
 		strategy: 'fixed',
 	});
 	const extraOpts = {
-		modifiers: [{ name: 'offset', options: { offset: [0, 5] } }],
+		modifiers: [
+			{ name: 'offset', options: { offset: [0, 5] } },
+			{
+				name: 'sameWidth',
+				enabled: true,
+				fn: ({ state, instance }) => {
+					const targetWidth = `${state.rects.reference.width}px`;
+					if (state.styles.popper.width === targetWidth) {
+						return;
+					}
+					state.styles.popper.width = targetWidth;
+					instance.update();
+				},
+				phase: 'beforeWrite',
+				requires: ['computeStyles'],
+			},
+		],
 	};
 
 	let templateOptions: string[] = [];
@@ -63,14 +79,19 @@
 			{description}
 		</div>
 	</div>
+</div>
+<div class="setting-item">
 	<div class="setting-item-control">
-		<input
-			type="text"
-			use:popperRef
-			bind:value={initialValue}
-			on:input={filterFiles}
-			spellcheck="false"
-		/>
+		<div class="search_input">
+			<input
+				type="text"
+				use:popperRef
+				bind:value={initialValue}
+				on:input={filterFiles}
+				spellcheck="false"
+				class="search_input"
+			/>
+		</div>
 		{#if templateOptions.length > 0}
 			<div class="suggestion-container" use:popperContent={extraOpts}>
 				<div class="suggestion">
@@ -92,3 +113,9 @@
 		{/if}
 	</div>
 </div>
+
+<style>
+	.search_input {
+		width: calc(100% - 20px);
+	}
+</style>
