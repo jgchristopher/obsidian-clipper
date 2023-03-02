@@ -4,7 +4,6 @@
 	export let name: string;
 	export let description: string;
 	export let initialValue: string;
-	//export let dataSet: TFile[];
 	export let onChange: (string: string) => void;
 
 	export let dataProvider: () => any[];
@@ -57,10 +56,6 @@
 			const target = e.target;
 			target.removeClass('is-selected');
 		}
-	};
-
-	const handleKeyEvent = (e: KeyboardEvent) => {
-		console.log(e);
 	};
 
 	const filterFiles = () => {
