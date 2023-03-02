@@ -19,7 +19,7 @@
 			{
 				name: 'sameWidth',
 				enabled: true,
-				fn: ({ state, instance }) => {
+				fn: ({ state, instance }: any) => {
 					const targetWidth = `${state.rects.reference.width}px`;
 					if (state.styles.popper.width === targetWidth) {
 						return;
@@ -57,6 +57,10 @@
 			const target = e.target;
 			target.removeClass('is-selected');
 		}
+	};
+
+	const handleKeyEvent = (e: KeyboardEvent) => {
+		console.log(e);
 	};
 
 	const filterFiles = () => {
