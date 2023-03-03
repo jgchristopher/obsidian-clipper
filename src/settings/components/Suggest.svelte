@@ -117,4 +117,8 @@
 	.search_input {
 		width: calc(100% - 20px);
 	}
+
+	.suggestion-container {
+		text-align: left;
+	}
 </style>
