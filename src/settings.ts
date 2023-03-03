@@ -10,6 +10,7 @@ export interface ObsidianClipperSettings {
 	dailyPosition: SectionPosition;
 	useWeeklyNote: boolean;
 	weeklyPosition: SectionPosition;
+	weeklyEntryTemplateLocation: string;
 	dailyEntryTemplateLocation: string;
 	markdownSettings: ObsidianClipperMarkdownSettings;
 }
@@ -34,6 +35,7 @@ export const DEFAULT_SETTINGS: ObsidianClipperSettings = {
 	useWeeklyNote: false,
 	weeklyPosition: SectionPosition.APPEND,
 	dailyEntryTemplateLocation: '',
+	weeklyEntryTemplateLocation: '',
 	markdownSettings: {
 		h1: '#',
 		h2: '##',

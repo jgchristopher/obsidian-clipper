@@ -4,8 +4,9 @@
 	import type { TabItem } from './settingstypes';
 	import Tabs from './Tabs.svelte';
 	import Notice from './Notice.svelte';
+	import type { App } from 'obsidian';
 
-	export let vaultName: string;
+	export let app: App;
 
 	let tabs: TabItem[] = [
 		{
@@ -13,7 +14,7 @@
 			value: 1,
 			component: BaseSettingsTab,
 			props: {
-				vaultName: vaultName,
+				app: app,
 			},
 		},
 		{

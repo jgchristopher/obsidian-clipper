@@ -42,19 +42,4 @@
 			/>
 		</div>
 	</div>
-	<div class="setting-item">
-		<div class="setting-item-info">
-			<div class="setting-item-name">Clipped Entry Template</div>
-			<div class="setting-item-description">
-				Choose the file to use as a template for the clipped entry
-			</div>
-		</div>
-		<div class="setting-item-control">
-			<input
-				type="text"
-				bind:value={$settings.dailyEntryTemplateLocation}
-				spellcheck="false"
-			/>
-		</div>
-	</div>
 </div>
