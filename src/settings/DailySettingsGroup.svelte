@@ -58,6 +58,24 @@
 					</select>
 				</div>
 			</div>
+			<div class="setting-item">
+				<div class="setting-item-info">
+					<div class="setting-item-name">
+						Open File After Adding Clipping - Daily?
+					</div>
+					<div class="setting-item-description">
+						Would you like to open the daily note after adding the clipping?
+					</div>
+				</div>
+				<div class="setting-item-control">
+					<label
+						class="checkbox-container"
+						class:is-enabled={$settings.dailyOpenOnWrite}
+					>
+						<input type="checkbox" bind:checked={$settings.dailyOpenOnWrite} />
+					</label>
+				</div>
+			</div>
 			<Suggest
 				name="Clipped Entry Template - Daily"
 				description="Choose the file to use as a template for the clipped entry in the daily 

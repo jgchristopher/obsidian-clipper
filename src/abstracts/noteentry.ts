@@ -1,4 +1,4 @@
-import { Notice, TAbstractFile, TFile, type App } from 'obsidian';
+import { Notice, TFile, type App } from 'obsidian';
 import { AppendWriter } from 'src/periodicnotes/appendwriter';
 import { PrependWriter } from 'src/periodicnotes/prependwriter';
 import { SectionPosition } from 'src/settings/types';

@@ -63,7 +63,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 				const file = this.app.vault.getAbstractFileByPath(notePath);
 				new TopicNoteEntry(
 					this.app,
-					true,
+					this.settings.topicOpenOnWrite,
 					this.settings.topicPosition,
 					this.settings.topicEntryTemplateLocation
 				).writeToNote(file, noteEntry);
@@ -71,7 +71,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 				if (this.settings.useDailyNote) {
 					new DailyPeriodicNoteEntry(
 						this.app,
-						this.settings.openFileOnWrite,
+						this.settings.dailyOpenOnWrite,
 						this.settings.dailyPosition,
 						this.settings.dailyEntryTemplateLocation
 					).writeToPeriodicNote(noteEntry, this.settings.dailyNoteHeading);
@@ -80,7 +80,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 				if (this.settings.useWeeklyNote) {
 					new WeeklyPeriodicNoteEntry(
 						this.app,
-						this.settings.openFileOnWrite,
+						this.settings.weeklyOpenOnWrite,
 						this.settings.weeklyPosition,
 						this.settings.weeklyEntryTemplateLocation
 					).writeToPeriodicNote(noteEntry, this.settings.weeklyNoteHeading);
