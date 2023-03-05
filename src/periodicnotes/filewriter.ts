@@ -7,12 +7,7 @@ import {
 	type HeadingCache,
 	type SectionCache,
 } from 'obsidian';
-
-function assertNotNull<T>(value: T | null | undefined): asserts value is T {
-	if (!value) {
-		throw new Error('Value is null');
-	}
-}
+import { Utility } from 'src/utils/utility';
 
 export abstract class FileWriter {
 	protected app: App;
@@ -132,10 +127,10 @@ export abstract class FileWriter {
 	): { lastLine: number; firstLine: number } {
 		// Get the CachedMetadata for this file
 		const cache = this.app.metadataCache.getFileCache(file);
-		assertNotNull(cache);
+		Utility.assertNotNull(cache);
 		try {
 			const cachedHeadings = cache.headings;
-			assertNotNull(cachedHeadings);
+			Utility.assertNotNull(cachedHeadings);
 			// We need to see if the configured heading exists in the document
 			const foundHeadingIndex = cachedHeadings.findIndex((cachedHeading) => {
 				return cachedHeading.heading === heading && cachedHeading.level === 1;

@@ -6,7 +6,7 @@ import {
 	type ObsidianClipperSettings,
 	DEFAULT_SETTINGS,
 } from './settings/types';
-import { ClippedNoteEntry } from './clippednoteentry';
+import { ClippedData } from './clippeddata';
 import { BookmarketlGenerator } from './bookmarkletgenerator';
 import { DailyPeriodicNoteEntry } from './periodicnotes/dailyperiodicnoteentry';
 import { WeeklyPeriodicNoteEntry } from './periodicnotes/weeklyperiodicnoteentry';
@@ -51,7 +51,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 					this.settings.markdownSettings
 				);
 			}
-			const noteEntry = new ClippedNoteEntry(
+			const noteEntry = new ClippedData(
 				title,
 				url,
 				this.settings,
