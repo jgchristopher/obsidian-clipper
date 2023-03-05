@@ -100,8 +100,9 @@ export default class ObsidianClipperPlugin extends Plugin {
 
   handleSubjectBookmarkletCommand(ctx: MarkdownView) {
     const bm = new BookmarketlGenerator(
-      this.app.vault.getName()
-    ).generateNoteBookmarklet(ctx.file.path);
+      this.app.vault.getName(),
+      ctx.file.path
+    ).generateBookmarklet();
 
     const bookmarkletLinkModal = new Modal(this.app);
     bookmarkletLinkModal.titleEl.createEl('h2', {
