@@ -1,5 +1,5 @@
 import type { App } from 'obsidian';
-import type { ObsidianClipperSettings } from './settings';
+import type { ObsidianClipperSettings } from './settings/types';
 import { getTemplateContents, applyTemplateTransformations } from './utils';
 
 export class ClippedNoteEntry {

@@ -1,4 +1,4 @@
-import type { ObsidianClipperMarkdownSettings } from 'src/settings';
+import type { ObsidianClipperMarkdownSettings } from '../settings/types';
 import TurndownService from 'turndown';
 import { MarkdownTables } from './tables';
 

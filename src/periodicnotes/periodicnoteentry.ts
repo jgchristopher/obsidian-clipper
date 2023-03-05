@@ -1,7 +1,7 @@
 import { App, TFile, Notice } from 'obsidian';
 import type { Moment } from 'moment';
 import type { ClippedNoteEntry } from '../clippednoteentry';
-import { SectionPosition } from './sectionposition';
+import { SectionPosition } from '../settings/types';
 import { PrependWriter } from './prependwriter';
 import { AppendWriter } from './appendwriter';
 
@@ -43,7 +43,6 @@ export abstract class PeriodicNoteEntry {
 		this.handleWrite(
 			note.path,
 			await noteEntry.formattedEntry(this.template),
-			this.sectionPosition,
 			heading
 		);
 	}
@@ -61,12 +60,11 @@ export abstract class PeriodicNoteEntry {
 	private async handleWrite(
 		noteFilePath: string,
 		data: string,
-		sectionPosition: SectionPosition,
 		heading?: string
 	) {
 		const file = this.app.vault.getAbstractFileByPath(noteFilePath);
 		if (file instanceof TFile) {
-			if (sectionPosition === SectionPosition.PREPEND) {
+			if (this.sectionPosition === SectionPosition.PREPEND) {
 				new PrependWriter(this.app, this.openFileOnWrite).write(
 					file,
 					data,
@@ -81,7 +79,7 @@ export abstract class PeriodicNoteEntry {
 			}
 		} else {
 			new Notice(
-				`Obsidian Clipper couldn't find the note to ${sectionPosition} to`
+				`Obsidian Clipper couldn't find the note to ${this.sectionPosition} to`
 			);
 		}
 	}

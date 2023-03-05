@@ -7,7 +7,7 @@ import {
 	getWeeklyNote,
 } from 'obsidian-daily-notes-interface';
 import { PeriodicNoteEntry } from './periodicnoteentry';
-import type { SectionPosition } from './sectionposition';
+import type { SectionPosition } from '../settings/types';
 
 export class WeeklyPeriodicNoteEntry extends PeriodicNoteEntry {
 	constructor(

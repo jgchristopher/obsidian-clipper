@@ -1,7 +1,7 @@
 <script lang="ts">
 	import BaseSettingsTab from './BaseSettingsTab.svelte';
 	import MarkdownSettingsTab from './MarkdownSettingsTab.svelte';
-	import type { TabItem } from './settingstypes';
+	import type { TabItem } from './sveltesettingstypes';
 	import Tabs from './Tabs.svelte';
 	import Notice from './Notice.svelte';
 	import type { App } from 'obsidian';

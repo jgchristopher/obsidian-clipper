@@ -10,13 +10,25 @@
 </script>
 
 <div class="clp_section_margin">
-	<div class="settings-item">
-		<Suggest
-			name="Clipped Entry Template - Topic"
-			description="Choose the file to use as a template for the clipped entry a topic note"
-			initialValue={$settings.topicEntryTemplateLocation}
-			dataProvider={() => app.vault.getMarkdownFiles()}
-			{onChange}
-		/>
+	<div class="setting-item">
+		<div class="setting-item-info">
+			<div class="setting-item-name">Topic Note Position</div>
+			<div class="setting-item-description">
+				Would you like to prepend clippings or append them to the bottom?
+			</div>
+		</div>
+		<div class="setting-item-control">
+			<select class="dropdown" bind:value={$settings.topicPosition}>
+				<option value="prepend">prepend</option>
+				<option value="append">append</option>
+			</select>
+		</div>
 	</div>
+	<Suggest
+		name="Clipped Entry Template - Topic"
+		description="Choose the file to use as a template for the clipped entry a topic note"
+		initialValue={$settings.topicEntryTemplateLocation}
+		dataProvider={() => app.vault.getMarkdownFiles()}
+		{onChange}
+	/>
 </div>
