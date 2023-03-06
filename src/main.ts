@@ -1,9 +1,12 @@
-import { App, Notice, PluginSettingTab, Plugin } from 'obsidian';
+import { App, PluginSettingTab, Plugin, Modal, MarkdownView } from 'obsidian';
 import { deepmerge } from 'deepmerge-ts';
 
 import type { Parameters } from './types';
-import { type ObsidianClipperSettings, DEFAULT_SETTINGS } from './settings';
-import { ClippedNoteEntry } from './clippednoteentry';
+import {
+	type ObsidianClipperSettings,
+	DEFAULT_SETTINGS,
+} from './settings/types';
+import { ClippedData } from './clippeddata';
 import { BookmarketlGenerator } from './bookmarkletgenerator';
 import { DailyPeriodicNoteEntry } from './periodicnotes/dailyperiodicnoteentry';
 import { WeeklyPeriodicNoteEntry } from './periodicnotes/weeklyperiodicnoteentry';
@@ -11,6 +14,7 @@ import SettingsComponent from './settings/SettingsComponent.svelte';
 import { init } from './settings/settingsstore';
 import type { SvelteComponent } from 'svelte';
 import { MarkdownProcessor } from './markdown/markdownprocessor';
+import { TopicNoteEntry } from './topicnoteentry';
 
 export default class ObsidianClipperPlugin extends Plugin {
 	settings: ObsidianClipperSettings;
@@ -21,8 +25,16 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 		this.addCommand({
 			id: 'copy-bookmarklet-address',
-			name: 'copy the Obsidian Clipper bookmarklet for this vault',
+			name: 'Vault Bookmarklet',
 			callback: () => this.handleCopyBookmarkletCommand(),
+		});
+
+		this.addCommand({
+			id: 'copy-note-bookmarklet-address',
+			name: 'Note Bookmarklet',
+			editorCallback: (_editor, ctx) => {
+				this.handleSubjectBookmarkletCommand(ctx);
+			},
 		});
 
 		this.registerObsidianProtocolHandler('obsidian-clipper', async (e) => {
@@ -31,6 +43,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 			const url = parameters.url;
 			const title = parameters.title;
 			const format = parameters.format;
+			const notePath = parameters.notePath;
 			let highlightData = parameters.highlightdata;
 
 			if (format === 'html') {
@@ -38,7 +51,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 					this.settings.markdownSettings
 				);
 			}
-			const noteEntry = new ClippedNoteEntry(
+			const noteEntry = new ClippedData(
 				title,
 				url,
 				this.settings,
@@ -46,22 +59,32 @@ export default class ObsidianClipperPlugin extends Plugin {
 				highlightData
 			);
 
-			if (this.settings.useDailyNote) {
-				new DailyPeriodicNoteEntry(
+			if (notePath !== '') {
+				const file = this.app.vault.getAbstractFileByPath(notePath);
+				new TopicNoteEntry(
 					this.app,
-					this.settings.openFileOnWrite,
-					this.settings.dailyPosition,
-					this.settings.dailyEntryTemplateLocation
-				).writeToPeriodicNote(noteEntry, this.settings.dailyNoteHeading);
-			}
+					this.settings.topicOpenOnWrite,
+					this.settings.topicPosition,
+					this.settings.topicEntryTemplateLocation
+				).writeToNote(file, noteEntry);
+			} else {
+				if (this.settings.useDailyNote) {
+					new DailyPeriodicNoteEntry(
+						this.app,
+						this.settings.dailyOpenOnWrite,
+						this.settings.dailyPosition,
+						this.settings.dailyEntryTemplateLocation
+					).writeToPeriodicNote(noteEntry, this.settings.dailyNoteHeading);
+				}
 
-			if (this.settings.useWeeklyNote) {
-				new WeeklyPeriodicNoteEntry(
-					this.app,
-					this.settings.openFileOnWrite,
-					this.settings.weeklyPosition,
-					this.settings.weeklyEntryTemplateLocation
-				).writeToPeriodicNote(noteEntry, this.settings.weeklyNoteHeading);
+				if (this.settings.useWeeklyNote) {
+					new WeeklyPeriodicNoteEntry(
+						this.app,
+						this.settings.weeklyOpenOnWrite,
+						this.settings.weeklyPosition,
+						this.settings.weeklyEntryTemplateLocation
+					).writeToPeriodicNote(noteEntry, this.settings.weeklyNoteHeading);
+				}
 			}
 		});
 	}
@@ -79,11 +102,39 @@ export default class ObsidianClipperPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
+	handleSubjectBookmarkletCommand(ctx: MarkdownView) {
+		const bm = new BookmarketlGenerator(
+			this.app.vault.getName(),
+			ctx.file.path
+		).generateBookmarklet();
+
+		const bookmarkletLinkModal = new Modal(this.app);
+		bookmarkletLinkModal.titleEl.createEl('h2', {
+			text: 'Copy Your Subject Bookmarklet',
+		});
+		bookmarkletLinkModal.contentEl.createEl('a', {
+			href: bm,
+			text: `Obsidian Clipper (${ctx.file.name})`,
+		});
+
+		bookmarkletLinkModal.open();
+	}
+
 	handleCopyBookmarkletCommand() {
-		navigator.clipboard.writeText(
-			new BookmarketlGenerator(this.app.vault.getName()).generateBookmarklet()
-		);
-		new Notice('Obsidian Clipper Bookmarklet copied to clipboard.');
+		const bm = new BookmarketlGenerator(
+			this.app.vault.getName()
+		).generateBookmarklet();
+
+		const bookmarkletLinkModal = new Modal(this.app);
+		bookmarkletLinkModal.titleEl.createEl('h2', {
+			text: 'Copy Your Vault Bookmarklet',
+		});
+		bookmarkletLinkModal.contentEl.createEl('a', {
+			href: bm,
+			text: `Obsidian Clipper (${this.app.vault.getName()})`,
+		});
+
+		bookmarkletLinkModal.open();
 	}
 }
 

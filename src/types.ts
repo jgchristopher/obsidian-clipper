@@ -1,12 +1,13 @@
 declare module 'obsidian' {
-  interface View {
-    file: TFile;
-  }
+	interface View {
+		file: TFile;
+	}
 }
 export interface Parameters {
-  vault: string;
-  url: string;
-  title: string;
-  format: string;
-  highlightdata?: string;
+	vault: string;
+	url: string;
+	title: string;
+	format: string;
+	notePath: string;
+	highlightdata?: string;
 }

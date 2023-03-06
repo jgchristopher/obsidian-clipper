@@ -6,7 +6,7 @@ import {
 	createDailyNote,
 } from 'obsidian-daily-notes-interface';
 import { PeriodicNoteEntry } from './periodicnoteentry';
-import type { SectionPosition } from './sectionposition';
+import type { SectionPosition } from '../settings/types';
 import type { Moment } from 'moment';
 
 export class DailyPeriodicNoteEntry extends PeriodicNoteEntry {

@@ -1,18 +1,28 @@
-import { SectionPosition } from './periodicnotes/sectionposition';
+export const SectionPosition = {
+	PREPEND: 'prepend',
+	APPEND: 'append',
+} as const;
+
+export type SectionPosition =
+	typeof SectionPosition[keyof typeof SectionPosition];
 
 export interface ObsidianClipperSettings {
 	tags: string;
 	timestampFormat: string;
 	dailyNoteHeading: string;
 	weeklyNoteHeading: string;
-	openFileOnWrite: boolean;
+	dailyOpenOnWrite: boolean;
 	useDailyNote: boolean;
 	dailyPosition: SectionPosition;
 	useWeeklyNote: boolean;
 	weeklyPosition: SectionPosition;
 	weeklyEntryTemplateLocation: string;
+	weeklyOpenOnWrite: boolean;
 	dailyEntryTemplateLocation: string;
 	markdownSettings: ObsidianClipperMarkdownSettings;
+	topicPosition: SectionPosition;
+	topicEntryTemplateLocation: string;
+	topicOpenOnWrite: boolean;
 }
 
 export interface ObsidianClipperMarkdownSettings {
@@ -29,13 +39,17 @@ export const DEFAULT_SETTINGS: ObsidianClipperSettings = {
 	weeklyNoteHeading: '',
 	tags: '',
 	timestampFormat: 'HH:mm',
-	openFileOnWrite: true,
+	dailyOpenOnWrite: false,
 	useDailyNote: true,
 	dailyPosition: SectionPosition.APPEND,
 	useWeeklyNote: false,
 	weeklyPosition: SectionPosition.APPEND,
+	weeklyOpenOnWrite: false,
 	dailyEntryTemplateLocation: '',
 	weeklyEntryTemplateLocation: '',
+	topicEntryTemplateLocation: '',
+	topicPosition: SectionPosition.APPEND,
+	topicOpenOnWrite: false,
 	markdownSettings: {
 		h1: '#',
 		h2: '##',

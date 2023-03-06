@@ -1,8 +1,8 @@
 import type { App } from 'obsidian';
-import type { ObsidianClipperSettings } from './settings';
+import type { ObsidianClipperSettings } from './settings/types';
 import { getTemplateContents, applyTemplateTransformations } from './utils';
 
-export class ClippedNoteEntry {
+export class ClippedData {
 	private tags: string;
 	private data?: string | undefined;
 	private settings: ObsidianClipperSettings;

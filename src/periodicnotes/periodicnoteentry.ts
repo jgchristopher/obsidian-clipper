@@ -1,16 +1,11 @@
 import { App, TFile, Notice } from 'obsidian';
 import type { Moment } from 'moment';
-import type { ClippedNoteEntry } from '../clippednoteentry';
-import { SectionPosition } from './sectionposition';
-import { PrependWriter } from './prependwriter';
-import { AppendWriter } from './appendwriter';
+import type { ClippedData } from '../clippeddata';
+import { NoteEntry } from 'src/abstracts/noteentry';
+import type { SectionPosition } from 'src/settings/types';
 
-export abstract class PeriodicNoteEntry {
-	protected app: App;
+export abstract class PeriodicNoteEntry extends NoteEntry {
 	protected notice: string;
-	protected openFileOnWrite: boolean;
-	protected sectionPosition: SectionPosition;
-	protected template: string;
 
 	protected abstract getPeriodicNote(
 		moment: Moment,
@@ -26,13 +21,11 @@ export abstract class PeriodicNoteEntry {
 		sectionPosition: SectionPosition,
 		template: string
 	) {
-		this.app = app;
-		this.openFileOnWrite = openFileOnWrite;
-		this.sectionPosition = sectionPosition;
+		super(app, openFileOnWrite, sectionPosition, template);
 		this.template = template;
 	}
 
-	async writeToPeriodicNote(noteEntry: ClippedNoteEntry, heading: string) {
+	async writeToPeriodicNote(noteEntry: ClippedData, heading: string) {
 		if (!this.hasPeriodicNoteEnabled()) {
 			new Notice(this.notice);
 			return;
@@ -43,7 +36,6 @@ export abstract class PeriodicNoteEntry {
 		this.handleWrite(
 			note.path,
 			await noteEntry.formattedEntry(this.template),
-			this.sectionPosition,
 			heading
 		);
 	}
@@ -56,33 +48,5 @@ export abstract class PeriodicNoteEntry {
 			return await this.waitForNoteCreation(now);
 		}
 		return periodicNote;
-	}
-
-	private async handleWrite(
-		noteFilePath: string,
-		data: string,
-		sectionPosition: SectionPosition,
-		heading?: string
-	) {
-		const file = this.app.vault.getAbstractFileByPath(noteFilePath);
-		if (file instanceof TFile) {
-			if (sectionPosition === SectionPosition.PREPEND) {
-				new PrependWriter(this.app, this.openFileOnWrite).write(
-					file,
-					data,
-					heading
-				);
-			} else {
-				new AppendWriter(this.app, this.openFileOnWrite).write(
-					file,
-					data,
-					heading
-				);
-			}
-		} else {
-			new Notice(
-				`Obsidian Clipper couldn't find the note to ${sectionPosition} to`
-			);
-		}
 	}
 }

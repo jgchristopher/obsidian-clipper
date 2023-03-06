@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { TabItem } from './settingstypes';
+	import type { TabItem } from './sveltesettingstypes';
 
 	export let tabs: TabItem[];
 	export let activeTabValue = 1;

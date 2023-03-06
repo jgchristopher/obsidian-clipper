@@ -5,7 +5,8 @@
 	import { settings } from './settingsstore';
 
 	export let app: App;
-	const onChange = (entry) => ($settings.weeklyEntryTemplateLocation = entry);
+	const onChange = (entry: string) =>
+		($settings.weeklyEntryTemplateLocation = entry);
 </script>
 
 <div class="clp_section_margin">
@@ -53,6 +54,22 @@
 					<select class="dropdown" bind:value={$settings.weeklyPosition}>
 						<option value="prepend">prepend</option>
 						<option value="append">append</option>
+					</select>
+				</div>
+			</div>
+			<div class="setting-item">
+				<div class="setting-item-info">
+					<div class="setting-item-name">
+						Open File After Adding Clipping - Weekly?
+					</div>
+					<div class="setting-item-description">
+						Would you like to open the weekly note after adding the clipping?
+					</div>
+				</div>
+				<div class="setting-item-control">
+					<select class="dropdown" bind:value={$settings.weeklyOpenOnWrite}>
+						<option value={true}>Yes</option>
+						<option value={false}>No</option>
 					</select>
 				</div>
 			</div>
