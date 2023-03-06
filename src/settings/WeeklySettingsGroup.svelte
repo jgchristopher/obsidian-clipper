@@ -67,12 +67,10 @@
 					</div>
 				</div>
 				<div class="setting-item-control">
-					<label
-						class="checkbox-container"
-						class:is-enabled={$settings.weeklyOpenOnWrite}
-					>
-						<input type="checkbox" bind:checked={$settings.weeklyOpenOnWrite} />
-					</label>
+					<select class="dropdown" bind:value={$settings.weeklyOpenOnWrite}>
+						<option value={true}>Yes</option>
+						<option value={false}>No</option>
+					</select>
 				</div>
 			</div>
 			<Suggest

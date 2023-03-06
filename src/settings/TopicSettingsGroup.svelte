@@ -32,12 +32,10 @@
 			</div>
 		</div>
 		<div class="setting-item-control">
-			<label
-				class="checkbox-container"
-				class:is-enabled={$settings.topicOpenOnWrite}
-			>
-				<input type="checkbox" bind:checked={$settings.topicOpenOnWrite} />
-			</label>
+			<select class="dropdown" bind:value={$settings.topicOpenOnWrite}>
+				<option value={true}>Yes</option>
+				<option value={false}>No</option>
+			</select>
 		</div>
 	</div>
 	<Suggest
