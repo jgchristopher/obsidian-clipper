@@ -9,5 +9,6 @@ export interface Parameters {
 	title: string;
 	format: string;
 	notePath: string;
+	comment: string;
 	highlightdata?: string;
 }

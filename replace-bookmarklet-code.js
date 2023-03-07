@@ -24,21 +24,25 @@ export class BookmarketlGenerator {
 }`;
 
 try {
-  let bookmarkletData = fs.readFileSync(bookmarkletFilePath, 'utf8');
+	let bookmarkletData = fs.readFileSync(bookmarkletFilePath, 'utf8');
 
-  bookmarkletData = bookmarkletData.replace(
-    '~VaultNameFiller~',
-    '${this.vaultName}'
-  );
+	bookmarkletData = bookmarkletData.replace(
+		'~VaultNameFiller~',
+		'${this.vaultName}'
+	);
 
-  bookmarkletData = bookmarkletData.replace('~NotePath~', '${this.notePath}');
+	bookmarkletData = bookmarkletData.replace('~NotePath~', '${this.notePath}');
 
-  const bookmarketGenerator = bookmarkletGeneratorTemplate.replaceAll(
-    '~BookmarkletReplace~',
-    bookmarkletData
-  );
+	bookmarkletData = bookmarkletData.replace('~WithComment~', 'true');
 
-  fs.writeFileSync(bookmarkletGeneratorFilePath, bookmarketGenerator);
+	console.log(bookmarkletData);
+
+	const bookmarketGenerator = bookmarkletGeneratorTemplate.replaceAll(
+		'~BookmarkletReplace~',
+		bookmarkletData
+	);
+
+	fs.writeFileSync(bookmarkletGeneratorFilePath, bookmarketGenerator);
 } catch (err) {
-  console.error(err);
+	console.error(err);
 }

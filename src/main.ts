@@ -44,6 +44,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 			const title = parameters.title;
 			const format = parameters.format;
 			const notePath = parameters.notePath;
+			const comment = parameters.comment;
 			let highlightData = parameters.highlightdata;
 
 			if (format === 'html') {
@@ -51,9 +52,11 @@ export default class ObsidianClipperPlugin extends Plugin {
 					this.settings.markdownSettings
 				);
 			}
+
 			const noteEntry = new ClippedData(
 				title,
 				url,
+				comment,
 				this.settings,
 				this.app,
 				highlightData

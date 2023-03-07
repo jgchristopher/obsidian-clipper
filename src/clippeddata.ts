@@ -4,20 +4,19 @@ import { getTemplateContents, applyTemplateTransformations } from './utils';
 
 export class ClippedData {
 	private tags: string;
-	private data?: string | undefined;
-	private settings: ObsidianClipperSettings;
-	private app: App;
 	private timeStamp: string;
 
 	constructor(
 		private title: string,
 		private url: string,
-		settings: ObsidianClipperSettings,
-		app: App,
-		data = ''
+		private comment: string,
+		private settings: ObsidianClipperSettings,
+		private app: App,
+		private data = ''
 	) {
 		this.title = title;
 		this.url = url;
+		this.comment = comment;
 		if (data !== '') {
 			this.data = data;
 		}
@@ -27,6 +26,7 @@ export class ClippedData {
 		});
 		this.tags = tagJoins.join(' ');
 		this.settings = settings;
+
 		this.app = app;
 		this.timeStamp = window.moment().format(this.settings.timestampFormat);
 	}
@@ -41,6 +41,7 @@ export class ClippedData {
 				this.url,
 				this.tags,
 				this.timeStamp,
+				this.comment,
 				this.data,
 				rawTemplateContents
 			);

@@ -24,3 +24,4 @@ data.json
 src/bookmarklet/index.js
 src/bookmarklet/obsidian-clipper.min.js
 src/bookmarkletgenerator.ts
+src/bookmarklet/dist/bookmarklet.js
