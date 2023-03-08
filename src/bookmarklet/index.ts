@@ -255,8 +255,8 @@ import MicroModal from 'micromodal';
 				console.log(textarea.value);
 				document.location.href = obsidianUrl;
 			}
-
 			modal.style.display = 'none';
+			modal.remove();
 		});
 		MicroModal.init();
 		MicroModal.show('obsidian-clipper-modal-1');
