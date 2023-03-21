@@ -59,7 +59,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 				highlightData
 			);
 
-			if (notePath !== '') {
+			if (notePath && notePath !== '') {
 				const file = this.app.vault.getAbstractFileByPath(notePath);
 				new TopicNoteEntry(
 					this.app,
