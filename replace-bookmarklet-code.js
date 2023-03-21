@@ -11,16 +11,14 @@ const bookmarkletGeneratorTemplate = `
 * SERIOUSLY! STOP GOING TO THIS FILE AND EDITING IT AND WONDERING WHY IT ISN'T WORKING :)
 **/
 export class BookmarketlGenerator {
-  vaultName: string;
-  notePath: string;
-  constructor(vaultName: string, notePath = '') {
+  constructor(private vaultName: string, private notePath = '', private useComment = 'false') {
     this.vaultName = vaultName;
     this.notePath = notePath;
+    this.useComment = useComment;
   }
   public generateBookmarklet(): string {
     return \`~BookmarkletReplace~\`;
   }
- 
 }`;
 
 try {
@@ -33,9 +31,10 @@ try {
 
 	bookmarkletData = bookmarkletData.replace('~NotePath~', '${this.notePath}');
 
-	bookmarkletData = bookmarkletData.replace('~WithComment~', 'true');
-
-	console.log(bookmarkletData);
+	bookmarkletData = bookmarkletData.replace(
+		'~WithComment~',
+		'${this.useComment}'
+	);
 
 	const bookmarketGenerator = bookmarkletGeneratorTemplate.replaceAll(
 		'~BookmarkletReplace~',

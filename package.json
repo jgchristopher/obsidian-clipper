@@ -1,6 +1,5 @@
 {
 	"name": "obsidian-clipper",
-  "sideEffects": false,
 	"version": "0.0.5",
 	"description": "This plugin helps you capture highlights from the web.",
 	"main": "main.js",
@@ -9,7 +8,7 @@
 		"dev": "node esbuild.config.mjs",
 		"compile": "tsc -noEmit -skipLibCheck",
     "build:compileBookmarklet": "tsc src/bookmarklet/index.ts",
-		"build:bookmarklet": "npm run build:compileBookmarklet && npm run webpack && ./node_modules/.bin/bookmarklet src/bookmarklet/dist/bookmarklet.js src/bookmarklet/obsidian-clipper.min.js",
+		"build:bookmarklet": "npm run build:compileBookmarklet  && ./node_modules/.bin/bookmarklet src/bookmarklet/dist/bookmarklet.js src/bookmarklet/obsidian-clipper.min.js",
 		"build:bookmarkletgen": "node replace-bookmarklet-code.js",
 		"build": "npm run build:bookmarklet && npm run build:bookmarkletgen && npm run compile && npm run tailwindcss &&  node esbuild.config.mjs production",
 		"tailwindcss": "npx tailwindcss -i ./input.css -o ./styles.css",

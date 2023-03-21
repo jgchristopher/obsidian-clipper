@@ -12,6 +12,25 @@
 <div class="clp_section_margin">
 	<div class="setting-item">
 		<div class="setting-item-info">
+			<div class="setting-item-name">
+				Ask for comments when using the Topic Bookmarklet?
+			</div>
+			<div class="setting-item-description">
+				If you choose 'Yes,' a prompt will ask for your comments in the browser
+				before sending the clipping to obsidian. Any comments provided can be
+				displayed using the &#123&#123 comment &#125&#125 replacement variable
+				in a template.
+			</div>
+		</div>
+		<div class="setting-item-control">
+			<select class="dropdown" bind:value={$settings.topicUseComments}>
+				<option value={true}>Yes</option>
+				<option value={false}>No</option>
+			</select>
+		</div>
+	</div>
+	<div class="setting-item">
+		<div class="setting-item-info">
 			<div class="setting-item-name">Topic Note Position</div>
 			<div class="setting-item-description">
 				Would you like to prepend clippings or append them to the bottom?

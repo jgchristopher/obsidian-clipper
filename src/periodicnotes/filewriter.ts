@@ -33,14 +33,14 @@ export abstract class FileWriter {
 		file: TFile,
 		clippedData: string,
 		heading?: string
-	): Promise<TFile> {
+	): Promise<void> {
 		const fileData = await this.app.vault.read(file);
 		const fileLines = fileData.split('\n');
 
 		if (!heading) {
 			const startLine = this.getEndOfFrontmatter(file);
 
-			return this.writeAndOpenFile(
+			this.writeAndOpenFile(
 				file.path,
 				this.positionDataWithNoHeader(fileData, clippedData, startLine)
 			);
@@ -72,14 +72,14 @@ export abstract class FileWriter {
 				// We should append to the end of the file
 				lines = [...preSectionContent, ...targetSection];
 			}
-			return this.writeAndOpenFile(file.path, lines.join('\n'));
+			this.writeAndOpenFile(file.path, lines.join('\n'));
 		}
 	}
 
 	private async writeAndOpenFile(
 		outputFileName: string,
 		text: string
-	): Promise<TFile> {
+	): Promise<void> {
 		const file = this.app.vault.getAbstractFileByPath(outputFileName);
 
 		if (file instanceof TFile) {
@@ -117,8 +117,6 @@ export abstract class FileWriter {
 			if (!fileIsAlreadyOpened)
 				await this.app.workspace.openLinkText(outputFileName, '', false);
 		}
-
-		return this.app.vault.getAbstractFileByPath(outputFileName) as TFile;
 	}
 
 	private getEndAndBeginningOfHeading(

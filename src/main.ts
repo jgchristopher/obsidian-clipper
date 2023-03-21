@@ -26,14 +26,18 @@ export default class ObsidianClipperPlugin extends Plugin {
 		this.addCommand({
 			id: 'copy-bookmarklet-address',
 			name: 'Vault Bookmarklet',
-			callback: () => this.handleCopyBookmarkletCommand(),
+			callback: () =>
+				this.handleCopyBookmarkletCommand(this.settings.vaultUseComments),
 		});
 
 		this.addCommand({
 			id: 'copy-note-bookmarklet-address',
 			name: 'Note Bookmarklet',
 			editorCallback: (_editor, ctx) => {
-				this.handleSubjectBookmarkletCommand(ctx);
+				this.handleSubjectBookmarkletCommand(
+					ctx,
+					this.settings.topicUseComments
+				);
 			},
 		});
 
@@ -105,10 +109,11 @@ export default class ObsidianClipperPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	handleSubjectBookmarkletCommand(ctx: MarkdownView) {
+	handleSubjectBookmarkletCommand(ctx: MarkdownView, useComments: boolean) {
 		const bm = new BookmarketlGenerator(
 			this.app.vault.getName(),
-			ctx.file.path
+			ctx.file.path,
+			useComments.toString()
 		).generateBookmarklet();
 
 		const bookmarkletLinkModal = new Modal(this.app);
@@ -123,9 +128,11 @@ export default class ObsidianClipperPlugin extends Plugin {
 		bookmarkletLinkModal.open();
 	}
 
-	handleCopyBookmarkletCommand() {
+	handleCopyBookmarkletCommand(useComments: boolean) {
 		const bm = new BookmarketlGenerator(
-			this.app.vault.getName()
+			this.app.vault.getName(),
+			'',
+			useComments.toString()
 		).generateBookmarklet();
 
 		const bookmarkletLinkModal = new Modal(this.app);

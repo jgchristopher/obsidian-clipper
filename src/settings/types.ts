@@ -23,6 +23,8 @@ export interface ObsidianClipperSettings {
 	topicPosition: SectionPosition;
 	topicEntryTemplateLocation: string;
 	topicOpenOnWrite: boolean;
+	topicUseComments: boolean;
+	vaultUseComments: boolean;
 }
 
 export interface ObsidianClipperMarkdownSettings {
@@ -50,6 +52,8 @@ export const DEFAULT_SETTINGS: ObsidianClipperSettings = {
 	topicEntryTemplateLocation: '',
 	topicPosition: SectionPosition.APPEND,
 	topicOpenOnWrite: false,
+	topicUseComments: false,
+	vaultUseComments: false,
 	markdownSettings: {
 		h1: '#',
 		h2: '##',
