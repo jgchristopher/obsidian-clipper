@@ -1,8 +1,13 @@
 <script lang="ts">
-	import { BookmarketlGenerator } from 'src/bookmarkletgenerator';
+	import { BookmarketlGenerator } from 'src/bookmarkletlink/bookmarkletgenerator';
+	import { settings } from './settingsstore';
 
 	export let vaultName: string;
-	let clipperHref = new BookmarketlGenerator(vaultName).generateBookmarklet();
+	let clipperHref = new BookmarketlGenerator(
+		vaultName,
+		'',
+		$settings.markdownSettings.h1
+	).generateBookmarklet();
 </script>
 
 <div>

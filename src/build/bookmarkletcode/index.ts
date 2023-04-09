@@ -1,6 +1,6 @@
 //@ts-ignore
 import TurndownService from 'turndown';
-import { MarkdownTables } from '../markdown/tables';
+import { MarkdownTables } from './markdown/tables';
 
 interface HeadingSettings {
 	h1: string;
@@ -33,7 +33,6 @@ interface HeadingSettings {
 	markdownService.addRule('heading_2_update', {
 		filter: ['h2'],
 		replacement: function (content: string) {
-			console.log(`Heading settings are ${JSON.stringify(headingSettings)}`);
 			return `${headingSettings.h2} ${content}`;
 		},
 	});

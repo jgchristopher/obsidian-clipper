@@ -7,7 +7,7 @@ import {
 	DEFAULT_SETTINGS,
 } from './settings/types';
 import { ClippedData } from './clippeddata';
-import { BookmarketlGenerator } from './bookmarkletgenerator';
+import { BookmarketlGenerator } from './bookmarkletlink/bookmarkletgenerator';
 import { DailyPeriodicNoteEntry } from './periodicnotes/dailyperiodicnoteentry';
 import { WeeklyPeriodicNoteEntry } from './periodicnotes/weeklyperiodicnoteentry';
 import SettingsComponent from './settings/SettingsComponent.svelte';

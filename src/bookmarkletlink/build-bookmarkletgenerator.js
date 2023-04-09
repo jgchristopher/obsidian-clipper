@@ -1,8 +1,10 @@
-// Get contents of bookmarklet file
-
+//@ts-ignore
+/* eslint @typescript-eslint/no-var-requires: "off" */
 const fs = require('fs');
-const bookmarkletFilePath = './src/bookmarklet/obsidian-clipper.min.js';
-const bookmarkletGeneratorFilePath = './src/bookmarkletgenerator.ts';
+const bookmarkletFilePath =
+	'./src/build/bookmarkletcode/dist/obsidian-clipper.min.js';
+//'../build/bookmarkletcode/dist/obsidian-clipper.min.js';
+const bookmarkletGeneratorFilePath = './bookmarkletgenerator.ts';
 const bookmarkletGeneratorTemplate = `
 /**
 * DO NOT EDIT THIS IS GENERATED CODE!
