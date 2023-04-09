@@ -136,7 +136,7 @@ export abstract class FileWriter {
 				return cachedHeading.heading === heading && cachedHeading.level === 1;
 			});
 
-			if (foundHeadingIndex) {
+			if (foundHeadingIndex !== -1) {
 				const foundHeading = cachedHeadings[foundHeadingIndex];
 				let nextHeading: HeadingCache | null = null;
 				// Need to find the next level 1 heading, if any

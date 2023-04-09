@@ -13,7 +13,6 @@ import { WeeklyPeriodicNoteEntry } from './periodicnotes/weeklyperiodicnoteentry
 import SettingsComponent from './settings/SettingsComponent.svelte';
 import { init } from './settings/settingsstore';
 import type { SvelteComponent } from 'svelte';
-import { MarkdownProcessor } from './markdown/markdownprocessor';
 import { TopicNoteEntry } from './topicnoteentry';
 
 export default class ObsidianClipperPlugin extends Plugin {
@@ -42,15 +41,9 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 			const url = parameters.url;
 			const title = parameters.title;
-			const format = parameters.format;
 			const notePath = parameters.notePath;
-			let highlightData = parameters.highlightdata;
+			const highlightData = parameters.highlightdata;
 
-			if (format === 'html') {
-				highlightData = new MarkdownProcessor(parameters.highlightdata).process(
-					this.settings.markdownSettings
-				);
-			}
 			const noteEntry = new ClippedData(
 				title,
 				url,
@@ -105,7 +98,8 @@ export default class ObsidianClipperPlugin extends Plugin {
 	handleSubjectBookmarkletCommand(ctx: MarkdownView) {
 		const bm = new BookmarketlGenerator(
 			this.app.vault.getName(),
-			ctx.file.path
+			ctx.file.path,
+			this.settings.markdownSettings.h1
 		).generateBookmarklet();
 
 		const bookmarkletLinkModal = new Modal(this.app);
@@ -122,7 +116,9 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 	handleCopyBookmarkletCommand() {
 		const bm = new BookmarketlGenerator(
-			this.app.vault.getName()
+			this.app.vault.getName(),
+			'',
+			this.settings.markdownSettings.h1
 		).generateBookmarklet();
 
 		const bookmarkletLinkModal = new Modal(this.app);

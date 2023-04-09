@@ -13,9 +13,11 @@ const bookmarkletGeneratorTemplate = `
 export class BookmarketlGenerator {
   vaultName: string;
   notePath: string;
-  constructor(vaultName: string, notePath = '') {
+  h1Setting: string; 
+  constructor(vaultName: string, notePath = '', h1Setting: string ) {
     this.vaultName = vaultName;
     this.notePath = notePath;
+    this.h1Setting = h1Setting;
   }
   public generateBookmarklet(): string {
     return \`~BookmarkletReplace~\`;
@@ -24,21 +26,23 @@ export class BookmarketlGenerator {
 }`;
 
 try {
-  let bookmarkletData = fs.readFileSync(bookmarkletFilePath, 'utf8');
+	let bookmarkletData = fs.readFileSync(bookmarkletFilePath, 'utf8');
 
-  bookmarkletData = bookmarkletData.replace(
-    '~VaultNameFiller~',
-    '${this.vaultName}'
-  );
+	bookmarkletData = bookmarkletData.replace(
+		'~VaultNameFiller~',
+		'${this.vaultName}'
+	);
 
-  bookmarkletData = bookmarkletData.replace('~NotePath~', '${this.notePath}');
+	bookmarkletData = bookmarkletData.replace('~NotePath~', '${this.notePath}');
 
-  const bookmarketGenerator = bookmarkletGeneratorTemplate.replaceAll(
-    '~BookmarkletReplace~',
-    bookmarkletData
-  );
+	bookmarkletData = bookmarkletData.replace('~H1Setting~', '${this.h1Setting}');
 
-  fs.writeFileSync(bookmarkletGeneratorFilePath, bookmarketGenerator);
+	const bookmarketGenerator = bookmarkletGeneratorTemplate.replaceAll(
+		'~BookmarkletReplace~',
+		bookmarkletData
+	);
+
+	fs.writeFileSync(bookmarkletGeneratorFilePath, bookmarketGenerator);
 } catch (err) {
-  console.error(err);
+	console.error(err);
 }

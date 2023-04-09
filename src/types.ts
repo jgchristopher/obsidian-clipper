@@ -7,7 +7,6 @@ export interface Parameters {
 	vault: string;
 	url: string;
 	title: string;
-	format: string;
 	notePath: string;
 	highlightdata?: string;
 }
