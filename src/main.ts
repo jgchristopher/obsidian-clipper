@@ -32,7 +32,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 			id: 'copy-note-bookmarklet-address',
 			name: 'Note Bookmarklet',
 			editorCallback: (_editor, ctx) => {
-				this.handleSubjectBookmarkletCommand(ctx);
+				this.handleSubjectBookmarkletCommand(ctx.file.path, ctx.file.name);
 			},
 		});
 
@@ -43,6 +43,17 @@ export default class ObsidianClipperPlugin extends Plugin {
 			const title = parameters.title;
 			const notePath = parameters.notePath;
 			const highlightData = parameters.highlightdata;
+
+			if (parameters.format === 'html') {
+				// Need to alert user
+				if (notePath !== '') {
+					this.handleSubjectBookmarkletCommand(notePath, notePath);
+				} else {
+					// show vault modal
+					this.handleCopyBookmarkletCommand();
+				}
+				return;
+			}
 
 			const noteEntry = new ClippedData(
 				title,
@@ -95,11 +106,11 @@ export default class ObsidianClipperPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	handleSubjectBookmarkletCommand(ctx: MarkdownView) {
+	handleSubjectBookmarkletCommand(filePath: string, fileName: string) {
 		const bm = new BookmarketlGenerator(
 			this.app.vault.getName(),
-			ctx.file.path,
-			this.settings.markdownSettings.h1
+			filePath,
+			this.settings.markdownSettings
 		).generateBookmarklet();
 
 		const bookmarkletLinkModal = new Modal(this.app);
@@ -108,7 +119,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 		});
 		bookmarkletLinkModal.contentEl.createEl('a', {
 			href: bm,
-			text: `Obsidian Clipper (${ctx.file.name})`,
+			text: `Obsidian Clipper (${fileName})`,
 		});
 
 		bookmarkletLinkModal.open();
@@ -118,7 +129,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 		const bm = new BookmarketlGenerator(
 			this.app.vault.getName(),
 			'',
-			this.settings.markdownSettings.h1
+			this.settings.markdownSettings
 		).generateBookmarklet();
 
 		const bookmarkletLinkModal = new Modal(this.app);

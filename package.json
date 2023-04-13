@@ -4,7 +4,6 @@
 	"description": "This plugin helps you capture highlights from the web.",
 	"main": "main.js",
 	"scripts": {
-		"dev": "node esbuild.config.mjs",
 		"compile": "tsc -noEmit -skipLibCheck",
 		"compile:bookmarklet": "tsc ./src/build/bookmarkletcode/index.ts",
 		"build:bookmarklet": "npm run compile:bookmarklet && npm run webpack && ./node_modules/.bin/bookmarklet ./src/build/bookmarkletcode/dist/bookmarklet.js ./src/build/bookmarkletcode/dist/obsidian-clipper.min.js",

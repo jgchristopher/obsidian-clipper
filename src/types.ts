@@ -8,5 +8,6 @@ export interface Parameters {
 	url: string;
 	title: string;
 	notePath: string;
+	format: string;
 	highlightdata?: string;
 }

@@ -82,20 +82,30 @@ interface HeadingSettings {
 
 		const obsidianUrl = `obsidian://obsidian-clipper?vault=${vaultName}&notePath=${notePath}&url=${encodeURIComponent(
 			url
-		)}&title=${encodeURIComponent(title)}&highlightdata=${encodeURIComponent(
-			content
-		)}`;
+		)}&format=md&title=${encodeURIComponent(
+			title
+		)}&highlightdata=${encodeURIComponent(content)}`;
 
-		console.log(obsidianUrl.length);
-
+		// Chrome on Windows limits character length of URLs
+		console.log(navigator.userAgent);
+		if (
+			navigator.userAgent.indexOf('Chrome') !== -1 &&
+			navigator.userAgent.indexOf('Windows') !== -1
+		) {
+			if (obsidianUrl.length >= 2000) {
+				alert(
+					`Chrome on Windows doesn't allow a highlight this large. ${obsidianUrl.length} characters have been selected and it must be less than 2000`
+				);
+			}
+		}
 		document.location.href = obsidianUrl;
 	}
 	sendToObsidian(document.URL, document.title);
 })('~VaultNameFiller~', '~NotePath~', {
 	h1: '~H1Setting~',
-	h2: '##',
-	h3: '###',
-	h4: '####',
-	h5: '#####',
-	h6: '######',
+	h2: '~H2Setting~',
+	h3: '~H3Setting~',
+	h4: '~H4Setting~',
+	h5: '~H5Setting~',
+	h6: '~H6Setting~',
 });
