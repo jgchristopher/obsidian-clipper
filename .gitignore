@@ -28,4 +28,4 @@ src/build/bookmarkletcode/dist
 
 # Generated Code
 src/bookmarkletlink/bookmarkletgenerator.ts
-
+src/build/bookmarkletcode/markdown/tables.js
