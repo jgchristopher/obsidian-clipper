@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Plugin, Modal, MarkdownView } from 'obsidian';
+import { App, PluginSettingTab, Plugin, Modal } from 'obsidian';
 import { deepmerge } from 'deepmerge-ts';
 
 import type { Parameters } from './types';
