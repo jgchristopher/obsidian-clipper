@@ -1,106 +1,106 @@
 .ml-3 {
-	margin-left: 0.75rem;
+  margin-left: 0.75rem;
 }
 
 .mt-3 {
-	margin-top: 0.75rem;
+  margin-top: 0.75rem;
 }
 
 .block {
-	display: block;
+  display: block;
 }
 
 .flex {
-	display: flex;
+  display: flex;
 }
 
 .h-5 {
-	height: 1.25rem;
+  height: 1.25rem;
 }
 
 .w-5 {
-	width: 1.25rem;
+  width: 1.25rem;
 }
 
 .flex-1 {
-	flex: 1 1 0%;
+  flex: 1 1 0%;
 }
 
 .flex-shrink-0 {
-	flex-shrink: 0;
+  flex-shrink: 0;
 }
 
 .flex-wrap {
-	flex-wrap: wrap;
+  flex-wrap: wrap;
 }
 
 .whitespace-nowrap {
-	white-space: nowrap;
+  white-space: nowrap;
 }
 
 .rounded-md {
-	border-radius: 0.375rem;
+  border-radius: 0.375rem;
 }
 
 .border {
-	border-width: 1px;
+  border-width: 1px;
 }
 
 .bg-blue-50 {
-	--tw-bg-opacity: 1;
-	background-color: rgb(239 246 255 / var(--tw-bg-opacity));
+  --tw-bg-opacity: 1;
+  background-color: rgb(239 246 255 / var(--tw-bg-opacity));
 }
 
 .p-4 {
-	padding: 1rem;
+  padding: 1rem;
 }
 
 .text-sm {
-	font-size: 0.875rem;
-	line-height: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .font-medium {
-	font-weight: 500;
+  font-weight: 500;
 }
 
 .text-blue-400 {
-	--tw-text-opacity: 1;
-	color: rgb(96 165 250 / var(--tw-text-opacity));
+  --tw-text-opacity: 1;
+  color: rgb(96 165 250 / var(--tw-text-opacity));
 }
 
 .text-blue-700 {
-	--tw-text-opacity: 1;
-	color: rgb(29 78 216 / var(--tw-text-opacity));
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
 }
 
 a {
-	color: var(--link-color);
+  color: var(--link-color);
 }
 
 div.clp_section_margin {
-	margin: 0 0 20px 0 !important;
+  margin: 0 0 20px 0 !important;
 }
 
 .hover\:text-blue-600:hover {
-	--tw-text-opacity: 1;
-	color: rgb(37 99 235 / var(--tw-text-opacity));
+  --tw-text-opacity: 1;
+  color: rgb(37 99 235 / var(--tw-text-opacity));
 }
 
 @media (min-width: 768px) {
-	.md\:ml-6 {
-		margin-left: 1.5rem;
-	}
+  .md\:ml-6 {
+    margin-left: 1.5rem;
+  }
 
-	.md\:mt-0 {
-		margin-top: 0px;
-	}
+  .md\:mt-0 {
+    margin-top: 0px;
+  }
 
-	.md\:flex {
-		display: flex;
-	}
+  .md\:flex {
+    display: flex;
+  }
 
-	.md\:justify-between {
-		justify-content: space-between;
-	}
+  .md\:justify-between {
+    justify-content: space-between;
+  }
 }
