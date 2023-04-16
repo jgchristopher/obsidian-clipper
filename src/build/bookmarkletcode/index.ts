@@ -76,6 +76,21 @@ interface HeadingSettings {
 		return html;
 	}
 
+	function showContentLengthWarning(obsidianUrl: string) {
+		if (
+			navigator.userAgent.indexOf('Chrome') !== -1 &&
+			navigator.userAgent.indexOf('Windows') !== -1
+		) {
+			if (obsidianUrl.length >= 2000) {
+				alert(
+					`Chrome on Windows doesn't allow a highlight this large.\n ${obsidianUrl.length} characters have been selected and it must be less than 2000. \n\n Firefox on Windows doesn't seem to have this same problem.`
+				);
+				return false;
+			}
+		}
+		return true;
+	}
+
 	function sendToObsidian(url: string, title: string): void {
 		// Turn the content into Markdown
 		const content = markdownService.turndown(getSelectionHtml());
@@ -87,7 +102,6 @@ interface HeadingSettings {
 		)}&highlightdata=${encodeURIComponent(content)}`;
 
 		// Chrome on Windows limits character length of URLs
-		console.log(navigator.userAgent);
 		if (
 			navigator.userAgent.indexOf('Chrome') !== -1 &&
 			navigator.userAgent.indexOf('Windows') !== -1
@@ -98,7 +112,9 @@ interface HeadingSettings {
 				);
 			}
 		}
-		document.location.href = obsidianUrl;
+		if (!showContentLengthWarning(obsidianUrl)) {
+			document.location.href = obsidianUrl;
+		}
 	}
 	sendToObsidian(document.URL, document.title);
 })('~VaultNameFiller~', '~NotePath~', {
