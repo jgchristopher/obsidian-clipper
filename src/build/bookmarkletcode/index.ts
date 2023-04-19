@@ -85,10 +85,10 @@ interface HeadingSettings {
 				alert(
 					`Chrome on Windows doesn't allow a highlight this large.\n ${obsidianUrl.length} characters have been selected and it must be less than 2000. \n\n Firefox on Windows doesn't seem to have this same problem.`
 				);
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	function sendToObsidian(url: string, title: string): void {
