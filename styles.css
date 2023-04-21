@@ -1,3 +1,15 @@
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 .ml-3 {
   margin-left: 0.75rem;
 }
@@ -14,6 +26,10 @@
   display: flex;
 }
 
+.hidden {
+  display: none;
+}
+
 .h-5 {
   height: 1.25rem;
 }
@@ -28,6 +44,14 @@
 
 .flex-shrink-0 {
   flex-shrink: 0;
+}
+
+.basis-0 {
+  flex-basis: 0px;
+}
+
+.flex-row {
+  flex-direction: row;
 }
 
 .flex-wrap {
@@ -87,6 +111,16 @@ div.clp_section_margin {
   color: rgb(37 99 235 / var(--tw-text-opacity));
 }
 
+@media (min-width: 640px) {
+  .sm\:block {
+    display: block;
+  }
+
+  .sm\:hidden {
+    display: none;
+  }
+}
+
 @media (min-width: 768px) {
   .md\:ml-6 {
     margin-left: 1.5rem;
@@ -104,3 +138,5 @@ div.clp_section_margin {
     justify-content: space-between;
   }
 }
+
+

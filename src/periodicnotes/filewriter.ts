@@ -6,6 +6,7 @@ import {
 	base64ToArrayBuffer,
 	type HeadingCache,
 	type SectionCache,
+	WorkspaceLeaf,
 } from 'obsidian';
 import { Utility } from 'src/utils/utility';
 
@@ -107,7 +108,7 @@ export abstract class FileWriter {
 
 		if (this.openFileOnWrite) {
 			let fileIsAlreadyOpened = false;
-			this.app.workspace.iterateAllLeaves((leaf) => {
+			this.app.workspace.iterateAllLeaves((leaf: WorkspaceLeaf) => {
 				if (leaf.view.file?.path === outputFileName) {
 					fileIsAlreadyOpened = true;
 					this.app.workspace.setActiveLeaf(leaf, { focus: true });

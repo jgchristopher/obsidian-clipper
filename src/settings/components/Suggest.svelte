@@ -47,14 +47,14 @@
 	const handleMouseOver = (e: MouseEvent) => {
 		if (e && e.target) {
 			const target = e.target;
-			target.addClass('is-selected');
+			(target as HTMLElement).addClass('is-selected');
 		}
 	};
 
 	const handleMouseOut = (e: MouseEvent) => {
 		if (e && e.target) {
 			const target = e.target;
-			target.removeClass('is-selected');
+			(target as HTMLElement).removeClass('is-selected');
 		}
 	};
 

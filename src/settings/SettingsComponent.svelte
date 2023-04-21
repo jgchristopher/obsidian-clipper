@@ -6,6 +6,7 @@
 	import Notice from './Notice.svelte';
 	import type { App } from 'obsidian';
 	import TopicSettingsTab from './TopicSettingsTab.svelte';
+	import LinksSettingsGroup from './LinksSettingsGroup.svelte';
 
 	export let app: App;
 
@@ -30,6 +31,14 @@
 			label: 'Markdown Settings',
 			value: 3,
 			component: MarkdownSettingsTab,
+		},
+		{
+			label: 'Bookmarklet & Extension',
+			value: 4,
+			component: LinksSettingsGroup,
+			props: {
+				app: app,
+			},
 		},
 	];
 </script>
