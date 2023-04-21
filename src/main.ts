@@ -47,10 +47,10 @@ export default class ObsidianClipperPlugin extends Plugin {
 			if (parameters.format === 'html') {
 				// Need to alert user
 				if (notePath !== '') {
-					this.handleSubjectBookmarkletCommand(notePath, notePath);
+					this.handleSubjectBookmarkletCommand(notePath, notePath, true);
 				} else {
 					// show vault modal
-					this.handleCopyBookmarkletCommand();
+					this.handleCopyBookmarkletCommand(true);
 				}
 				return;
 			}
@@ -106,7 +106,17 @@ export default class ObsidianClipperPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	handleSubjectBookmarkletCommand(filePath: string, fileName: string) {
+	handleSubjectBookmarkletCommand(
+		filePath: string,
+		fileName: string,
+		updateRequired = false
+	) {
+		let noticeText = '';
+		if (updateRequired) {
+			noticeText = `Notice: Your Bookmarklet is out of date and needs to be updated.
+				Please Drag the link below to replace your current bookmarklet`;
+		}
+
 		const bm = new BookmarketlGenerator(
 			this.app.vault.getName(),
 			filePath,
@@ -117,15 +127,28 @@ export default class ObsidianClipperPlugin extends Plugin {
 		bookmarkletLinkModal.titleEl.createEl('h2', {
 			text: 'Copy Your Subject Bookmarklet',
 		});
-		bookmarkletLinkModal.contentEl.createEl('a', {
-			href: bm,
-			text: `Obsidian Clipper (${fileName})`,
-		});
+
+		bookmarkletLinkModal.contentEl.createEl('div', { text: noticeText });
+
+		bookmarkletLinkModal.contentEl.append(createEl('br'));
+
+		bookmarkletLinkModal.contentEl.append(
+			createEl('a', {
+				href: bm,
+				text: `Obsidian Clipper (${fileName})`,
+			})
+		);
 
 		bookmarkletLinkModal.open();
 	}
 
-	handleCopyBookmarkletCommand() {
+	handleCopyBookmarkletCommand(updateRequired = false) {
+		let noticeText = '';
+		if (updateRequired) {
+			noticeText = `Notice: Your Bookmarklet is out of date and needs to be updated.
+				Please Drag the link below to replace your current bookmarklet`;
+		}
+
 		const bm = new BookmarketlGenerator(
 			this.app.vault.getName(),
 			'',
@@ -136,10 +159,17 @@ export default class ObsidianClipperPlugin extends Plugin {
 		bookmarkletLinkModal.titleEl.createEl('h2', {
 			text: 'Copy Your Vault Bookmarklet',
 		});
-		bookmarkletLinkModal.contentEl.createEl('a', {
-			href: bm,
-			text: `Obsidian Clipper (${this.app.vault.getName()})`,
-		});
+
+		bookmarkletLinkModal.contentEl.createEl('div', { text: noticeText });
+
+		bookmarkletLinkModal.contentEl.append(createEl('br'));
+
+		bookmarkletLinkModal.contentEl.append(
+			createEl('a', {
+				href: bm,
+				text: `Obsidian Clipper (${this.app.vault.getName()})`,
+			})
+		);
 
 		bookmarkletLinkModal.open();
 	}
