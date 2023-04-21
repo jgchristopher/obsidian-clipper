@@ -21,6 +21,11 @@ data.json
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store
 
-src/bookmarklet/index.js
-src/bookmarklet/obsidian-clipper.min.js
-src/bookmarkletgenerator.ts
+# Build steps to get to the bookmarklet code copied to a browser
+src/build/bookmarkletcode/index.js
+src/build/bookmarkletcode/obsidian-clipper.min.js
+src/build/bookmarkletcode/dist
+
+# Generated Code
+src/bookmarkletlink/bookmarkletgenerator.ts
+src/build/bookmarkletcode/markdown/tables.js

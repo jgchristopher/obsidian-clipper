@@ -4,7 +4,7 @@ export const SectionPosition = {
 } as const;
 
 export type SectionPosition =
-	typeof SectionPosition[keyof typeof SectionPosition];
+	(typeof SectionPosition)[keyof typeof SectionPosition];
 
 export interface ObsidianClipperSettings {
 	tags: string;

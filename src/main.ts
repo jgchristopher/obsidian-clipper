@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Plugin, Modal, MarkdownView } from 'obsidian';
+import { App, PluginSettingTab, Plugin, Modal } from 'obsidian';
 import { deepmerge } from 'deepmerge-ts';
 
 import type { Parameters } from './types';
@@ -7,13 +7,12 @@ import {
 	DEFAULT_SETTINGS,
 } from './settings/types';
 import { ClippedData } from './clippeddata';
-import { BookmarketlGenerator } from './bookmarkletgenerator';
+import { BookmarketlGenerator } from './bookmarkletlink/bookmarkletgenerator';
 import { DailyPeriodicNoteEntry } from './periodicnotes/dailyperiodicnoteentry';
 import { WeeklyPeriodicNoteEntry } from './periodicnotes/weeklyperiodicnoteentry';
 import SettingsComponent from './settings/SettingsComponent.svelte';
 import { init } from './settings/settingsstore';
 import type { SvelteComponent } from 'svelte';
-import { MarkdownProcessor } from './markdown/markdownprocessor';
 import { TopicNoteEntry } from './topicnoteentry';
 
 export default class ObsidianClipperPlugin extends Plugin {
@@ -33,7 +32,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 			id: 'copy-note-bookmarklet-address',
 			name: 'Note Bookmarklet',
 			editorCallback: (_editor, ctx) => {
-				this.handleSubjectBookmarkletCommand(ctx);
+				this.handleSubjectBookmarkletCommand(ctx.file.path, ctx.file.name);
 			},
 		});
 
@@ -42,15 +41,20 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 			const url = parameters.url;
 			const title = parameters.title;
-			const format = parameters.format;
 			const notePath = parameters.notePath;
-			let highlightData = parameters.highlightdata;
+			const highlightData = parameters.highlightdata;
 
-			if (format === 'html') {
-				highlightData = new MarkdownProcessor(parameters.highlightdata).process(
-					this.settings.markdownSettings
-				);
+			if (parameters.format === 'html') {
+				// Need to alert user
+				if (notePath !== '') {
+					this.handleSubjectBookmarkletCommand(notePath, notePath, true);
+				} else {
+					// show vault modal
+					this.handleCopyBookmarkletCommand(true);
+				}
+				return;
 			}
+
 			const noteEntry = new ClippedData(
 				title,
 				url,
@@ -102,37 +106,70 @@ export default class ObsidianClipperPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	handleSubjectBookmarkletCommand(ctx: MarkdownView) {
+	handleSubjectBookmarkletCommand(
+		filePath: string,
+		fileName: string,
+		updateRequired = false
+	) {
+		let noticeText = '';
+		if (updateRequired) {
+			noticeText = `Notice: Your Bookmarklet is out of date and needs to be updated.
+				Please Drag the link below to replace your current bookmarklet`;
+		}
+
 		const bm = new BookmarketlGenerator(
 			this.app.vault.getName(),
-			ctx.file.path
+			filePath,
+			this.settings.markdownSettings
 		).generateBookmarklet();
 
 		const bookmarkletLinkModal = new Modal(this.app);
 		bookmarkletLinkModal.titleEl.createEl('h2', {
 			text: 'Copy Your Subject Bookmarklet',
 		});
-		bookmarkletLinkModal.contentEl.createEl('a', {
-			href: bm,
-			text: `Obsidian Clipper (${ctx.file.name})`,
-		});
+
+		bookmarkletLinkModal.contentEl.createEl('div', { text: noticeText });
+
+		bookmarkletLinkModal.contentEl.append(createEl('br'));
+
+		bookmarkletLinkModal.contentEl.append(
+			createEl('a', {
+				href: bm,
+				text: `Obsidian Clipper (${fileName})`,
+			})
+		);
 
 		bookmarkletLinkModal.open();
 	}
 
-	handleCopyBookmarkletCommand() {
+	handleCopyBookmarkletCommand(updateRequired = false) {
+		let noticeText = '';
+		if (updateRequired) {
+			noticeText = `Notice: Your Bookmarklet is out of date and needs to be updated.
+				Please Drag the link below to replace your current bookmarklet`;
+		}
+
 		const bm = new BookmarketlGenerator(
-			this.app.vault.getName()
+			this.app.vault.getName(),
+			'',
+			this.settings.markdownSettings
 		).generateBookmarklet();
 
 		const bookmarkletLinkModal = new Modal(this.app);
 		bookmarkletLinkModal.titleEl.createEl('h2', {
 			text: 'Copy Your Vault Bookmarklet',
 		});
-		bookmarkletLinkModal.contentEl.createEl('a', {
-			href: bm,
-			text: `Obsidian Clipper (${this.app.vault.getName()})`,
-		});
+
+		bookmarkletLinkModal.contentEl.createEl('div', { text: noticeText });
+
+		bookmarkletLinkModal.contentEl.append(createEl('br'));
+
+		bookmarkletLinkModal.contentEl.append(
+			createEl('a', {
+				href: bm,
+				text: `Obsidian Clipper (${this.app.vault.getName()})`,
+			})
+		);
 
 		bookmarkletLinkModal.open();
 	}

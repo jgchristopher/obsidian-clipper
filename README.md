@@ -1,8 +1,7 @@
 # Obsidian Clipper
 
-##**Notice:** 
+##**Notice:**
 **Please reinstall the BookMarketlet** link found in the plugin settings. Significant changes were made to this plugin and the updated bookmarklet takes advantage of these changes.
-
 
 This plugin allows you to capture highlights from the web as Markdown entries in Obsidian.
 
@@ -30,14 +29,14 @@ I originally got this idea from modifying the Gist found in this [Obisdian Forum
 
 I used the following Obsidian Plugin repos as examples of how to accomplish my goal.
 
--   [Obsidian Advanced URI](https://github.com/Vinzent03/obsidian-advanced-uri)
--   [Obisidan Periodic Notes](https://github.com/liamcain/obsidian-periodic-notes)
--   [Turndown Ext](https://github.com/jtreml/turndown) to manage HTML tables
+- [Obsidian Advanced URI](https://github.com/Vinzent03/obsidian-advanced-uri)
+- [Obisidan Periodic Notes](https://github.com/liamcain/obsidian-periodic-notes)
+- [Turndown Ext](https://github.com/jtreml/turndown) to manage HTML tables
 
 #### Dependencies used in development
 
--   [Obsidian Periodic Note Interface](https://github.com/liamcain/obsidian-daily-notes-interface)
--   [Turndown](https://github.com/mixmark-io/turndown) is used in the bookmarklet code to parse highlighted HTML and convert it to Markdown
+- [Obsidian Periodic Note Interface](https://github.com/liamcain/obsidian-daily-notes-interface)
+- [Turndown](https://github.com/mixmark-io/turndown) is used in the bookmarklet code to parse highlighted HTML and convert it to Markdown
 
 If you like the plugin and would want to support its development?
 
