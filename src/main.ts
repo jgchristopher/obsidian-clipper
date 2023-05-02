@@ -106,6 +106,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
+	// TODO: Need to see if this can be replaced with Svelte to make use of the setttings components changes
 	handleSubjectBookmarkletCommand(
 		filePath: string,
 		fileName: string,
