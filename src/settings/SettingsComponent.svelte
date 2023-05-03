@@ -13,7 +13,7 @@
 
 	let tabs: TabItem[] = [
 		{
-			label: 'Base Settings',
+			label: 'Base',
 			value: 1,
 			component: BaseSettingsTab,
 			props: {
@@ -21,7 +21,7 @@
 			},
 		},
 		{
-			label: 'Topic Note Settings',
+			label: 'Topic Note',
 			value: 2,
 			component: TopicSettingsTab,
 			props: {
@@ -29,12 +29,12 @@
 			},
 		},
 		{
-			label: 'Markdown Settings',
+			label: 'Markdown',
 			value: 3,
 			component: MarkdownSettingsTab,
 		},
 		{
-			label: 'Bookmarklet & Extension',
+			label: 'Browser',
 			value: 4,
 			component: LinksSettingsGroup,
 			props: {

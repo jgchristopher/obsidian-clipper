@@ -5,9 +5,14 @@
 
 	export let vaultName: string;
 	export let filePath = '';
-	export let fileName = '';
+	let fileName = '';
 
-	console.log(fileName);
+	if (filePath !== '') {
+		const lastSlashIndex = filePath.lastIndexOf('/');
+		if (lastSlashIndex !== -1) {
+			fileName = filePath.substring(lastSlashIndex + 1);
+		}
+	}
 
 	let noteOrVault = fileName !== '' ? `${fileName} file` : `${vaultName} vault`;
 
@@ -40,8 +45,8 @@
 	<div>
 		<div>
 			Click the button below to generate a personalized Chrome-based extension
-			for {noteOrVault}. After clickin the button, use the link displayed to
-			download the .zip file.
+			for the <span class="font-extrabold">{noteOrVault}</span>. After clicking
+			the button, use the link to download the .zip file.
 		</div>
 		<div class="my-4" bind:this={s3LinkContainer}>
 			<button on:click={getExtension}>Chrome Extension ({noteOrVault})</button>

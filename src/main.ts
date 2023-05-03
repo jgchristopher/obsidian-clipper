@@ -32,7 +32,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 			id: 'copy-note-bookmarklet-address',
 			name: 'Note Bookmarklet',
 			editorCallback: (_editor, ctx) => {
-				this.handleSubjectBookmarkletCommand(ctx.file.path, ctx.file.name);
+				this.handleCopyBookmarkletCommand(false, ctx.file.path);
 			},
 		});
 
@@ -47,7 +47,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 			if (parameters.format === 'html') {
 				// Need to alert user
 				if (notePath !== '') {
-					this.handleSubjectBookmarkletCommand(notePath, notePath, true);
+					this.handleCopyBookmarkletCommand(true, notePath);
 				} else {
 					// show vault modal
 					this.handleCopyBookmarkletCommand(true);
@@ -106,37 +106,37 @@ export default class ObsidianClipperPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	handleSubjectBookmarkletCommand(
-		filePath: string,
-		fileName: string,
-		updateRequired = false
-	) {
-		let noticeText = `Notice: Your Bookmarklet is out of date and needs to be updated.
-				Please Drag the link below to replace your current bookmarklet`;
-		if (updateRequired) {
-			noticeText = `Notice: Your Bookmarklet is out of date and needs to be updated.
-				Please Drag the link below to replace your current bookmarklet`;
-		}
+	// handleSubjectBookmarkletCommand(
+	// 	filePath: string,
+	// 	fileName: string,
+	// 	updateRequired = false
+	// ) {
+	// 	let noticeText = `Notice: Your Bookmarklet is out of date and needs to be updated.
+	// 			Please Drag the link below to replace your current bookmarklet`;
+	// 	if (updateRequired) {
+	// 		noticeText = `Notice: Your Bookmarklet is out of date and needs to be updated.
+	// 			Please Drag the link below to replace your current bookmarklet`;
+	// 	}
+	//
+	// 	const bookmarkletLinkModal = new Modal(this.app);
+	// 	bookmarkletLinkModal.titleEl.createEl('h2', {
+	// 		text: 'Copy Your Subject Bookmarklet',
+	// 	});
+	//
+	// 	new BookmarkletModalComponent({
+	// 		target: bookmarkletLinkModal.contentEl,
+	// 		props: {
+	// 			noticeText: noticeText,
+	// 			vaultName: this.app.vault.getName(),
+	// 			filePath: filePath,
+	// 			fileName: fileName,
+	// 		},
+	// 	});
+	//
+	// 	bookmarkletLinkModal.open();
+	// }
 
-		const bookmarkletLinkModal = new Modal(this.app);
-		bookmarkletLinkModal.titleEl.createEl('h2', {
-			text: 'Copy Your Subject Bookmarklet',
-		});
-
-		new BookmarkletModalComponent({
-			target: bookmarkletLinkModal.contentEl,
-			props: {
-				noticeText: noticeText,
-				vaultName: this.app.vault.getName(),
-				filePath: filePath,
-				fileName: fileName,
-			},
-		});
-
-		bookmarkletLinkModal.open();
-	}
-
-	handleCopyBookmarkletCommand(updateRequired = false) {
+	handleCopyBookmarkletCommand(updateRequired = false, filePath = '') {
 		let noticeText = '';
 		if (updateRequired) {
 			noticeText = `Notice: Your Bookmarklet is out of date and needs to be updated.
@@ -153,6 +153,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 			props: {
 				noticeText: noticeText,
 				vaultName: this.app.vault.getName(),
+				filePath: filePath,
 			},
 		});
 

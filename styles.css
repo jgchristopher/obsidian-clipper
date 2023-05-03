@@ -89,6 +89,10 @@
   line-height: 1.25rem;
 }
 
+.font-extrabold {
+  font-weight: 800;
+}
+
 .font-medium {
   font-weight: 500;
 }
