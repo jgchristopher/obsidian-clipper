@@ -9,6 +9,7 @@
 	import LinksSettingsGroup from './LinksSettingsGroup.svelte';
 
 	export let app: App;
+	const noticeText = 'Try out the new Chrome Extension creation service below.';
 
 	let tabs: TabItem[] = [
 		{
@@ -43,6 +44,19 @@
 	];
 </script>
 
-<Notice />
+<Notice>
+	<span slot="noticeText">
+		{noticeText}
+	</span>
+	<span slot="calloutLink">
+		<a
+			href="https://github.com/jgchristopher/obsidian-clipper#obsidian-clipper"
+			class="whitespace-nowrap font-medium text-blue-700 hover:text-blue-600"
+		>
+			Details
+			<span aria-hidden="true"> &rarr;</span>
+		</a>
+	</span>
+</Notice>
 <br />
 <Tabs {tabs} />

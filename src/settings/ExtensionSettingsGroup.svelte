@@ -4,11 +4,18 @@
 	import { requestUrl } from 'obsidian';
 
 	export let vaultName: string;
-	let s3LinkContainer;
+	export let filePath = '';
+	export let fileName = '';
+
+	console.log(fileName);
+
+	let noteOrVault = fileName !== '' ? `${fileName} file` : `${vaultName} vault`;
+
+	let s3LinkContainer: HTMLElement;
 
 	let clipperHref = new BookmarketlGenerator(
 		vaultName,
-		'',
+		filePath,
 		$settings.markdownSettings
 	).generateBookmarklet();
 
@@ -32,11 +39,12 @@
 <div class="clp_section_margin">
 	<div>
 		<div>
-			Click the button below to download a Chrome-based extension for the {vaultName}
-			vault
+			Click the button below to generate a personalized Chrome-based extension
+			for {noteOrVault}. After clickin the button, use the link displayed to
+			download the .zip file.
 		</div>
-		<div bind:this={s3LinkContainer}>
-			<button on:click={getExtension}>Chrome Extension ({vaultName})</button>
+		<div class="my-4" bind:this={s3LinkContainer}>
+			<button on:click={getExtension}>Chrome Extension ({noteOrVault})</button>
 		</div>
 	</div>
 </div>
