@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Plugin, Modal } from 'obsidian';
+import { App, PluginSettingTab, Plugin, Modal, Notice } from 'obsidian';
 import { deepmerge } from 'deepmerge-ts';
 
 import type { Parameters } from './types';
@@ -14,6 +14,7 @@ import { init } from './settings/settingsstore';
 import type { SvelteComponent } from 'svelte';
 import BookmarkletModalComponent from './modals/BookmarkletModalComponent.svelte';
 import { TopicNoteEntry } from './topicnoteentry';
+import { BookmarketlGenerator } from './bookmarkletlink/bookmarkletgenerator';
 
 export default class ObsidianClipperPlugin extends Plugin {
 	settings: ObsidianClipperSettings;
@@ -22,10 +23,33 @@ export default class ObsidianClipperPlugin extends Plugin {
 		await this.loadSettings();
 		this.addSettingTab(new SettingTab(this.app, this));
 
+		// handleCopyBookmarkletCommand() {
+		// 	navigator.clipboard.writeText(
+		// 		new BookmarketlGenerator(
+		// 			this.app.vault.getName()
+		// 		).generateBookmarklet()
+		// 	);
+		// 	new Notice("Obsidian Clipper Bookmarklet copied to clipboard.");
+		// }
+
+		this.addCommand({
+			id: 'copy-bookmarklet-address-clipboard',
+			name: 'Vault Bookmarklet to Clipboard',
+			callback: () => this.handleCopyBookmarkletToClipboard(),
+		});
+
 		this.addCommand({
 			id: 'copy-bookmarklet-address',
 			name: 'Vault Bookmarklet',
 			callback: () => this.handleCopyBookmarkletCommand(),
+		});
+
+		this.addCommand({
+			id: 'copy-note-bookmarklet-address-clipboard',
+			name: 'Note Bookmarklet to Clipboard',
+			editorCallback: (_editor, ctx) => {
+				this.handleCopyBookmarkletToClipboard(ctx.file.path);
+			},
 		});
 
 		this.addCommand({
@@ -104,6 +128,17 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+	}
+
+	handleCopyBookmarkletToClipboard(notePath = '') {
+		navigator.clipboard.writeText(
+			new BookmarketlGenerator(
+				this.app.vault.getName(),
+				notePath,
+				this.settings.markdownSettings
+			).generateBookmarklet()
+		);
+		new Notice('Obsidian Clipper Bookmarklet copied to clipboard.');
 	}
 
 	handleCopyBookmarkletCommand(updateRequired = false, filePath = '') {
