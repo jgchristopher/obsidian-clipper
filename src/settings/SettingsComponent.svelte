@@ -9,7 +9,8 @@
 	import LinksSettingsGroup from './LinksSettingsGroup.svelte';
 
 	export let app: App;
-	const noticeText = 'Try out the new Chrome Extension creation service below.';
+	const noticeText =
+		'Check out the new Chrome-based browser Extension on the Browser setting tab! That is also where you will find the Bookmarklet link for your vault.';
 
 	let tabs: TabItem[] = [
 		{
