@@ -16,18 +16,12 @@
 		</div>
 		<div class="ml-3 flex-1 md:flex md:justify-between">
 			<p class="text-sm text-blue-700">
-				Please reinstall the BookMarketlet link found below. Significant changes
-				were made to this plugin and the updated bookmarklet takes advantage of
-				these changes.
+				<slot name="noticeText">
+					<span />
+				</slot>
 			</p>
 			<p class="mt-3 text-sm md:mt-0 md:ml-6">
-				<a
-					href="https://github.com/jgchristopher/obsidian-clipper#obsidian-clipper"
-					class="whitespace-nowrap font-medium text-blue-700 hover:text-blue-600"
-				>
-					Details
-					<span aria-hidden="true"> &rarr;</span>
-				</a>
+				<slot name="calloutLink" />
 			</p>
 		</div>
 	</div>

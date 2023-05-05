@@ -7,23 +7,37 @@
 	const handleClick = (tabValue: number) => (activeTabValue = tabValue);
 </script>
 
-<ul>
+<div>
+	<div class="sm:hidden">
+		<label for="tabs" class="sr-only">Select a tab</label>
+		<select bind:value={activeTabValue}>
+			{#each tabs as tab}
+				<option selected={activeTabValue === tab.value} value={tab.value}>
+					{tab.label}
+				</option>
+			{/each}
+		</select>
+	</div>
+	<div class="hidden sm:block">
+		<ul>
+			{#each tabs as tab}
+				<li class={activeTabValue === tab.value ? 'active' : ''}>
+					<span
+						on:keypress={() => handleClick(tab.value)}
+						on:click={() => handleClick(tab.value)}>{tab.label}</span
+					>
+				</li>
+			{/each}
+		</ul>
+	</div>
 	{#each tabs as tab}
-		<li class={activeTabValue === tab.value ? 'active' : ''}>
-			<span
-				on:keypress={() => handleClick(tab.value)}
-				on:click={() => handleClick(tab.value)}>{tab.label}</span
-			>
-		</li>
+		{#if activeTabValue == tab.value}
+			<div class="obs_clp_box">
+				<svelte:component this={tab.component} {...tab.props} />
+			</div>
+		{/if}
 	{/each}
-</ul>
-{#each tabs as tab}
-	{#if activeTabValue == tab.value}
-		<div class="obs_clp_box">
-			<svelte:component this={tab.component} {...tab.props} />
-		</div>
-	{/if}
-{/each}
+</div>
 
 <style>
 	.obs_clp_box {
@@ -46,7 +60,7 @@
 	}
 
 	span {
-		border: 1px solid transparent;
+		border: 1px solid #fff;
 		border-top-left-radius: 0.25rem;
 		border-top-right-radius: 0.25rem;
 		display: block;
