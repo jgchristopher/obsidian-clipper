@@ -23,15 +23,6 @@ export default class ObsidianClipperPlugin extends Plugin {
 		await this.loadSettings();
 		this.addSettingTab(new SettingTab(this.app, this));
 
-		// handleCopyBookmarkletCommand() {
-		// 	navigator.clipboard.writeText(
-		// 		new BookmarketlGenerator(
-		// 			this.app.vault.getName()
-		// 		).generateBookmarklet()
-		// 	);
-		// 	new Notice("Obsidian Clipper Bookmarklet copied to clipboard.");
-		// }
-
 		this.addCommand({
 			id: 'copy-bookmarklet-address-clipboard',
 			name: 'Vault Bookmarklet to Clipboard',
