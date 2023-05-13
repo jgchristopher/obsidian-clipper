@@ -77,6 +77,10 @@
 		<div class="setting-item-description">
 			{description}
 		</div>
+		<a
+			href="https://raw.githubusercontent.com/jgchristopher/obsidian-clipper/tree/main/docs/example-template.md"
+			>Template Example</a
+		>
 	</div>
 </div>
 <div class="setting-item">

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { App } from 'obsidian';
-	import Suggest from './components/Suggest.svelte';
+	import Suggest from './components/TemplateSuggest.svelte';
 	import { settings } from './settingsstore';
 
 	export let app: App;
