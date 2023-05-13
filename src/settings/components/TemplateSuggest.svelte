@@ -78,7 +78,7 @@
 			{description}
 		</div>
 		<a
-			href="https://raw.githubusercontent.com/jgchristopher/obsidian-clipper/tree/main/docs/example-template.md"
+			href="https://raw.githubusercontent.com/jgchristopher/obsidian-clipper/main/docs/example-template.md"
 			>Template Example</a
 		>
 	</div>
