@@ -37,6 +37,7 @@ export abstract class FileWriter {
 	): Promise<TFile> {
 		const fileData = await this.app.vault.read(file);
 		const fileLines = fileData.split('\n');
+		debugger;
 
 		if (!heading) {
 			const startLine = this.getEndOfFrontmatter(file);
@@ -172,7 +173,7 @@ export abstract class FileWriter {
 			if (cache) {
 				const sections = cache.getFileCache(file)?.sections;
 				const frontmatter = sections?.find((item: SectionCache) => {
-					return (item.type = 'yaml');
+					return item.type === 'yaml';
 				});
 				if (frontmatter) {
 					endLine = frontmatter.position.end.line;
