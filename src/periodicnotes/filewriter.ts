@@ -172,7 +172,7 @@ export abstract class FileWriter {
 			if (cache) {
 				const sections = cache.getFileCache(file)?.sections;
 				const frontmatter = sections?.find((item: SectionCache) => {
-					return (item.type = 'yaml');
+					return item.type === 'yaml';
 				});
 				if (frontmatter) {
 					endLine = frontmatter.position.end.line;
