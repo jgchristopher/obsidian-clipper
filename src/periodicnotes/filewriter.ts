@@ -37,7 +37,6 @@ export abstract class FileWriter {
 	): Promise<TFile> {
 		const fileData = await this.app.vault.read(file);
 		const fileLines = fileData.split('\n');
-		debugger;
 
 		if (!heading) {
 			const startLine = this.getEndOfFrontmatter(file);
