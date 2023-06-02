@@ -16,6 +16,18 @@ If you have the [Advanced Tables]() plugin installed, then HTML tables should be
 
 This plugin has the ability to call out to an [external service](https://obsidianclipper.com) that creates a Chrome-based browser extension wrapper around the generated bookmarklet for your vault or note. The Chrome-based extension is the only way to interact with Obsidian Clipper in browsers like [Arc](https://arc.net/). The code for this external service is maintained by me and can be found on [Github](https://github.com/jgchristopher/obsidian_clipper_extension_maker)
 
+## Chrome-based Browser Extension
+
+Obsidian Clipper gives you the option to download a Chrome-based browser extension to use instead of the bookmarklet. This can be useful for browsers like Arc that don't support bookmarklets. Below are some the instructions on how to use the extension once downloaded.
+
+**Once the obsidian-clipper-extention.zip file is downloaded follow these instructions.**
+
+1. Unzip the obsidian-clipper-extention.zip file.
+2. Open a Chromium-based browser and navigate to the Manage Extensions... view.
+3. You will need to enable Developer mode.
+4. Once Developer mode is enabled, a Load unpacked button should become available.
+5. Click the Load unpacked button and navigate to the unzipped obsidian-clipper-extention directory and select it.
+
 ## Have Ideas/Requests/Bugs?
 
 Please feel free to create an [Issue](https://github.com/jgchristopher/obsidian-clipper/issues/new/choose)
