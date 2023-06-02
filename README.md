@@ -12,6 +12,10 @@ If you have the [Advanced Tables]() plugin installed, then HTML tables should be
 
 ![Default Behaviour](./gifs/default.gif)
 
+## Network Use Notice
+
+This plugin has the ability to call out to an [external service](https://obsidianclipper.com) that creates a Chrome-based browser extension wrapper around the generated bookmarklet for your vault or note. The Chrome-based extension is the only way to interact with Obsidian Clipper in browsers like [Arc](https://arc.net/). The code for this external service is maintained by me and can be found on [Github](https://github.com/jgchristopher/obsidian_clipper_extension_maker)
+
 ## Have Ideas/Requests/Bugs?
 
 Please feel free to create an [Issue](https://github.com/jgchristopher/obsidian-clipper/issues/new/choose)
