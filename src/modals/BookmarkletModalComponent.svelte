@@ -17,6 +17,6 @@
 		</Notice>
 	{/if}
 
-	<BookmarkletSettingsGroup {vaultName} />
+	<BookmarkletSettingsGroup {vaultName} {filePath} />
 	<ExtensionSettingsGroup {vaultName} {filePath} />
 </div>
