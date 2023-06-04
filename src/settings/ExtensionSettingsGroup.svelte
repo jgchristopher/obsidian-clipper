@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { BookmarketlGenerator } from 'src/bookmarkletlink/bookmarkletgenerator';
+	import { getFileName } from 'src/utils/fileutils';
 	import { settings } from './settingsstore';
 	import { requestUrl } from 'obsidian';
 
@@ -8,10 +9,7 @@
 	let fileName = '';
 
 	if (filePath !== '') {
-		const lastSlashIndex = filePath.lastIndexOf('/');
-		if (lastSlashIndex !== -1) {
-			fileName = filePath.substring(lastSlashIndex + 1);
-		}
+		fileName = getFileName(filePath);
 	}
 
 	let noteOrVault = fileName !== '' ? `${fileName} file` : `${vaultName} vault`;

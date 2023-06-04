@@ -63,7 +63,7 @@
 		if (initialValue) {
 			dataProvider().forEach((file) => {
 				if (file.path.toLowerCase().startsWith(initialValue.toLowerCase())) {
-					storageArr = [...storageArr, file.path.toLowerCase()];
+					storageArr = [...storageArr, file.path];
 				}
 			});
 		}
