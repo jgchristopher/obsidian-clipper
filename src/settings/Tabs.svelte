@@ -8,17 +8,7 @@
 </script>
 
 <div>
-	<div class="sm:hidden">
-		<label for="tabs" class="sr-only">Select a tab</label>
-		<select bind:value={activeTabValue}>
-			{#each tabs as tab}
-				<option selected={activeTabValue === tab.value} value={tab.value}>
-					{tab.label}
-				</option>
-			{/each}
-		</select>
-	</div>
-	<div class="hidden sm:block">
+	<div>
 		<ul>
 			{#each tabs as tab}
 				<li class={activeTabValue === tab.value ? 'active' : ''}>
