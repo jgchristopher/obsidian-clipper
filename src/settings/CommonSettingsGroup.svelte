@@ -42,4 +42,18 @@
 			/>
 		</div>
 	</div>
+	<div class="setting-item">
+		<div class="setting-item-info">
+			<div class="setting-item-name">Advanced</div>
+			<div class="setting-item-description">
+				<div>
+					Store all clippings in a `/clippings` folder by hostname and use
+					embedded references
+				</div>
+			</div>
+		</div>
+		<div class="setting-item-control">
+			<input type="checkbox" bind:checked={$settings.advanced} />
+		</div>
+	</div>
 </div>

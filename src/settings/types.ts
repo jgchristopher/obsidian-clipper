@@ -23,6 +23,7 @@ export interface ObsidianClipperSettings {
 	topicPosition: SectionPosition;
 	topicEntryTemplateLocation: string;
 	topicOpenOnWrite: boolean;
+	advanced: boolean;
 }
 
 export interface ObsidianClipperMarkdownSettings {
@@ -58,4 +59,5 @@ export const DEFAULT_SETTINGS: ObsidianClipperSettings = {
 		h5: '#####',
 		h6: '######',
 	},
+	advanced: false,
 };
