@@ -56,4 +56,8 @@ export class ClippedData {
 		}
 		return formattedData;
 	}
+
+	public getEntryContent() {
+		return this.data;
+	}
 }

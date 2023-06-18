@@ -16,6 +16,7 @@ import BookmarkletModalComponent from './modals/BookmarkletModalComponent.svelte
 import { TopicNoteEntry } from './topicnoteentry';
 import { BookmarketlGenerator } from './bookmarkletlink/bookmarkletgenerator';
 import { fromUrl, parseDomain } from 'parse-domain';
+import { AdvancedNoteEntry } from './advancednotes/advancednoteentry';
 
 export default class ObsidianClipperPlugin extends Plugin {
 	settings: ObsidianClipperSettings;
@@ -73,12 +74,13 @@ export default class ObsidianClipperPlugin extends Plugin {
 				return;
 			}
 
-			// 1. If Advanced Flag is set,
-			// 2. store the clipping in a note named after the domain hostname and return a block id to reference ![[hostname^clipping-generatedblockid]]
-			// 3. Take the block id reference and update the periodic notes/Topic note as normal
-			if (this.settings.advanced) {
+			let entryReference = highlightData;
+
+			if (this.settings.advanced && highlightData) {
 				const domain = parseDomain(fromUrl(url));
-				console.log('Domain', domain.hostname);
+				entryReference = await new AdvancedNoteEntry(
+					this.app
+				).writeToAdvancedNoteStorage(domain.hostname.toString(), highlightData);
 			}
 
 			const noteEntry = new ClippedData(
@@ -86,7 +88,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 				url,
 				this.settings,
 				this.app,
-				highlightData
+				entryReference
 			);
 
 			if (notePath && notePath !== '') {
