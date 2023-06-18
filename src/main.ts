@@ -37,7 +37,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 		this.addCommand({
 			id: 'copy-note-bookmarklet-address-clipboard',
-			name: 'Note Bookmarklet to Clipboard',
+			name: 'Topic Bookmarklet to Clipboard',
 			editorCallback: (_editor, ctx) => {
 				this.handleCopyBookmarkletToClipboard(ctx.file.path);
 			},
@@ -45,7 +45,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 		this.addCommand({
 			id: 'copy-note-bookmarklet-address',
-			name: 'Note Bookmarklet',
+			name: 'Topic Bookmarklet',
 			editorCallback: (_editor, ctx) => {
 				this.handleCopyBookmarkletCommand(false, ctx.file.path);
 			},
@@ -141,7 +141,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 		const bookmarkletLinkModal = new Modal(this.app);
 		bookmarkletLinkModal.titleEl.createEl('h2', {
-			text: 'Copy Your Vault Bookmarklet',
+			text: 'Copy Your Bookmarklet',
 		});
 
 		new BookmarkletModalComponent({
