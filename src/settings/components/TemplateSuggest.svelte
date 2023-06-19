@@ -98,6 +98,17 @@
 		{#if templateOptions.length > 0}
 			<div class="suggestion-container" use:popperContent={extraOpts}>
 				<div class="suggestion">
+					<div
+						class="suggestion-item"
+						on:keydown
+						on:focus
+						on:blur
+						on:click={() => setInputVal('')}
+						on:mouseover={handleMouseOver}
+						on:mouseout={handleMouseOut}
+					>
+						None
+					</div>
 					{#each templateOptions as templateOption}
 						<div
 							class="suggestion-item"

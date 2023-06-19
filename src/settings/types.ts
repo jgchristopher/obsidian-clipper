@@ -24,6 +24,7 @@ export interface ObsidianClipperSettings {
 	topicEntryTemplateLocation: string;
 	topicOpenOnWrite: boolean;
 	advanced: boolean;
+	advancedStorageFolder: string;
 }
 
 export interface ObsidianClipperMarkdownSettings {
@@ -60,4 +61,5 @@ export const DEFAULT_SETTINGS: ObsidianClipperSettings = {
 		h6: '######',
 	},
 	advanced: false,
+	advancedStorageFolder: 'clippings',
 };

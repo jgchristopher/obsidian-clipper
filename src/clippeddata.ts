@@ -51,7 +51,13 @@ export class ClippedData {
 			if (!this.data) {
 				formattedData = `- [ ] [${this.title}](${this.url}) ${this.tags}\n\n---`;
 			} else {
-				formattedData = `- [ ] [${this.title}](${this.url}) ${this.tags}\n${this.data}\n\n---`;
+				if (this.settings.advanced) {
+					// The Advanced format has the url as a footnote of the clipped data
+					formattedData = `- [ ] ${this.title} ${this.tags}\n${this.data}\n\n---`;
+				} else {
+					// Else make the title a link
+					formattedData = `- [ ] [${this.title}](${this.url}) ${this.tags}\n${this.data}\n\n---`;
+				}
 			}
 		}
 		return formattedData;

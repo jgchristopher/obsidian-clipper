@@ -79,8 +79,13 @@ export default class ObsidianClipperPlugin extends Plugin {
 			if (this.settings.advanced && highlightData) {
 				const domain = parseDomain(fromUrl(url));
 				entryReference = await new AdvancedNoteEntry(
-					this.app
-				).writeToAdvancedNoteStorage(domain.hostname.toString(), highlightData);
+					this.app,
+					this.settings.advancedStorageFolder
+				).writeToAdvancedNoteStorage(
+					domain.hostname.toString(),
+					highlightData,
+					url
+				);
 			}
 
 			const noteEntry = new ClippedData(
