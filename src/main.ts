@@ -15,6 +15,8 @@ import type { SvelteComponent } from 'svelte';
 import BookmarkletModalComponent from './modals/BookmarkletModalComponent.svelte';
 import { TopicNoteEntry } from './topicnoteentry';
 import { BookmarketlGenerator } from './bookmarkletlink/bookmarkletgenerator';
+import { fromUrl, parseDomain } from 'parse-domain';
+import { AdvancedNoteEntry } from './advancednotes/advancednoteentry';
 
 export default class ObsidianClipperPlugin extends Plugin {
 	settings: ObsidianClipperSettings;
@@ -59,9 +61,11 @@ export default class ObsidianClipperPlugin extends Plugin {
 			const notePath = parameters.notePath;
 			const highlightData = parameters.highlightdata;
 
+			// For a brief time the bookmarklet was sending over raw html instead of processed markdown and we need to alert the user to reinstall the bookmarklet
 			if (parameters.format === 'html') {
 				// Need to alert user
 				if (notePath !== '') {
+					// Was this a Topic Note bookMarklet?
 					this.handleCopyBookmarkletCommand(true, notePath);
 				} else {
 					// show vault modal
@@ -70,12 +74,26 @@ export default class ObsidianClipperPlugin extends Plugin {
 				return;
 			}
 
+			let entryReference = highlightData;
+
+			if (this.settings.advanced && highlightData) {
+				const domain = parseDomain(fromUrl(url));
+				entryReference = await new AdvancedNoteEntry(
+					this.app,
+					this.settings.advancedStorageFolder
+				).writeToAdvancedNoteStorage(
+					domain.hostname.toString(),
+					highlightData,
+					url
+				);
+			}
+
 			const noteEntry = new ClippedData(
 				title,
 				url,
 				this.settings,
 				this.app,
-				highlightData
+				entryReference
 			);
 
 			if (notePath && notePath !== '') {

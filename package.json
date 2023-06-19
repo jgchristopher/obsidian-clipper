@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-clipper",
-	"version": "0.1.6",
+	"version": "0.2.0",
 	"description": "This plugin helps you capture highlights from the web.",
 	"main": "main.js",
 	"scripts": {
@@ -45,6 +45,7 @@
 	"dependencies": {
 		"deepmerge-ts": "^4.3.0",
 		"obsidian-daily-notes-interface": "0.9.4",
+		"parse-domain": "^7.0.1",
 		"turndown": "7.1.1"
 	}
 }
