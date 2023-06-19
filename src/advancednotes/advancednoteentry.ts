@@ -28,6 +28,9 @@ export class AdvancedNoteEntry extends NoteEntry {
 		} else {
 			new AppendWriter(this.app, this.openFileOnWrite).write(file, entry);
 		}
+		// Wait for the new note or note data to be available then return
+		await new Promise((r) => setTimeout(r, 50));
+
 		return `![[${hostName}#${sectionHeader}]]`;
 	}
 }
