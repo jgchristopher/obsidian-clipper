@@ -17,8 +17,8 @@ interface HeadingSettings {
 	headingSettings: HeadingSettings,
 	captureComment: string
 ) => {
-	const vaultName = vault; // encodeURIComponent(vault);
-	const notePath = note; // encodeURIComponent(note);
+	const vaultName = encodeURIComponent(vault);
+	const notePath = encodeURIComponent(note);
 	const useComment = encodeURIComponent(captureComment);
 
 	let comment = '';
