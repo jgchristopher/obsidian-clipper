@@ -25,6 +25,7 @@ export interface ObsidianClipperSettings {
 	topicOpenOnWrite: boolean;
 	advanced: boolean;
 	advancedStorageFolder: string;
+	captureComments: boolean;
 }
 
 export interface ObsidianClipperMarkdownSettings {
@@ -62,4 +63,5 @@ export const DEFAULT_SETTINGS: ObsidianClipperSettings = {
 	},
 	advanced: false,
 	advancedStorageFolder: 'clippings',
+	captureComments: false,
 };

@@ -60,6 +60,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 			const title = parameters.title;
 			const notePath = parameters.notePath;
 			const highlightData = parameters.highlightdata;
+			const comments = parameters.comments;
 
 			// For a brief time the bookmarklet was sending over raw html instead of processed markdown and we need to alert the user to reinstall the bookmarklet
 			if (parameters.format === 'html') {
@@ -93,7 +94,8 @@ export default class ObsidianClipperPlugin extends Plugin {
 				url,
 				this.settings,
 				this.app,
-				entryReference
+				entryReference,
+				comments
 			);
 
 			if (notePath && notePath !== '') {
@@ -144,7 +146,8 @@ export default class ObsidianClipperPlugin extends Plugin {
 			new BookmarketlGenerator(
 				this.app.vault.getName(),
 				notePath,
-				this.settings.markdownSettings
+				this.settings.markdownSettings,
+				this.settings.captureComments.toString()
 			).generateBookmarklet()
 		);
 		new Notice('Obsidian Clipper Bookmarklet copied to clipboard.');

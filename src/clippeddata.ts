@@ -11,19 +11,22 @@ export class ClippedData {
 	private settings: ObsidianClipperSettings;
 	private app: App;
 	private timeStamp: string;
+	private comment: string;
 
 	constructor(
 		private title: string,
 		private url: string,
 		settings: ObsidianClipperSettings,
 		app: App,
-		data = ''
+		data = '',
+		comment = ''
 	) {
 		this.title = title;
 		this.url = url;
 		if (data !== '') {
 			this.data = data;
 		}
+		this.comment = comment;
 		const tagJoins: string[] = [];
 		settings.tags.split(',').forEach((t) => {
 			tagJoins.push(`#${t}`);
@@ -45,6 +48,7 @@ export class ClippedData {
 				this.tags,
 				this.timeStamp,
 				this.data,
+				this.comment,
 				rawTemplateContents
 			);
 		} else {

@@ -15,7 +15,8 @@
 	let clipperHref = new BookmarketlGenerator(
 		vaultName,
 		filePath,
-		$settings.markdownSettings
+		$settings.markdownSettings,
+		$settings.captureComments
 	).generateBookmarklet();
 </script>
 

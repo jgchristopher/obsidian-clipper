@@ -43,7 +43,18 @@
 			/>
 		</div>
 	</div>
-	
+	<div class="setting-item">
+		<div class="setting-item-info">
+			<div class="setting-item-name">Capture Comment in Browser</div>
+			<div class="setting-item-description">
+				Display a modal in the browser to capture any comments before sending to
+				Obsidian?
+			</div>
+		</div>
+		<div class="setting-item-control">
+			<input type="checkbox" bind:checked={$settings.captureComments} />
+		</div>
+	</div>
 </div>
 
 <div class="clp_section_margin">
