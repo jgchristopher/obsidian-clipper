@@ -45,12 +45,9 @@
 		list-style: none;
 		border-bottom: 1px solid #dee2e6;
 	}
-	li {
-		margin-bottom: -1px;
-	}
 
 	span {
-		border: 1px solid #fff;
+		border: 1px solid #dee2e6;
 		border-top-left-radius: 0.25rem;
 		border-top-right-radius: 0.25rem;
 		display: block;
@@ -62,9 +59,12 @@
 		border-color: #e9ecef #e9ecef #dee2e6;
 	}
 
+	li {
+		border-color: var(--color-base-40, var(--background-modifier-border-focus));
+	}
+
 	li.active > span {
-		color: #495057;
-		background-color: #fff;
-		border-color: #dee2e6 #dee2e6 #fff;
+		background-color: var(--background-modifier-hover);
+		border-color: var(--color-base-40, var(--background-modifier-border-focus));
 	}
 </style>
