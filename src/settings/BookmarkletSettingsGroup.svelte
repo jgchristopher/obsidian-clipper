@@ -1,23 +1,6 @@
 <script lang="ts">
-	import { BookmarketlGenerator } from 'src/bookmarkletlink/bookmarkletgenerator';
-	import { getFileName } from 'src/utils/fileutils';
-
-	import { settings } from './settingsstore';
-
-	export let vaultName: string;
-	export let filePath = '';
-
-	let linkDisplay = vaultName;
-	if (filePath !== '') {
-		linkDisplay = getFileName(filePath);
-	}
-
-	let clipperHref = new BookmarketlGenerator(
-		vaultName,
-		filePath,
-		$settings.markdownSettings,
-		$settings.captureComments
-	).generateBookmarklet();
+	export let clipperHref: string;
+	export let noteOrVault: string;
 </script>
 
 <div class="clp_section_margin">
@@ -28,7 +11,7 @@
 				bookmarklet will allow you to highlight information on the web and send
 				it to obsidian
 			</div>
-			<a href={clipperHref}>Obsidian Clipper ({linkDisplay})</a>
+			<a href={clipperHref}>Obsidian Clipper ({noteOrVault})</a>
 		</div>
 	</div>
 </div>

@@ -1,12 +1,12 @@
 <script lang="ts">
 	import BaseSettingsTab from './BaseSettingsTab.svelte';
-	import MarkdownSettingsTab from './MarkdownSettingsTab.svelte';
 	import type { TabItem } from './sveltesettingstypes';
 	import Tabs from './Tabs.svelte';
 	import Notice from './Notice.svelte';
 	import type { App } from 'obsidian';
 	import TopicSettingsTab from './TopicSettingsTab.svelte';
 	import LinksSettingsGroup from './LinksSettingsGroup.svelte';
+	import AdvancedSettingsGroup from './AdvancedSettingsGroup.svelte';
 
 	export let app: App;
 	const noticeText =
@@ -30,14 +30,17 @@
 			},
 		},
 		{
-			label: 'Markdown',
+			label: 'Browser',
 			value: 3,
-			component: MarkdownSettingsTab,
+			component: LinksSettingsGroup,
+			props: {
+				app: app,
+			},
 		},
 		{
-			label: 'Browser',
+			label: 'Advanced',
 			value: 4,
-			component: LinksSettingsGroup,
+			component: AdvancedSettingsGroup,
 			props: {
 				app: app,
 			},

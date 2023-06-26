@@ -33,7 +33,7 @@
 	.obs_clp_box {
 		margin-bottom: 10px;
 		padding: 40px;
-		border: 1px solid #dee2e6;
+		border: 1px solid var(--tab-divider-color);
 		border-radius: 0 0 0.5rem 0.5rem;
 		border-top: 0;
 	}
@@ -43,28 +43,26 @@
 		padding-left: 0;
 		margin-bottom: 0;
 		list-style: none;
-		border-bottom: 1px solid #dee2e6;
+		border-bottom: 1px solid var(--tab-divider-color);
 	}
 
 	span {
-		border: 1px solid #dee2e6;
+		border: 1px solid var(--tab-divider-color);
 		border-top-left-radius: 0.25rem;
 		border-top-right-radius: 0.25rem;
 		display: block;
 		padding: 0.5rem 1rem;
 		cursor: pointer;
+		color: var(--tab-text-color);
 	}
 
 	span:hover {
 		border-color: #e9ecef #e9ecef #dee2e6;
 	}
 
-	li {
-		border-color: var(--color-base-40, var(--background-modifier-border-focus));
-	}
-
 	li.active > span {
-		background-color: var(--background-modifier-hover);
+		background-color: var(--tab-background-active);
 		border-color: var(--color-base-40, var(--background-modifier-border-focus));
+		color: var(--tab-text-color-active);
 	}
 </style>
