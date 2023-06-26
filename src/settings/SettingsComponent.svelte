@@ -9,6 +9,7 @@
 	import AdvancedSettingsGroup from './AdvancedSettingsGroup.svelte';
 
 	export let app: App;
+	const vaultName = app.vault.getName();
 	const noticeText =
 		'Check out the new Chrome-based browser Extension on the Browser setting tab! That is also where you will find the Bookmarklet link for your vault.';
 
@@ -34,7 +35,7 @@
 			value: 3,
 			component: LinksSettingsGroup,
 			props: {
-				app: app,
+				vaultName: vaultName,
 			},
 		},
 		{

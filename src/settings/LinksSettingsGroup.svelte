@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { App } from 'obsidian';
 	import { settings } from './settingsstore';
 	import { getFileName } from 'src/utils/fileutils';
 	import { BookmarketlGenerator } from 'src/bookmarkletlink/bookmarkletgenerator';
@@ -7,8 +6,7 @@
 	import BookmarkletSettingsGroup from './BookmarkletSettingsGroup.svelte';
 	import ExtensionSettingsGroup from './ExtensionSettingsGroup.svelte';
 
-	export let app: App;
-	const vaultName = app.vault.getName();
+	export let vaultName = '';
 
 	export let filePath = '';
 	let fileName = '';

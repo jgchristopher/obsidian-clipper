@@ -58,7 +58,7 @@ try {
 	);
 
 	bookmarkletData = bookmarkletData.replace(
-		'~H1Setting~',
+		'~H4Setting~',
 		'${this.markdownSettings.h4}'
 	);
 

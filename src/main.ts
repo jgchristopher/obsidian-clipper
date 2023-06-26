@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Plugin, Modal, Notice } from 'obsidian';
+import { App, PluginSettingTab, Plugin, Modal, Notice, TFile } from 'obsidian';
 import { deepmerge } from 'deepmerge-ts';
 
 import type { Parameters } from './types';
@@ -17,6 +17,7 @@ import { TopicNoteEntry } from './topicnoteentry';
 import { BookmarketlGenerator } from './bookmarkletlink/bookmarkletgenerator';
 import { fromUrl, parseDomain } from 'parse-domain';
 import { AdvancedNoteEntry } from './advancednotes/advancednoteentry';
+import { CanvasEntry } from './canvasentry';
 
 export default class ObsidianClipperPlugin extends Plugin {
 	settings: ObsidianClipperSettings;
@@ -50,6 +51,25 @@ export default class ObsidianClipperPlugin extends Plugin {
 			name: 'Topic Bookmarklet',
 			editorCallback: (_editor, ctx) => {
 				this.handleCopyBookmarkletCommand(false, ctx.file.path);
+			},
+		});
+
+		this.addCommand({
+			id: 'copy-note-bookmarklet-address',
+			name: 'Canvas Bookmarklet',
+			checkCallback: (checking: boolean) => {
+				if (checking) {
+					return (
+						this.app.workspace.activeLeaf?.view.file.extension === 'canvas'
+					);
+				} else {
+					debugger;
+					const ctx = this.app.workspace.activeLeaf?.view;
+					console.log('Active Leaf is a Canvas', ctx?.file);
+					if (ctx) {
+						this.handleCopyBookmarkletCommand(false, ctx.file.path);
+					}
+				}
 			},
 		});
 
@@ -100,12 +120,17 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 			if (notePath && notePath !== '') {
 				const file = this.app.vault.getAbstractFileByPath(notePath);
-				new TopicNoteEntry(
-					this.app,
-					this.settings.topicOpenOnWrite,
-					this.settings.topicPosition,
-					this.settings.topicEntryTemplateLocation
-				).writeToNote(file, noteEntry);
+				debugger;
+				if ((file as TFile).extension === 'canvas') {
+					new CanvasEntry(app).writeToCanvas(file as TFile, noteEntry);
+				} else {
+					new TopicNoteEntry(
+						this.app,
+						this.settings.topicOpenOnWrite,
+						this.settings.topicPosition,
+						this.settings.topicEntryTemplateLocation
+					).writeToNote(file, noteEntry);
+				}
 			} else {
 				if (this.settings.useDailyNote) {
 					new DailyPeriodicNoteEntry(

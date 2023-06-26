@@ -29,7 +29,7 @@
 		"esbuild-svelte": "^0.7.3",
 		"eslint": "^8.34.0",
 		"jsdom": "^22.1.0",
-		"obsidian": "latest",
+		"obsidian": "obsidianmd/obsidian-api#master",
 		"rimraf": "^4.4.1",
 		"svelte": "3.55.1",
 		"svelte-eslint-parser": "^0.23.0",
