@@ -43,6 +43,8 @@
 		"webpack-cli": "^5.0.1"
 	},
 	"dependencies": {
+		"@dagrejs/dagre": "^1.0.2",
+		"@types/dagre": "^0.7.48",
 		"deepmerge-ts": "^4.3.0",
 		"obsidian-daily-notes-interface": "0.9.4",
 		"parse-domain": "^7.0.1",

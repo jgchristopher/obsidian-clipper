@@ -67,6 +67,10 @@ export class ClippedData {
 		return formattedData;
 	}
 
+	public getUrl() {
+		return this.url;
+	}
+
 	public getEntryContent() {
 		return this.data;
 	}

@@ -20,7 +20,9 @@
 		vaultName,
 		filePath,
 		$settings.markdownSettings,
-		$settings.captureComments.toString()
+		(
+			$settings.experimentalBookmarkletComment && $settings.captureComments
+		).toString()
 	).generateBookmarklet();
 
 	let updateClipperHref = () => {
@@ -28,7 +30,9 @@
 			vaultName,
 			filePath,
 			$settings.markdownSettings,
-			$settings.captureComments.toString()
+			(
+				$settings.experimentalBookmarkletComment && $settings.captureComments
+			).toString()
 		).generateBookmarklet();
 	};
 </script>
@@ -40,22 +44,24 @@
 
 <div class="clp_section_margin">
 	<h1>Bookmarklet Settings</h1>
-	<div class="setting-item">
-		<div class="setting-item-info">
-			<div class="setting-item-name">Capture Comment in Browser</div>
-			<div class="setting-item-description">
-				Display a modal in the browser to capture any comments before sending to
-				Obsidian?
+	{#if $settings.experimentalBookmarkletComment}
+		<div class="setting-item">
+			<div class="setting-item-info">
+				<div class="setting-item-name">Capture Comment in Browser</div>
+				<div class="setting-item-description">
+					Display a modal in the browser to capture any comments before sending
+					to Obsidian?
+				</div>
+			</div>
+			<div class="setting-item-control">
+				<input
+					type="checkbox"
+					bind:checked={$settings.captureComments}
+					on:change={updateClipperHref}
+				/>
 			</div>
 		</div>
-		<div class="setting-item-control">
-			<input
-				type="checkbox"
-				bind:checked={$settings.captureComments}
-				on:change={updateClipperHref}
-			/>
-		</div>
-	</div>
+	{/if}
 	<div class="setting-item">
 		<div class="setting-item-info">
 			<h1 class="setting-item-name">Markdown Headings</h1>

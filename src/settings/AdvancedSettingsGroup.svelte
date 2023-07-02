@@ -37,3 +37,35 @@
 		</div>
 	{/if}
 </div>
+<div class="clp_section_margin">
+	<h1>Experimental Settings</h1>
+	<div class="setting-item mod-toggle">
+		<div class="setting-item-info">
+			<h1 class="setting-item-name">Support Canvas</h1>
+		</div>
+		<div class="setting-item-control">
+			<label
+				class="checkbox-container"
+				class:is-enabled={$settings.experimentalCanvas}
+			>
+				<input type="checkbox" bind:checked={$settings.experimentalCanvas} />
+			</label>
+		</div>
+	</div>
+	<div class="setting-item mod-toggle" style="border-top: none !important;">
+		<div class="setting-item-info">
+			<h1 class="setting-item-name">Comment Support in Browser</h1>
+		</div>
+		<div class="setting-item-control">
+			<label
+				class="checkbox-container"
+				class:is-enabled={$settings.experimentalBookmarkletComment}
+			>
+				<input
+					type="checkbox"
+					bind:checked={$settings.experimentalBookmarkletComment}
+				/>
+			</label>
+		</div>
+	</div>
+</div>
