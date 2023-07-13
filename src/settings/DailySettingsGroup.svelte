@@ -60,9 +60,7 @@
 			</div>
 			<div class="setting-item">
 				<div class="setting-item-info">
-					<div class="setting-item-name">
-						Open File After Adding Clipping - Daily?
-					</div>
+					<div class="setting-item-name">Open Note After Adding Clipping?</div>
 					<div class="setting-item-description">
 						Would you like to open the daily note after adding the clipping?
 					</div>
@@ -76,7 +74,7 @@
 			</div>
 			<Suggest
 				name="Clipped Entry Template - Daily"
-				description="Choose the file to use as a template for the clipped entry in the daily 
+				description="Choose the template to use as for the clipped entry in the daily 
 			periodic note"
 				initialValue={$settings.dailyEntryTemplateLocation}
 				dataProvider={() => app.vault.getMarkdownFiles()}

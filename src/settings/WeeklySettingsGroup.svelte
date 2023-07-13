@@ -30,7 +30,7 @@
 					<div class="setting-item-name">Weekly Note Header</div>
 					<div class="setting-item-description">
 						What header should highlight data be prepended/appended under in
-						your daily note?
+						your weekly note?
 					</div>
 				</div>
 				<div class="setting-item-control">
@@ -59,9 +59,7 @@
 			</div>
 			<div class="setting-item">
 				<div class="setting-item-info">
-					<div class="setting-item-name">
-						Open File After Adding Clipping - Weekly?
-					</div>
+					<div class="setting-item-name">Open Note After Adding Clipping?</div>
 					<div class="setting-item-description">
 						Would you like to open the weekly note after adding the clipping?
 					</div>
@@ -75,7 +73,7 @@
 			</div>
 			<Suggest
 				name="Clipped Entry Template - Weekly"
-				description="Choose the file to use as a template for the clipped entry in the weekly
+				description="Choose the template to use as for the clipped entry in the weekly
 			periodic note"
 				initialValue={$settings.weeklyEntryTemplateLocation}
 				dataProvider={() => app.vault.getMarkdownFiles()}

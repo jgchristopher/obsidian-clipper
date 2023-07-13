@@ -26,7 +26,7 @@
 	</div>
 	<div class="setting-item">
 		<div class="setting-item-info">
-			<div class="setting-item-name">Open File After Adding Clipping?</div>
+			<div class="setting-item-name">Open Note After Adding Clipping?</div>
 			<div class="setting-item-description">
 				Would you like to open the note after adding the clipping?
 			</div>
@@ -39,8 +39,8 @@
 		</div>
 	</div>
 	<Suggest
-		name="Clipped Entry Template - Topic"
-		description="Choose the file to use as a template for the clipped entry a topic note"
+		name="Clipped Entry Template"
+		description="Choose the template to use for the clipped entry in a topic note"
 		initialValue={$settings.topicEntryTemplateLocation}
 		dataProvider={() => app.vault.getMarkdownFiles()}
 		{onChange}
