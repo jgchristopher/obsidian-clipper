@@ -99,6 +99,10 @@ div.clp_section_margin {
   margin: 0 0 20px 0 !important;
 }
 
+.internal-embed[alt="clipped"] h1 {
+  display: none;
+}
+
 .hover\:text-blue-600:hover {
   --tw-text-opacity: 1;
   color: rgb(37 99 235 / var(--tw-text-opacity));
@@ -121,5 +125,3 @@ div.clp_section_margin {
     justify-content: space-between;
   }
 }
-
-

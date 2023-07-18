@@ -6,26 +6,26 @@ import {
   Notice,
   TFile,
   View,
-} from 'obsidian';
-import { deepmerge } from 'deepmerge-ts';
+} from "obsidian";
+import { deepmerge } from "deepmerge-ts";
 
-import type { Parameters } from './types';
+import type { Parameters } from "./types";
 import {
   type ObsidianClipperSettings,
   DEFAULT_SETTINGS,
-} from './settings/types';
-import { ClippedData } from './clippeddata';
-import { DailyPeriodicNoteEntry } from './periodicnotes/dailyperiodicnoteentry';
-import { WeeklyPeriodicNoteEntry } from './periodicnotes/weeklyperiodicnoteentry';
-import SettingsComponent from './settings/SettingsComponent.svelte';
-import { init } from './settings/settingsstore';
-import type { SvelteComponent } from 'svelte';
-import BookmarkletModalComponent from './modals/BookmarkletModalComponent.svelte';
-import { TopicNoteEntry } from './topicnoteentry';
-import { BookmarketlGenerator } from './bookmarkletlink/bookmarkletgenerator';
-import { AdvancedNoteEntry } from './advancednotes/advancednoteentry';
-import { CanvasEntry } from './canvasentry';
-import { Utility } from './utils/utility';
+} from "./settings/types";
+import { ClippedData } from "./clippeddata";
+import { DailyPeriodicNoteEntry } from "./periodicnotes/dailyperiodicnoteentry";
+import { WeeklyPeriodicNoteEntry } from "./periodicnotes/weeklyperiodicnoteentry";
+import SettingsComponent from "./settings/SettingsComponent.svelte";
+import { init } from "./settings/settingsstore";
+import type { SvelteComponent } from "svelte";
+import BookmarkletModalComponent from "./modals/BookmarkletModalComponent.svelte";
+import { TopicNoteEntry } from "./topicnoteentry";
+import { BookmarketlGenerator } from "./bookmarkletlink/bookmarkletgenerator";
+import { AdvancedNoteEntry } from "./advancednotes/advancednoteentry";
+import { CanvasEntry } from "./canvasentry";
+import { Utility } from "./utils/utility";
 
 export default class ObsidianClipperPlugin extends Plugin {
   settings: ObsidianClipperSettings;
@@ -35,42 +35,42 @@ export default class ObsidianClipperPlugin extends Plugin {
     this.addSettingTab(new SettingTab(this.app, this));
 
     this.addCommand({
-      id: 'copy-bookmarklet-address-clipboard',
-      name: 'Vault Bookmarklet to Clipboard',
+      id: "copy-bookmarklet-address-clipboard",
+      name: "Vault Bookmarklet to Clipboard",
       callback: () => this.handleCopyBookmarkletToClipboard(),
     });
 
     this.addCommand({
-      id: 'copy-bookmarklet-address',
-      name: 'Vault Bookmarklet',
+      id: "copy-bookmarklet-address",
+      name: "Vault Bookmarklet",
       callback: () => this.handleCopyBookmarkletCommand(),
     });
 
     this.addCommand({
-      id: 'copy-note-bookmarklet-address-clipboard',
-      name: 'Topic Bookmarklet to Clipboard',
+      id: "copy-note-bookmarklet-address-clipboard",
+      name: "Topic Bookmarklet to Clipboard",
       editorCallback: (_editor, ctx) => {
         this.handleCopyBookmarkletToClipboard(ctx.file?.path);
       },
     });
 
     this.addCommand({
-      id: 'copy-note-bookmarklet-address',
-      name: 'Topic Bookmarklet',
+      id: "copy-note-bookmarklet-address",
+      name: "Topic Bookmarklet",
       editorCallback: (_editor, ctx) => {
         this.handleCopyBookmarkletCommand(false, ctx.file?.path);
       },
     });
 
     this.addCommand({
-      id: 'copy-note-bookmarklet-address',
-      name: 'Canvas Bookmarklet',
+      id: "copy-note-bookmarklet-address-canvas",
+      name: "Canvas Bookmarklet",
       checkCallback: (checking: boolean) => {
         if (checking) {
           return (
             this.settings.experimentalCanvas &&
             this.app.workspace.getActiveViewOfType(View)?.file.extension ===
-            'canvas'
+              "canvas"
           );
         } else {
           const ctx = this.app.workspace.getActiveViewOfType(View);
@@ -81,7 +81,7 @@ export default class ObsidianClipperPlugin extends Plugin {
       },
     });
 
-    this.registerObsidianProtocolHandler('obsidian-clipper', async (e) => {
+    this.registerObsidianProtocolHandler("obsidian-clipper", async (e) => {
       const parameters = e as unknown as Parameters;
 
       const url = parameters.url;
@@ -91,9 +91,9 @@ export default class ObsidianClipperPlugin extends Plugin {
       const comments = parameters.comments;
 
       // For a brief time the bookmarklet was sending over raw html instead of processed markdown and we need to alert the user to reinstall the bookmarklet
-      if (parameters.format === 'html') {
+      if (parameters.format === "html") {
         // Need to alert user
-        if (notePath !== '') {
+        if (notePath !== "") {
           // Was this a Topic Note bookMarklet?
           this.handleCopyBookmarkletCommand(true, notePath);
         } else {
@@ -122,9 +122,9 @@ export default class ObsidianClipperPlugin extends Plugin {
         comments
       );
 
-      if (notePath && notePath !== '') {
+      if (notePath && notePath !== "") {
         const file = this.app.vault.getAbstractFileByPath(notePath);
-        if ((file as TFile).extension === 'canvas') {
+        if ((file as TFile).extension === "canvas") {
           new CanvasEntry(this.app).writeToCanvas(file as TFile, noteEntry);
         } else {
           new TopicNoteEntry(
@@ -169,7 +169,7 @@ export default class ObsidianClipperPlugin extends Plugin {
     await this.saveData(this.settings);
   }
 
-  handleCopyBookmarkletToClipboard(notePath = '') {
+  handleCopyBookmarkletToClipboard(notePath = "") {
     navigator.clipboard.writeText(
       new BookmarketlGenerator(
         this.app.vault.getName(),
@@ -181,19 +181,19 @@ export default class ObsidianClipperPlugin extends Plugin {
         ).toString()
       ).generateBookmarklet()
     );
-    new Notice('Obsidian Clipper Bookmarklet copied to clipboard.');
+    new Notice("Obsidian Clipper Bookmarklet copied to clipboard.");
   }
 
-  handleCopyBookmarkletCommand(updateRequired = false, filePath = '') {
-    let noticeText = '';
+  handleCopyBookmarkletCommand(updateRequired = false, filePath = "") {
+    let noticeText = "";
     if (updateRequired) {
       noticeText = `Notice: Your Bookmarklet is out of date and needs to be updated.
 				Please Drag the link below to replace your current bookmarklet`;
     }
 
     const bookmarkletLinkModal = new Modal(this.app);
-    bookmarkletLinkModal.titleEl.createEl('h2', {
-      text: 'Copy Your Bookmarklet',
+    bookmarkletLinkModal.titleEl.createEl("h2", {
+      text: "Copy Your Bookmarklet",
     });
 
     new BookmarkletModalComponent({
