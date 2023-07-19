@@ -66,6 +66,10 @@ export class CanvasEntry {
 	}
 
 	private findDomainNodeOrCreate(canvasData: CanvasData, domain: string) {
+		if (!canvasData.nodes) {
+			canvasData.nodes = [];
+		}
+
 		let domainNode = canvasData.nodes.find((node) => node.text === domain);
 		if (!domainNode) {
 			domainNode = this.createTextNode(canvasData.nodes, domain);
@@ -109,6 +113,9 @@ export class CanvasEntry {
 			toNode: domainNode.id,
 			toSide: 'bottom',
 		};
+		if (!canvasData.edges) {
+			canvasData.edges = [];
+		}
 		canvasData.edges.push(edge);
 	}
 

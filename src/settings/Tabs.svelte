@@ -58,11 +58,17 @@
 
 	span:hover {
 		border-color: #e9ecef #e9ecef #dee2e6;
+		background-color: var(--background-modifier-hover);
+		color: var(--tab-text-color-active);
+	}
+
+	li:hover {
+		background-color: var(--background-modifier-hover);
 	}
 
 	li.active > span {
 		background-color: var(--tab-background-active);
-		border-color: var(--color-base-40, var(--background-modifier-border-focus));
+		border-color: #e9ecef #e9ecef #dee2e6;
 		color: var(--tab-text-color-active);
 	}
 </style>
