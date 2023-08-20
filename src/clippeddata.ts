@@ -11,6 +11,7 @@ export class ClippedData {
 	private settings: ObsidianClipperSettings;
 	private app: App;
 	private timeStamp: string;
+	private date: string;
 	private comment: string;
 
 	constructor(
@@ -35,6 +36,7 @@ export class ClippedData {
 		this.settings = settings;
 		this.app = app;
 		this.timeStamp = window.moment().format(this.settings.timestampFormat);
+		this.date = window.moment().format(this.settings.dateFormat);
 	}
 
 	public async formattedEntry(template?: string): Promise<string> {
@@ -47,6 +49,7 @@ export class ClippedData {
 				this.url,
 				this.tags,
 				this.timeStamp,
+				this.date,
 				this.data,
 				this.comment,
 				rawTemplateContents
