@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-clipper",
-	"version": "0.2.2",
+	"version": "0.2.3",
 	"description": "This plugin helps you capture highlights from the web.",
 	"main": "main.js",
 	"scripts": {
