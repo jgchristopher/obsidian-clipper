@@ -22,8 +22,6 @@ export class CanvasEntry {
 		Utility.assertNotNull(content);
 		const fileData = await this.app.vault.read(file);
 		const canvasData: CanvasData = JSON.parse(fileData);
-		debugger;
-		console.log(canvasData);
 
 		const newNode = this.createTextNode(
 			canvasData.nodes,
@@ -98,6 +96,7 @@ export class CanvasEntry {
 	}
 
 	private getPositionCoordinatesForNewNode(nodes: AllCanvasNodeData[]) {
+		// TODO: Need to figure out a viable creation position algorithm?
 		return { x: -1300, y: -800 };
 	}
 
