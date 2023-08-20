@@ -55,6 +55,11 @@
 	<div class="setting-item mod-toggle" style="border-top: none !important;">
 		<div class="setting-item-info">
 			<h1 class="setting-item-name">Comment Support in Browser</h1>
+			<div class="setting-item-description">
+				After enabling this option, you must go to the 'Browser' tab, update
+				your settings to turn on the 'Capture Comment in Browser' setting and
+				reinstall the bookmarklet.
+			</div>
 		</div>
 		<div class="setting-item-control">
 			<label
