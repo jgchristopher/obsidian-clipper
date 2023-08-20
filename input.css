@@ -2,11 +2,13 @@
 @tailwind utilities;
 
 a {
-	color: var(--link-color);
+  color: var(--link-color);
 }
 
 div.clp_section_margin {
-	margin: 0 0 20px 0 !important;
+  margin: 0 0 20px 0 !important;
 }
 
-
+.internal-embed[alt="clipped"] h1 {
+  display: none;
+}

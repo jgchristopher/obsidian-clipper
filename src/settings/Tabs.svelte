@@ -33,7 +33,7 @@
 	.obs_clp_box {
 		margin-bottom: 10px;
 		padding: 40px;
-		border: 1px solid #dee2e6;
+		border: 1px solid var(--tab-divider-color);
 		border-radius: 0 0 0.5rem 0.5rem;
 		border-top: 0;
 	}
@@ -43,28 +43,32 @@
 		padding-left: 0;
 		margin-bottom: 0;
 		list-style: none;
-		border-bottom: 1px solid #dee2e6;
-	}
-	li {
-		margin-bottom: -1px;
+		border-bottom: 1px solid var(--tab-divider-color);
 	}
 
 	span {
-		border: 1px solid #fff;
+		border: 1px solid var(--tab-divider-color);
 		border-top-left-radius: 0.25rem;
 		border-top-right-radius: 0.25rem;
 		display: block;
 		padding: 0.5rem 1rem;
 		cursor: pointer;
+		color: var(--tab-text-color);
 	}
 
 	span:hover {
 		border-color: #e9ecef #e9ecef #dee2e6;
+		background-color: var(--background-modifier-hover);
+		color: var(--tab-text-color-active);
+	}
+
+	li:hover {
+		background-color: var(--background-modifier-hover);
 	}
 
 	li.active > span {
-		color: #495057;
-		background-color: #fff;
-		border-color: #dee2e6 #dee2e6 #fff;
+		background-color: var(--tab-background-active);
+		border-color: #e9ecef #e9ecef #dee2e6;
+		color: var(--tab-text-color-active);
 	}
 </style>

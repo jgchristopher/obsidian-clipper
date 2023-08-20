@@ -1,14 +1,15 @@
 <script lang="ts">
 	import BaseSettingsTab from './BaseSettingsTab.svelte';
-	import MarkdownSettingsTab from './MarkdownSettingsTab.svelte';
 	import type { TabItem } from './sveltesettingstypes';
 	import Tabs from './Tabs.svelte';
 	import Notice from './Notice.svelte';
 	import type { App } from 'obsidian';
 	import TopicSettingsTab from './TopicSettingsTab.svelte';
 	import LinksSettingsGroup from './LinksSettingsGroup.svelte';
+	import AdvancedSettingsGroup from './AdvancedSettingsGroup.svelte';
 
 	export let app: App;
+	const vaultName = app.vault.getName();
 	const noticeText =
 		'Check out the new Chrome-based browser Extension on the Browser setting tab! That is also where you will find the Bookmarklet link for your vault.';
 
@@ -30,14 +31,17 @@
 			},
 		},
 		{
-			label: 'Markdown',
+			label: 'Browser',
 			value: 3,
-			component: MarkdownSettingsTab,
+			component: LinksSettingsGroup,
+			props: {
+				vaultName: vaultName,
+			},
 		},
 		{
-			label: 'Browser',
+			label: 'Advanced',
 			value: 4,
-			component: LinksSettingsGroup,
+			component: AdvancedSettingsGroup,
 			props: {
 				app: app,
 			},

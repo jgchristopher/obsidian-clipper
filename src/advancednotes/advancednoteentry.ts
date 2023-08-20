@@ -44,6 +44,6 @@ export class AdvancedNoteEntry extends NoteEntry {
 			throw Error(errorMessage);
 		}
 
-		return `![[${this.storageFolder}/${hostName}#${sectionHeader}]]`;
+		return `![[${this.storageFolder}/${hostName}#${sectionHeader}|clipped]]`;
 	}
 }

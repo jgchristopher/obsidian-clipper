@@ -19,7 +19,7 @@ export async function getTemplateContents(
 		if (templateFile) {
 			templateContents = await vault.cachedRead(templateFile);
 		}
-		return templateContents;
+		return `${templateContents}\n`;
 	} catch (err) {
 		console.error(
 			`Failed to read the clipper entry template '${normalizedTemplatePath}'`,
@@ -37,7 +37,9 @@ export function applyTemplateTransformations(
 	url: string,
 	tags: string,
 	time: string,
+	date: string,
 	content = '',
+	comment = '',
 	rawTemplateContents: string
 ): string {
 	const templateContents = rawTemplateContents
@@ -45,7 +47,9 @@ export function applyTemplateTransformations(
 		.replace(/{{\s*url\s*}}/gi, url)
 		.replace(/{{\s*tags\s*}}/gi, tags)
 		.replace(/{{\s*content\s*}}/gi, content)
-		.replace(/{{\s*time\s*}}/gi, time);
+		.replace(/{{\s*comment\s*}}/gi, comment)
+		.replace(/{{\s*time\s*}}/gi, time)
+		.replace(/{{\s*date\s*}}/gi, date);
 
 	return templateContents;
 }

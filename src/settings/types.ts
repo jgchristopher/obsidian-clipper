@@ -9,6 +9,7 @@ export type SectionPosition =
 export interface ObsidianClipperSettings {
 	tags: string;
 	timestampFormat: string;
+	dateFormat: string;
 	dailyNoteHeading: string;
 	weeklyNoteHeading: string;
 	dailyOpenOnWrite: boolean;
@@ -25,6 +26,9 @@ export interface ObsidianClipperSettings {
 	topicOpenOnWrite: boolean;
 	advanced: boolean;
 	advancedStorageFolder: string;
+	captureComments: boolean;
+	experimentalCanvas: boolean;
+	experimentalBookmarkletComment: boolean;
 }
 
 export interface ObsidianClipperMarkdownSettings {
@@ -41,6 +45,7 @@ export const DEFAULT_SETTINGS: ObsidianClipperSettings = {
 	weeklyNoteHeading: '',
 	tags: '',
 	timestampFormat: 'HH:mm',
+	dateFormat: 'MM/DD/YY',
 	dailyOpenOnWrite: false,
 	useDailyNote: true,
 	dailyPosition: SectionPosition.APPEND,
@@ -62,4 +67,7 @@ export const DEFAULT_SETTINGS: ObsidianClipperSettings = {
 	},
 	advanced: false,
 	advancedStorageFolder: 'clippings',
+	captureComments: false,
+	experimentalCanvas: false,
+	experimentalBookmarkletComment: false,
 };

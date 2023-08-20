@@ -1,7 +1,6 @@
 <script lang="ts">
-	import ExtensionSettingsGroup from 'src/settings/ExtensionSettingsGroup.svelte';
-	import BookmarkletSettingsGroup from 'src/settings/BookmarkletSettingsGroup.svelte';
 	import Notice from 'src/settings/Notice.svelte';
+	import LinksSettingsGroup from 'src/settings/LinksSettingsGroup.svelte';
 
 	export let noticeText: string;
 	export let vaultName: string;
@@ -17,6 +16,5 @@
 		</Notice>
 	{/if}
 
-	<BookmarkletSettingsGroup {vaultName} {filePath} />
-	<ExtensionSettingsGroup {vaultName} {filePath} />
+	<LinksSettingsGroup {vaultName} {filePath} />
 </div>

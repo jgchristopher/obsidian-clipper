@@ -1,42 +1,28 @@
 <script lang="ts">
-	import { BookmarketlGenerator } from 'src/bookmarkletlink/bookmarkletgenerator';
-	import { getFileName } from 'src/utils/fileutils';
-	import { settings } from './settingsstore';
 	import { requestUrl } from 'obsidian';
 
-	export let vaultName: string;
-	export let filePath = '';
-	let fileName = '';
-
-	if (filePath !== '') {
-		fileName = getFileName(filePath);
-	}
-
-	let noteOrVault = fileName !== '' ? `${fileName} file` : `${vaultName} vault`;
-
+	export let clipperHref: string;
+	export let noteOrVault: string;
+	// eslint-disable-next-line
 	let s3LinkContainer: HTMLElement;
 
-	let clipperHref = new BookmarketlGenerator(
-		vaultName,
-		filePath,
-		$settings.markdownSettings
-	).generateBookmarklet();
-
-	async function getExtension() {
+	const getExtension = async () => {
 		const response = await requestUrl({
 			url: 'https://obsidianclipper.com/api/extension',
 			contentType: 'application/json',
 			method: 'POST',
 			body: JSON.stringify({
-				name: vaultName,
+				name: noteOrVault,
 				bookmarklet_code: clipperHref,
 			}),
 		});
+
+		// eslint-disable-next-line
 		const s3Link = window.document.createElement('a');
 		s3Link.href = response.json.data.link;
 		s3Link.textContent = 'Download Chrome Extension';
 		s3LinkContainer.replaceChildren(s3Link);
-	}
+	};
 </script>
 
 <div class="clp_section_margin">

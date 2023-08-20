@@ -19,10 +19,12 @@ export class BookmarketlGenerator {
   vaultName: string;
   notePath: string;
   markdownSettings: ObsidianClipperMarkdownSettings; 
-  constructor(vaultName: string, notePath = '', markdownSettings: ObsidianClipperMarkdownSettings ) {
+	captureComments: string;  
+constructor(vaultName: string, notePath = '', markdownSettings: ObsidianClipperMarkdownSettings, captureComments: string ) {
     this.vaultName = vaultName;
     this.notePath = notePath;
     this.markdownSettings = markdownSettings;
+		this.captureComments = captureComments;
   }
   public generateBookmarklet(): string {
     return \`~BookmarkletReplace~\`;
@@ -56,7 +58,7 @@ try {
 	);
 
 	bookmarkletData = bookmarkletData.replace(
-		'~H1Setting~',
+		'~H4Setting~',
 		'${this.markdownSettings.h4}'
 	);
 
@@ -68,6 +70,11 @@ try {
 	bookmarkletData = bookmarkletData.replace(
 		'~H6Setting~',
 		'${this.markdownSettings.h6}'
+	);
+
+	bookmarkletData = bookmarkletData.replace(
+		'~CaptureComment~',
+		'${this.captureComments}'
 	);
 
 	const bookmarketGenerator = bookmarkletGeneratorTemplate.replaceAll(

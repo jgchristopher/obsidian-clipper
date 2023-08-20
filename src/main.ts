@@ -1,4 +1,12 @@
-import { App, PluginSettingTab, Plugin, Modal, Notice } from 'obsidian';
+import {
+	App,
+	PluginSettingTab,
+	Plugin,
+	Modal,
+	Notice,
+	TFile,
+	View,
+} from 'obsidian';
 import { deepmerge } from 'deepmerge-ts';
 
 import type { Parameters } from './types';
@@ -15,8 +23,9 @@ import type { SvelteComponent } from 'svelte';
 import BookmarkletModalComponent from './modals/BookmarkletModalComponent.svelte';
 import { TopicNoteEntry } from './topicnoteentry';
 import { BookmarketlGenerator } from './bookmarkletlink/bookmarkletgenerator';
-import { fromUrl, parseDomain } from 'parse-domain';
 import { AdvancedNoteEntry } from './advancednotes/advancednoteentry';
+import { CanvasEntry } from './canvasentry';
+import { Utility } from './utils/utility';
 
 export default class ObsidianClipperPlugin extends Plugin {
 	settings: ObsidianClipperSettings;
@@ -41,7 +50,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 			id: 'copy-note-bookmarklet-address-clipboard',
 			name: 'Topic Bookmarklet to Clipboard',
 			editorCallback: (_editor, ctx) => {
-				this.handleCopyBookmarkletToClipboard(ctx.file.path);
+				this.handleCopyBookmarkletToClipboard(ctx.file?.path);
 			},
 		});
 
@@ -49,7 +58,26 @@ export default class ObsidianClipperPlugin extends Plugin {
 			id: 'copy-note-bookmarklet-address',
 			name: 'Topic Bookmarklet',
 			editorCallback: (_editor, ctx) => {
-				this.handleCopyBookmarkletCommand(false, ctx.file.path);
+				this.handleCopyBookmarkletCommand(false, ctx.file?.path);
+			},
+		});
+
+		this.addCommand({
+			id: 'copy-note-bookmarklet-address-canvas',
+			name: 'Canvas Bookmarklet',
+			checkCallback: (checking: boolean) => {
+				if (checking) {
+					return (
+						this.settings.experimentalCanvas &&
+						this.app.workspace.getActiveViewOfType(View)?.file.extension ===
+							'canvas'
+					);
+				} else {
+					const ctx = this.app.workspace.getActiveViewOfType(View);
+					if (ctx) {
+						this.handleCopyBookmarkletCommand(false, ctx.file.path);
+					}
+				}
 			},
 		});
 
@@ -60,6 +88,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 			const title = parameters.title;
 			const notePath = parameters.notePath;
 			const highlightData = parameters.highlightdata;
+			const comments = parameters.comments;
 
 			// For a brief time the bookmarklet was sending over raw html instead of processed markdown and we need to alert the user to reinstall the bookmarklet
 			if (parameters.format === 'html') {
@@ -77,15 +106,11 @@ export default class ObsidianClipperPlugin extends Plugin {
 			let entryReference = highlightData;
 
 			if (this.settings.advanced && highlightData) {
-				const domain = parseDomain(fromUrl(url));
+				const domain = Utility.parseDomainFromUrl(url);
 				entryReference = await new AdvancedNoteEntry(
 					this.app,
 					this.settings.advancedStorageFolder
-				).writeToAdvancedNoteStorage(
-					domain.hostname.toString(),
-					highlightData,
-					url
-				);
+				).writeToAdvancedNoteStorage(domain, highlightData, url);
 			}
 
 			const noteEntry = new ClippedData(
@@ -93,17 +118,22 @@ export default class ObsidianClipperPlugin extends Plugin {
 				url,
 				this.settings,
 				this.app,
-				entryReference
+				entryReference,
+				comments
 			);
 
 			if (notePath && notePath !== '') {
 				const file = this.app.vault.getAbstractFileByPath(notePath);
-				new TopicNoteEntry(
-					this.app,
-					this.settings.topicOpenOnWrite,
-					this.settings.topicPosition,
-					this.settings.topicEntryTemplateLocation
-				).writeToNote(file, noteEntry);
+				if ((file as TFile).extension === 'canvas') {
+					new CanvasEntry(this.app).writeToCanvas(file as TFile, noteEntry);
+				} else {
+					new TopicNoteEntry(
+						this.app,
+						this.settings.topicOpenOnWrite,
+						this.settings.topicPosition,
+						this.settings.topicEntryTemplateLocation
+					).writeToNote(file, noteEntry);
+				}
 			} else {
 				if (this.settings.useDailyNote) {
 					new DailyPeriodicNoteEntry(
@@ -144,7 +174,11 @@ export default class ObsidianClipperPlugin extends Plugin {
 			new BookmarketlGenerator(
 				this.app.vault.getName(),
 				notePath,
-				this.settings.markdownSettings
+				this.settings.markdownSettings,
+				(
+					this.settings.experimentalBookmarkletComment &&
+					this.settings.captureComments
+				).toString()
 			).generateBookmarklet()
 		);
 		new Notice('Obsidian Clipper Bookmarklet copied to clipboard.');
