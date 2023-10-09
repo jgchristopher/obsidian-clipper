@@ -8,7 +8,7 @@
 		<div class="setting-item-info">
 			<div class="setting-item-name">Tags</div>
 			<div class="setting-item-description">
-				What tags would you like added to the captured highlights?
+				Tags to add to captured highlights?
 			</div>
 		</div>
 		<div class="setting-item-control">
@@ -25,8 +25,8 @@
 			<div class="setting-item-name">Time Format</div>
 			<div class="setting-item-description">
 				<div>
-					Format you would like to use for the &#123&#123 time &#125&#125
-					template in clippings. See
+					Format to use for the &#123&#123 time &#125&#125 template in
+					clippings. See
 				</div>
 				<a href="https://momentjs.com/docs/#/displaying/format/"
 					>format reference</a
@@ -47,8 +47,8 @@
 			<div class="setting-item-name">Date Format</div>
 			<div class="setting-item-description">
 				<div>
-					Format you would like to use for the &#123&#123 date &#125&#125
-					template in clippings. See
+					Format to use for the &#123&#123 date &#125&#125 template in
+					clippings. See
 				</div>
 				<a href="https://momentjs.com/docs/#/displaying/format/"
 					>format reference</a

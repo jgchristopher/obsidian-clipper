@@ -14,7 +14,7 @@
 		<div class="setting-item-info">
 			<div class="setting-item-name">Topic Note Position</div>
 			<div class="setting-item-description">
-				Would you like to prepend clippings or append them to the bottom?
+				Prepend clippings or append them to the bottom?
 			</div>
 		</div>
 		<div class="setting-item-control">
@@ -28,7 +28,7 @@
 		<div class="setting-item-info">
 			<div class="setting-item-name">Open Note After Adding Clipping?</div>
 			<div class="setting-item-description">
-				Would you like to open the note after adding the clipping?
+				Open the note after adding the clipping?
 			</div>
 		</div>
 		<div class="setting-item-control">

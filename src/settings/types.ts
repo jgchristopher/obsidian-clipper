@@ -58,7 +58,7 @@ export const DEFAULT_SETTINGS: ObsidianClipperSettings = {
 	topicPosition: SectionPosition.APPEND,
 	topicOpenOnWrite: false,
 	markdownSettings: {
-		h1: '#',
+		h1: '##',
 		h2: '##',
 		h3: '###',
 		h4: '####',
