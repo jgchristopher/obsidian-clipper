@@ -5,7 +5,7 @@
 	"main": "main.js",
 	"scripts": {
 		"compile": "tsc -noEmit -skipLibCheck",
-		"compile:bookmarklet": "tsc -noEmit -skipLibCheck ./src/build/bookmarkletcode/index.ts",
+		"compile:bookmarklet": "tsc -skipLibCheck ./src/build/bookmarkletcode/index.ts",
 		"build:bookmarklet": "npm run compile:bookmarklet && npm run webpack && ./node_modules/.bin/bookmarklet ./src/build/bookmarkletcode/dist/bookmarklet.js ./src/build/bookmarkletcode/dist/obsidian-clipper.min.js",
 		"build:bookmarkletgen": "node ./src/bookmarkletlink/build-bookmarkletgenerator.js",
 		"tailwindcss": "npx tailwindcss -i ./input.css -o ./styles.css",
