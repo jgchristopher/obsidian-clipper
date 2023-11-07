@@ -12,7 +12,9 @@ If you have the [Advanced Tables](https://github.com/tgrosinger/advanced-tables-
 
 ## How to use
 
-Checkout the getting started video below [here.](https://youtu.be/kINRwNG2LCQ)
+[Documentation Site](https://docs.obsidianclipper.com)
+
+Checkout the getting started video [here.](https://youtu.be/kINRwNG2LCQ)
 
 [![Default Behaviour](https://img.youtube.com/vi/kINRwNG2LCQ/0.jpg)](https://youtu.be/kINRwNG2LCQ)
 
