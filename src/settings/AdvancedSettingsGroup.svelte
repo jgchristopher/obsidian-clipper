@@ -7,7 +7,12 @@
 	<h1>Advanced Settings</h1>
 	<div class="setting-item mod-toggle">
 		<div class="setting-item-info">
-			<h1 class="setting-item-name">Advanced Usage</h1>
+			<div class="setting-item-name">Store Clippings Per Domain</div>
+			<div class="setting-item-description">
+				Creates a note per top-level domain and stores all clippings from that
+				domain within it. It will add an embedded document link in your Daily
+				Note.
+			</div>
 		</div>
 		<div class="setting-item-control">
 			<label class="checkbox-container" class:is-enabled={$settings.advanced}>

@@ -29,8 +29,8 @@
 				<div class="setting-item-info">
 					<div class="setting-item-name">Weekly Note Header</div>
 					<div class="setting-item-description">
-						What header should highlight data be prepended/appended under in
-						your weekly note?
+						What header should highlight data be prepended/appended under in the
+						weekly note?
 					</div>
 				</div>
 				<div class="setting-item-control">
@@ -46,8 +46,8 @@
 				<div class="setting-item-info">
 					<div class="setting-item-name">Weekly Note Position</div>
 					<div class="setting-item-description">
-						Would you like to prepend clippings to the top of the section or
-						append them to the bottom of the section?
+						Prepend clippings to the top of the section or append them to the
+						bottom of the section?
 					</div>
 				</div>
 				<div class="setting-item-control">
@@ -61,7 +61,7 @@
 				<div class="setting-item-info">
 					<div class="setting-item-name">Open Note After Adding Clipping?</div>
 					<div class="setting-item-description">
-						Would you like to open the weekly note after adding the clipping?
+						Open the weekly note after adding the clipping?
 					</div>
 				</div>
 				<div class="setting-item-control">

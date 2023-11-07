@@ -1,16 +1,22 @@
 # Obsidian Clipper
 
-This plugin allows you to capture highlights from the web as Markdown entries in Obsidian.
+This plugin allows you to capture highlights from the web as Markdown
+entries in Obsidian.
 
 ## Requirements
 
-Obsidian Clipper can be configured to write to either a daily note, weekly note, or both. I have plans to allow other locations.
+Obsidian Clipper can be configured to write to either a daily note, weekly note, or both.
+I have plans to allow other locations.
 
 If you have the [Advanced Tables](https://github.com/tgrosinger/advanced-tables-obsidian) plugin installed, then HTML tables should be captured as markdown tables.
 
 ## How to use
 
-![Default Behaviour](./gifs/default.gif)
+[Documentation Site](https://docs.obsidianclipper.com)
+
+Checkout the getting started video [here.](https://youtu.be/kINRwNG2LCQ)
+
+[![Default Behaviour](https://img.youtube.com/vi/kINRwNG2LCQ/0.jpg)](https://youtu.be/kINRwNG2LCQ)
 
 ## Network Use Notice
 

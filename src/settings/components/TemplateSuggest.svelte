@@ -63,13 +63,15 @@
 
 	const filterFiles = () => {
 		let storageArr: string[] = [];
-		if (initialValue) {
-			dataProvider().forEach((file) => {
+		dataProvider().forEach((file) => {
+			if (initialValue) {
 				if (file.path.toLowerCase().startsWith(initialValue.toLowerCase())) {
 					storageArr = [...storageArr, file.path];
 				}
-			});
-		}
+			} else {
+				storageArr = [...storageArr, file.path];
+			}
+		});
 		templateOptions = storageArr;
 	};
 </script>
@@ -96,6 +98,7 @@
 				on:input={filterFiles}
 				spellcheck="false"
 				class="search_input"
+				on:focusin={filterFiles}
 			/>
 		</div>
 		{#if templateOptions.length > 0}

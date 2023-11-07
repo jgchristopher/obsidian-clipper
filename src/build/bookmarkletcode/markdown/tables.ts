@@ -111,8 +111,8 @@ class MarkdownTablesHelper {
 	}
 
 	static handleColSpan(content: string, node: HTMLElement, emptyChar: string) {
-		const colspan = node.getAttribute('colspan') || 1;
-		for (let i = 1; i < colspan; i++) {
+		const colspan = node.getAttribute('colspan') || '1';
+		for (let i = 1; i < parseInt(colspan, 10); i++) {
 			content += ' | ' + emptyChar.repeat(3);
 		}
 		return content;

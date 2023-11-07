@@ -11,7 +11,7 @@
 	export let app: App;
 	const vaultName = app.vault.getName();
 	const noticeText =
-		'Check out the new Chrome-based browser Extension on the Browser setting tab! That is also where you will find the Bookmarklet link for your vault.';
+		'Lost on how to get started? Check out the new documentation website';
 
 	let tabs: TabItem[] = [
 		{
@@ -55,7 +55,7 @@
 	</span>
 	<span slot="calloutLink">
 		<a
-			href="https://github.com/jgchristopher/obsidian-clipper#obsidian-clipper"
+			href="https://docs.obsidianclipper.com"
 			class="whitespace-nowrap font-medium text-blue-700 hover:text-blue-600"
 		>
 			Details
