@@ -55,7 +55,7 @@
 	</span>
 	<span slot="calloutLink">
 		<a
-			href="https://obsidianclipper.com"
+			href="https://docs.obsidianclipper.com"
 			class="whitespace-nowrap font-medium text-blue-700 hover:text-blue-600"
 		>
 			Details
