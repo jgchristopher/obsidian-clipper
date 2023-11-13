@@ -129,6 +129,7 @@ export abstract class FileWriter {
 		// Get the CachedMetadata for this file
 		const cache = this.app.metadataCache.getFileCache(file);
 		Utility.assertNotNull(cache);
+		heading = Utility.cleanHeading(heading);
 		try {
 			const cachedHeadings = cache.headings;
 			Utility.assertNotNull(cachedHeadings);
