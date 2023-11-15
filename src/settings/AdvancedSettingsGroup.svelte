@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
 	import { settings } from './settingsstore';
+	import { propertyStore } from 'svelte-writable-derived';
+
+	let chosenSettingStore = propertyStore(settings, ['clippers', 0]);
 </script>
 
 <div class="clp_section_margin">
@@ -15,12 +18,15 @@
 			</div>
 		</div>
 		<div class="setting-item-control">
-			<label class="checkbox-container" class:is-enabled={$settings.advanced}>
-				<input type="checkbox" bind:checked={$settings.advanced} />
+			<label
+				class="checkbox-container"
+				class:is-enabled={$chosenSettingStore.advanced}
+			>
+				<input type="checkbox" bind:checked={$chosenSettingStore.advanced} />
 			</label>
 		</div>
 	</div>
-	{#if $settings.advanced}
+	{#if $chosenSettingStore.advanced}
 		<div in:slide|local={{ duration: 300 }} out:slide|local={{ duration: 300 }}>
 			<div class="setting-item">
 				<div class="setting-item-info">
@@ -33,7 +39,7 @@
 				<div class="setting-item-control">
 					<input
 						type="text"
-						bind:value={$settings.advancedStorageFolder}
+						bind:value={$chosenSettingStore.advancedStorageFolder}
 						spellcheck="false"
 						placeholder=""
 					/>
@@ -51,9 +57,12 @@
 		<div class="setting-item-control">
 			<label
 				class="checkbox-container"
-				class:is-enabled={$settings.experimentalCanvas}
+				class:is-enabled={$chosenSettingStore.experimentalCanvas}
 			>
-				<input type="checkbox" bind:checked={$settings.experimentalCanvas} />
+				<input
+					type="checkbox"
+					bind:checked={$chosenSettingStore.experimentalCanvas}
+				/>
 			</label>
 		</div>
 	</div>
@@ -69,11 +78,11 @@
 		<div class="setting-item-control">
 			<label
 				class="checkbox-container"
-				class:is-enabled={$settings.experimentalBookmarkletComment}
+				class:is-enabled={$chosenSettingStore.experimentalBookmarkletComment}
 			>
 				<input
 					type="checkbox"
-					bind:checked={$settings.experimentalBookmarkletComment}
+					bind:checked={$chosenSettingStore.experimentalBookmarkletComment}
 				/>
 			</label>
 		</div>

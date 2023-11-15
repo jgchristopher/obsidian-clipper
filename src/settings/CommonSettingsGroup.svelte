@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { propertyStore } from 'svelte-writable-derived';
 	import { settings } from './settingsstore';
+	let chosenSettingStore = propertyStore(settings, ['clippers', 0]);
 </script>
 
 <div class="clp_section_margin">
@@ -14,7 +16,7 @@
 		<div class="setting-item-control">
 			<input
 				type="text"
-				bind:value={$settings.tags}
+				bind:value={$chosenSettingStore.tags}
 				spellcheck="false"
 				placeholder="tags,seperated,by,commas"
 			/>
@@ -36,7 +38,7 @@
 		<div class="setting-item-control">
 			<input
 				type="text"
-				bind:value={$settings.timestampFormat}
+				bind:value={$chosenSettingStore.timestampFormat}
 				spellcheck="false"
 				placeholder="HH:mm"
 			/>
@@ -58,7 +60,7 @@
 		<div class="setting-item-control">
 			<input
 				type="text"
-				bind:value={$settings.dateFormat}
+				bind:value={$chosenSettingStore.dateFormat}
 				spellcheck="false"
 				placeholder="MM/DD/YY"
 			/>

@@ -1,18 +1,11 @@
-import {
-	App,
-	PluginSettingTab,
-	Plugin,
-	Modal,
-	Notice,
-	TFile,
-	View,
-} from 'obsidian';
+import { App, PluginSettingTab, Plugin, Modal, Notice, TFile } from 'obsidian';
 import { deepmerge } from 'deepmerge-ts';
 
 import type { Parameters } from './types';
 import {
-	type ObsidianClipperSettings,
+	type ObsidianClipperPluginSettings,
 	DEFAULT_SETTINGS,
+	type ObsidianClipperSettings,
 } from './settings/types';
 import { ClippedData } from './clippeddata';
 import { DailyPeriodicNoteEntry } from './periodicnotes/dailyperiodicnoteentry';
@@ -28,7 +21,7 @@ import { CanvasEntry } from './canvasentry';
 import { Utility } from './utils/utility';
 
 export default class ObsidianClipperPlugin extends Plugin {
-	settings: ObsidianClipperSettings;
+	settings: ObsidianClipperPluginSettings;
 
 	async onload() {
 		await this.loadSettings();
@@ -62,24 +55,24 @@ export default class ObsidianClipperPlugin extends Plugin {
 			},
 		});
 
-		this.addCommand({
-			id: 'copy-note-bookmarklet-address-canvas',
-			name: 'Canvas Bookmarklet',
-			checkCallback: (checking: boolean) => {
-				if (checking) {
-					return (
-						this.settings.experimentalCanvas &&
-						this.app.workspace.getActiveViewOfType(View)?.file.extension ===
-							'canvas'
-					);
-				} else {
-					const ctx = this.app.workspace.getActiveViewOfType(View);
-					if (ctx) {
-						this.handleCopyBookmarkletCommand(false, ctx.file.path);
-					}
-				}
-			},
-		});
+		// this.addCommand({
+		// 	id: 'copy-note-bookmarklet-address-canvas',
+		// 	name: 'Canvas Bookmarklet',
+		// 	checkCallback: (_checking: boolean) => {
+		// 		if (checking) {
+		// 			return (
+		// 				this.settings.experimentalCanvas &&
+		// 				this.app.workspace.getActiveViewOfType(View)?.file.extension ===
+		// 					'canvas'
+		// 			);
+		// 		} else {
+		// 			const ctx = this.app.workspace.getActiveViewOfType(View);
+		// 			if (ctx) {
+		// 				this.handleCopyBookmarkletCommand(false, ctx.file.path);
+		// 			}
+		// 		}
+		// 	},
+		// });
 
 		this.registerObsidianProtocolHandler('obsidian-clipper', async (e) => {
 			const parameters = e as unknown as Parameters;
@@ -89,6 +82,9 @@ export default class ObsidianClipperPlugin extends Plugin {
 			const notePath = parameters.notePath;
 			const highlightData = parameters.highlightdata;
 			const comments = parameters.comments;
+			const clipperId = parameters.clipperId;
+
+			const clipperSettings = this.settings.clippers[clipperId];
 
 			// For a brief time the bookmarklet was sending over raw html instead of processed markdown and we need to alert the user to reinstall the bookmarklet
 			if (parameters.format === 'html') {
@@ -105,18 +101,18 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 			let entryReference = highlightData;
 
-			if (this.settings.advanced && highlightData) {
+			if (clipperSettings.advanced && highlightData) {
 				const domain = Utility.parseDomainFromUrl(url);
 				entryReference = await new AdvancedNoteEntry(
 					this.app,
-					this.settings.advancedStorageFolder
+					clipperSettings.advancedStorageFolder
 				).writeToAdvancedNoteStorage(domain, highlightData, url);
 			}
 
 			const noteEntry = new ClippedData(
 				title,
 				url,
-				this.settings,
+				clipperSettings,
 				this.app,
 				entryReference,
 				comments
@@ -129,28 +125,28 @@ export default class ObsidianClipperPlugin extends Plugin {
 				} else {
 					new TopicNoteEntry(
 						this.app,
-						this.settings.topicOpenOnWrite,
-						this.settings.topicPosition,
-						this.settings.topicEntryTemplateLocation
+						clipperSettings.topicOpenOnWrite,
+						clipperSettings.topicPosition,
+						clipperSettings.topicEntryTemplateLocation
 					).writeToNote(file, noteEntry);
 				}
 			} else {
-				if (this.settings.useDailyNote) {
+				if (clipperSettings.useDailyNote) {
 					new DailyPeriodicNoteEntry(
 						this.app,
-						this.settings.dailyOpenOnWrite,
-						this.settings.dailyPosition,
-						this.settings.dailyEntryTemplateLocation
-					).writeToPeriodicNote(noteEntry, this.settings.dailyNoteHeading);
+						clipperSettings.dailyOpenOnWrite,
+						clipperSettings.dailyPosition,
+						clipperSettings.dailyEntryTemplateLocation
+					).writeToPeriodicNote(noteEntry, clipperSettings.dailyNoteHeading);
 				}
 
-				if (this.settings.useWeeklyNote) {
+				if (clipperSettings.useWeeklyNote) {
 					new WeeklyPeriodicNoteEntry(
 						this.app,
-						this.settings.weeklyOpenOnWrite,
-						this.settings.weeklyPosition,
-						this.settings.weeklyEntryTemplateLocation
-					).writeToPeriodicNote(noteEntry, this.settings.weeklyNoteHeading);
+						clipperSettings.weeklyOpenOnWrite,
+						clipperSettings.weeklyPosition,
+						clipperSettings.weeklyEntryTemplateLocation
+					).writeToPeriodicNote(noteEntry, clipperSettings.weeklyNoteHeading);
 				}
 			}
 		});
@@ -160,7 +156,12 @@ export default class ObsidianClipperPlugin extends Plugin {
 		let mergedSettings = DEFAULT_SETTINGS;
 		const settingsData = await this.loadData();
 		if (settingsData !== null) {
-			mergedSettings = deepmerge(DEFAULT_SETTINGS, settingsData);
+			if (!settingsData.hasOwnProperty('version')) {
+				console.log(
+					"Settings exist and haven't been migrated to version 2 or higher"
+				);
+				mergedSettings = deepmerge(DEFAULT_SETTINGS, settingsData);
+			}
 		}
 		this.settings = mergedSettings;
 	}
@@ -170,14 +171,20 @@ export default class ObsidianClipperPlugin extends Plugin {
 	}
 
 	handleCopyBookmarkletToClipboard(notePath = '') {
+		const clipperSettings = this.settings.clippers.find(
+			(settings: ObsidianClipperSettings) => {
+				return settings.notePath == notePath;
+			}
+		);
+		Utility.assertNotNull(clipperSettings);
 		navigator.clipboard.writeText(
 			new BookmarketlGenerator(
 				this.app.vault.getName(),
 				notePath,
-				this.settings.markdownSettings,
+				clipperSettings.markdownSettings,
 				(
-					this.settings.experimentalBookmarkletComment &&
-					this.settings.captureComments
+					clipperSettings.experimentalBookmarkletComment &&
+					clipperSettings.captureComments
 				).toString()
 			).generateBookmarklet()
 		);

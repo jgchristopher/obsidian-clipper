@@ -3,10 +3,12 @@
 	import { slide } from 'svelte/transition';
 	import Suggest from './components/TemplateSuggest.svelte';
 	import { settings } from './settingsstore';
+	import { propertyStore } from 'svelte-writable-derived';
 
 	export let app: App;
+	let chosenSettingStore = propertyStore(settings, ['clippers', 0]);
 	const onChange = (entry: string) => {
-		$settings.dailyEntryTemplateLocation = entry;
+		$chosenSettingStore.dailyEntryTemplateLocation = entry;
 	};
 </script>
 
@@ -18,13 +20,16 @@
 		<div class="setting-item-control">
 			<label
 				class="checkbox-container"
-				class:is-enabled={$settings.useDailyNote}
+				class:is-enabled={$chosenSettingStore.useDailyNote}
 			>
-				<input type="checkbox" bind:checked={$settings.useDailyNote} />
+				<input
+					type="checkbox"
+					bind:checked={$chosenSettingStore.useDailyNote}
+				/>
 			</label>
 		</div>
 	</div>
-	{#if $settings.useDailyNote}
+	{#if $chosenSettingStore.useDailyNote}
 		<div in:slide|local={{ duration: 300 }} out:slide|local={{ duration: 300 }}>
 			<div class="setting-item">
 				<div class="setting-item-info">
@@ -37,7 +42,7 @@
 				<div class="setting-item-control">
 					<input
 						type="text"
-						bind:value={$settings.dailyNoteHeading}
+						bind:value={$chosenSettingStore.dailyNoteHeading}
 						spellcheck="false"
 						placeholder=""
 					/>
@@ -52,7 +57,10 @@
 					</div>
 				</div>
 				<div class="setting-item-control">
-					<select class="dropdown" bind:value={$settings.dailyPosition}>
+					<select
+						class="dropdown"
+						bind:value={$chosenSettingStore.dailyPosition}
+					>
 						<option value="prepend">prepend</option>
 						<option value="append">append</option>
 					</select>
@@ -66,7 +74,10 @@
 					</div>
 				</div>
 				<div class="setting-item-control">
-					<select class="dropdown" bind:value={$settings.dailyOpenOnWrite}>
+					<select
+						class="dropdown"
+						bind:value={$chosenSettingStore.dailyOpenOnWrite}
+					>
 						<option value={true}>Yes</option>
 						<option value={false}>No</option>
 					</select>
@@ -76,7 +87,7 @@
 				name="Clipped Entry Template - Daily"
 				description="Choose the template to use as for the clipped entry in the daily 
 			periodic note"
-				initialValue={$settings.dailyEntryTemplateLocation}
+				initialValue={$chosenSettingStore.dailyEntryTemplateLocation}
 				dataProvider={() => app.vault.getMarkdownFiles()}
 				{onChange}
 			/>

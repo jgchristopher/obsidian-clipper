@@ -9,6 +9,7 @@ export interface Parameters {
 	title: string;
 	notePath: string;
 	format: string;
+	clipperId: number;
 	comments?: string;
 	highlightdata?: string;
 }

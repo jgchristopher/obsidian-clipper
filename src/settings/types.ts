@@ -3,10 +3,16 @@ export const SectionPosition = {
 	APPEND: 'append',
 } as const;
 
+export interface ObsidianClipperPluginSettings {
+	clippers: ObsidianClipperSettings[];
+	version: number;
+}
+
 export type SectionPosition =
 	(typeof SectionPosition)[keyof typeof SectionPosition];
 
 export interface ObsidianClipperSettings {
+	notePath: string;
 	tags: string;
 	timestampFormat: string;
 	dateFormat: string;
@@ -40,7 +46,8 @@ export interface ObsidianClipperMarkdownSettings {
 	h6: string;
 }
 
-export const DEFAULT_SETTINGS: ObsidianClipperSettings = {
+const DEFAULT_DAILY_NOTE_SETTING: ObsidianClipperSettings = {
+	notePath: '',
 	dailyNoteHeading: '',
 	weeklyNoteHeading: '',
 	tags: '',
@@ -70,4 +77,9 @@ export const DEFAULT_SETTINGS: ObsidianClipperSettings = {
 	captureComments: false,
 	experimentalCanvas: false,
 	experimentalBookmarkletComment: false,
+};
+
+export const DEFAULT_SETTINGS: ObsidianClipperPluginSettings = {
+	clippers: [DEFAULT_DAILY_NOTE_SETTING],
+	version: 2.0,
 };

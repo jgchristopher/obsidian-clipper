@@ -5,10 +5,13 @@
 
 	import BookmarkletSettingsGroup from './BookmarkletSettingsGroup.svelte';
 	import ExtensionSettingsGroup from './ExtensionSettingsGroup.svelte';
+	import { propertyStore } from 'svelte-writable-derived';
 
 	export let vaultName = '';
 
 	export let filePath = '';
+	let chosenSettingStore = propertyStore(settings, ['clippers', 0]);
+
 	let fileName = '';
 
 	if (filePath !== '') {
@@ -19,9 +22,10 @@
 	let clipperHref = new BookmarketlGenerator(
 		vaultName,
 		filePath,
-		$settings.markdownSettings,
+		$chosenSettingStore.markdownSettings,
 		(
-			$settings.experimentalBookmarkletComment && $settings.captureComments
+			$chosenSettingStore.experimentalBookmarkletComment &&
+			$chosenSettingStore.captureComments
 		).toString()
 	).generateBookmarklet();
 
@@ -29,9 +33,10 @@
 		clipperHref = new BookmarketlGenerator(
 			vaultName,
 			filePath,
-			$settings.markdownSettings,
+			$chosenSettingStore.markdownSettings,
 			(
-				$settings.experimentalBookmarkletComment && $settings.captureComments
+				$chosenSettingStore.experimentalBookmarkletComment &&
+				$chosenSettingStore.captureComments
 			).toString()
 		).generateBookmarklet();
 	};
@@ -44,7 +49,7 @@
 
 <div class="clp_section_margin">
 	<h1>Bookmarklet Settings</h1>
-	{#if $settings.experimentalBookmarkletComment}
+	{#if $chosenSettingStore.experimentalBookmarkletComment}
 		<div class="setting-item">
 			<div class="setting-item-info">
 				<div class="setting-item-name">Capture Comment in Browser</div>
@@ -56,7 +61,7 @@
 			<div class="setting-item-control">
 				<input
 					type="checkbox"
-					bind:checked={$settings.captureComments}
+					bind:checked={$chosenSettingStore.captureComments}
 					on:change={updateClipperHref}
 				/>
 			</div>
@@ -77,7 +82,7 @@
 		<div class="setting-item-control">
 			<input
 				type="text"
-				bind:value={$settings.markdownSettings.h2}
+				bind:value={$chosenSettingStore.markdownSettings.h2}
 				spellcheck="false"
 				placeholder=""
 			/>
@@ -93,7 +98,7 @@
 		<div class="setting-item-control">
 			<input
 				type="text"
-				bind:value={$settings.markdownSettings.h3}
+				bind:value={$chosenSettingStore.markdownSettings.h3}
 				spellcheck="false"
 				placeholder=""
 			/>
@@ -109,7 +114,7 @@
 		<div class="setting-item-control">
 			<input
 				type="text"
-				bind:value={$settings.markdownSettings.h4}
+				bind:value={$chosenSettingStore.markdownSettings.h4}
 				spellcheck="false"
 				placeholder=""
 			/>
@@ -125,7 +130,7 @@
 		<div class="setting-item-control">
 			<input
 				type="text"
-				bind:value={$settings.markdownSettings.h5}
+				bind:value={$chosenSettingStore.markdownSettings.h5}
 				spellcheck="false"
 				placeholder=""
 			/>
@@ -141,7 +146,7 @@
 		<div class="setting-item-control">
 			<input
 				type="text"
-				bind:value={$settings.markdownSettings.h6}
+				bind:value={$chosenSettingStore.markdownSettings.h6}
 				spellcheck="false"
 				placeholder=""
 			/>
