@@ -16,6 +16,7 @@ export type SectionPosition =
 export interface ObsidianClipperSettings {
 	name: string;
 	clipperId: string;
+	createdAt: Date;
 	notePath: string;
 	tags: string;
 	timestampFormat: string;
@@ -51,8 +52,9 @@ export interface ObsidianClipperMarkdownSettings {
 }
 
 const DEFAULT_DAILY_NOTE_SETTING: ObsidianClipperSettings = {
-	name: 'default',
+	name: 'Default',
 	clipperId: randomUUID(),
+	createdAt: new Date(Date.now()),
 	notePath: '',
 	dailyNoteHeading: '',
 	weeklyNoteHeading: '',
