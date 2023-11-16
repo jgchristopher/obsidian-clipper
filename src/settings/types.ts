@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto';
+
 export const SectionPosition = {
 	PREPEND: 'prepend',
 	APPEND: 'append',
@@ -12,6 +14,8 @@ export type SectionPosition =
 	(typeof SectionPosition)[keyof typeof SectionPosition];
 
 export interface ObsidianClipperSettings {
+	name: string;
+	clipperId: string;
 	notePath: string;
 	tags: string;
 	timestampFormat: string;
@@ -47,6 +51,8 @@ export interface ObsidianClipperMarkdownSettings {
 }
 
 const DEFAULT_DAILY_NOTE_SETTING: ObsidianClipperSettings = {
+	name: 'default',
+	clipperId: randomUUID(),
 	notePath: '',
 	dailyNoteHeading: '',
 	weeklyNoteHeading: '',

@@ -7,6 +7,7 @@
 	import TopicSettingsTab from './TopicSettingsTab.svelte';
 	import LinksSettingsGroup from './LinksSettingsGroup.svelte';
 	import AdvancedSettingsGroup from './AdvancedSettingsGroup.svelte';
+	import { settings } from './settingsstore';
 
 	export let app: App;
 	const vaultName = app.vault.getName();
@@ -47,6 +48,27 @@
 			},
 		},
 	];
+
+	const handleClick = (settingsNumber: number) => {
+		console.log(settingsNumber);
+		// const settingsChosenStore = propertyStore(settings, [
+		// 	'level2settings',
+		// 	settingsNumber,
+		// ]);
+		// const settingsScreen = new Modal(this.app);
+		// settingsScreen.titleEl.createEl('h2', {
+		// 	text: get(settingsChosenStore).title,
+		// });
+		//
+		// new ModalComponent({
+		// 	target: settingsScreen.contentEl,
+		// 	props: {
+		// 		chosenSetting: settingsChosenStore,
+		// 	},
+		// });
+		//
+		// settingsScreen.open();
+	};
 </script>
 
 <Notice>
@@ -63,5 +85,15 @@
 		</a>
 	</span>
 </Notice>
+<br />
+<ul>
+	{#each $settings.clippers as clipper, i}
+		<li>
+			<span on:keypress={() => handleClick(i)} on:click={() => handleClick(i)}>
+				{clipper.name}
+			</span>
+		</li>
+	{/each}
+</ul>
 <br />
 <Tabs {tabs} />
