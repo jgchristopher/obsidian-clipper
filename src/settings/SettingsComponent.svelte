@@ -18,7 +18,7 @@
 		let clipperPlaceholderSettings = deepmerge({}, DEFAULT_DAILY_NOTE_SETTING);
 		clipperPlaceholderSettings.clipperId = randomUUID();
 		$settings.clippers.push(clipperPlaceholderSettings);
-		$settings = $settings;
+		$settings = $settings; //eslint-disable-line
 	};
 
 	const handleClick = (id: string) => {
@@ -81,9 +81,9 @@
 					class="mt-1 flex items-center gap-x-1 text-xs leading-5 text-gray-500"
 				>
 					<p class="whitespace-nowrap">
-						Created on <time datetime={moment(clipper.createdAt).toISOString()}
-							>{moment(clipper.createdAt).format('MMMM DD, YYYY')}</time
-						>
+						Created on <time datetime={moment(clipper.createdAt).toISOString()}>
+							{moment(clipper.createdAt).format('MMMM DD, YYYY')}
+						</time>
 					</p>
 					<svg viewBox="0 0 2 2" class="h-0.5 w-0.5 fill-current">
 						<circle cx="1" cy="1" r="1" />
@@ -102,3 +102,81 @@
 		</li>
 	{/each}
 </ul>
+
+<div class="px-4 sm:px-6 lg:px-8">
+	<div class="sm:flex sm:items-center">
+		<div class="sm:flex-auto">
+			<h1 class="text-base font-semibold leading-6 text-gray-900">Users</h1>
+			<p class="mt-2 text-sm text-gray-700">
+				A list of all the users in your account including their name, title,
+				email and role.
+			</p>
+		</div>
+		<div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+			<button
+				type="button"
+				class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+				>Add user</button
+			>
+		</div>
+	</div>
+	<div class="mt-8 flow-root">
+		<div class="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
+			<div class="inline-block min-w-full py-2 align-middle">
+				<table class="min-w-full border-separate border-spacing-0">
+					<thead>
+						<tr>
+							<th
+								scope="col"
+								class="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
+								>Name</th
+							>
+							<th
+								scope="col"
+								class="sticky top-0 z-10 hidden border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:table-cell"
+								>Created On</th
+							>
+							<th
+								scope="col"
+								class="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-3 pr-4 backdrop-blur backdrop-filter sm:pr-6 lg:pr-8"
+							>
+								<span class="sr-only">Edit</span>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each $settings.clippers as clipper}
+							<tr>
+								<td
+									class="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm font-medium sm:pl-6 lg:pl-8"
+									>{clipper.name}</td
+								>
+								<td
+									class="whitespace-nowrap border-b border-gray-200 hidden px-3 py-4 text-sm sm:table-cell"
+									><p class="whitespace-nowrap">
+										Created on <time
+											datetime={moment(clipper.createdAt).toISOString()}
+										>
+											{moment(clipper.createdAt).format('MMMM DD, YYYY')}
+										</time>
+									</p>
+								</td>
+
+								<td
+									class="relative whitespace-nowrap border-b border-gray-200 py-4 pr-4 pl-3 text-right text-sm font-medium sm:pr-8 lg:pr-8"
+								>
+									<span
+										on:keypress={() => handleClick(clipper.clipperId)}
+										on:click={() => handleClick(clipper.clipperId)}
+										class="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block"
+										>Edit</span
+									>
+								</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
