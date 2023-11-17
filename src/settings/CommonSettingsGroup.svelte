@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { propertyStore } from 'svelte-writable-derived';
-	import { settings } from './settingsstore';
-	let chosenSettingStore = propertyStore(settings, ['clippers', 0]);
+	import type { ObsidianClipperSettings } from './types';
+	import type { Writable } from 'svelte/store';
+
+	export let settings: Writable<ObsidianClipperSettings>;
 </script>
 
 <div class="clp_section_margin">
@@ -16,7 +17,7 @@
 		<div class="setting-item-control">
 			<input
 				type="text"
-				bind:value={$chosenSettingStore.tags}
+				bind:value={$settings.tags}
 				spellcheck="false"
 				placeholder="tags,seperated,by,commas"
 			/>
@@ -38,7 +39,7 @@
 		<div class="setting-item-control">
 			<input
 				type="text"
-				bind:value={$chosenSettingStore.timestampFormat}
+				bind:value={$settings.timestampFormat}
 				spellcheck="false"
 				placeholder="HH:mm"
 			/>
@@ -60,7 +61,7 @@
 		<div class="setting-item-control">
 			<input
 				type="text"
-				bind:value={$chosenSettingStore.dateFormat}
+				bind:value={$settings.dateFormat}
 				spellcheck="false"
 				placeholder="MM/DD/YY"
 			/>

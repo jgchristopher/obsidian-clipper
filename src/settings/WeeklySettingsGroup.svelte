@@ -2,15 +2,14 @@
 	import type { App } from 'obsidian';
 	import { slide } from 'svelte/transition';
 	import Suggest from './components/TemplateSuggest.svelte';
-	import { settings } from './settingsstore';
-	import { propertyStore } from 'svelte-writable-derived';
+	import type { ObsidianClipperSettings } from './types';
+	import type { Writable } from 'svelte/store';
 
 	export let app: App;
-
-	let chosenSettingStore = propertyStore(settings, ['clippers', 0]);
+	export let settings: Writable<ObsidianClipperSettings>;
 
 	const onChange = (entry: string) =>
-		($chosenSettingStore.weeklyEntryTemplateLocation = entry);
+		($settings.weeklyEntryTemplateLocation = entry);
 </script>
 
 <div class="clp_section_margin">
@@ -21,16 +20,13 @@
 		<div class="setting-item-control">
 			<label
 				class="checkbox-container"
-				class:is-enabled={$chosenSettingStore.useWeeklyNote}
+				class:is-enabled={$settings.useWeeklyNote}
 			>
-				<input
-					type="checkbox"
-					bind:checked={$chosenSettingStore.useWeeklyNote}
-				/>
+				<input type="checkbox" bind:checked={$settings.useWeeklyNote} />
 			</label>
 		</div>
 	</div>
-	{#if $chosenSettingStore.useWeeklyNote}
+	{#if $settings.useWeeklyNote}
 		<div in:slide|local={{ duration: 300 }} out:slide|local={{ duration: 300 }}>
 			<div class="setting-item">
 				<div class="setting-item-info">
@@ -43,7 +39,7 @@
 				<div class="setting-item-control">
 					<input
 						type="text"
-						bind:value={$chosenSettingStore.weeklyNoteHeading}
+						bind:value={$settings.weeklyNoteHeading}
 						spellcheck="false"
 						placeholder=""
 					/>
@@ -58,10 +54,7 @@
 					</div>
 				</div>
 				<div class="setting-item-control">
-					<select
-						class="dropdown"
-						bind:value={$chosenSettingStore.weeklyPosition}
-					>
+					<select class="dropdown" bind:value={$settings.weeklyPosition}>
 						<option value="prepend">prepend</option>
 						<option value="append">append</option>
 					</select>
@@ -75,10 +68,7 @@
 					</div>
 				</div>
 				<div class="setting-item-control">
-					<select
-						class="dropdown"
-						bind:value={$chosenSettingStore.weeklyOpenOnWrite}
-					>
+					<select class="dropdown" bind:value={$settings.weeklyOpenOnWrite}>
 						<option value={true}>Yes</option>
 						<option value={false}>No</option>
 					</select>
@@ -88,7 +78,7 @@
 				name="Clipped Entry Template - Weekly"
 				description="Choose the template to use as for the clipped entry in the weekly
 			periodic note"
-				initialValue={$chosenSettingStore.weeklyEntryTemplateLocation}
+				initialValue={$settings.weeklyEntryTemplateLocation}
 				dataProvider={() => app.vault.getMarkdownFiles()}
 				{onChange}
 			/>

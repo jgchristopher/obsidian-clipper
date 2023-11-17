@@ -153,17 +153,19 @@ export default class ObsidianClipperPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		let mergedSettings = DEFAULT_SETTINGS;
+		const mergedSettings = DEFAULT_SETTINGS;
 		const settingsData = await this.loadData();
 		if (settingsData !== null) {
 			if (!settingsData.hasOwnProperty('version')) {
 				console.log(
 					"Settings exist and haven't been migrated to version 2 or higher"
 				);
-				mergedSettings = deepmerge(DEFAULT_SETTINGS, settingsData);
+				// mergedSettings = deepmerge(DEFAULT_SETTINGS, settingsData);
 			}
+			this.settings = settingsData;
+		} else {
+			this.settings = mergedSettings;
 		}
-		this.settings = mergedSettings;
 	}
 
 	async saveSettings() {

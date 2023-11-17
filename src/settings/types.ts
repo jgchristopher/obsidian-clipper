@@ -51,7 +51,7 @@ export interface ObsidianClipperMarkdownSettings {
 	h6: string;
 }
 
-const DEFAULT_DAILY_NOTE_SETTING: ObsidianClipperSettings = {
+export const DEFAULT_DAILY_NOTE_SETTING: ObsidianClipperSettings = {
 	name: 'Default',
 	clipperId: randomUUID(),
 	createdAt: new Date(Date.now()),

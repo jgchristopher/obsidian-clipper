@@ -1,13 +1,13 @@
 <script lang="ts">
 	import type { App } from 'obsidian';
 	import Suggest from './components/TemplateSuggest.svelte';
-	import { settings } from './settingsstore';
-	import { propertyStore } from 'svelte-writable-derived';
+	import type { ObsidianClipperSettings } from './types';
+	import type { Writable } from 'svelte/store';
 
 	export let app: App;
-	let chosenSettingStore = propertyStore(settings, ['clippers', 0]);
+	export let settings: Writable<ObsidianClipperSettings>;
 	const onChange = (entry: string) => {
-		$chosenSettingStore.topicEntryTemplateLocation = entry;
+		$settings.topicEntryTemplateLocation = entry;
 	};
 </script>
 
@@ -20,7 +20,7 @@
 			</div>
 		</div>
 		<div class="setting-item-control">
-			<select class="dropdown" bind:value={$chosenSettingStore.topicPosition}>
+			<select class="dropdown" bind:value={$settings.topicPosition}>
 				<option value="prepend">prepend</option>
 				<option value="append">append</option>
 			</select>
@@ -34,10 +34,7 @@
 			</div>
 		</div>
 		<div class="setting-item-control">
-			<select
-				class="dropdown"
-				bind:value={$chosenSettingStore.topicOpenOnWrite}
-			>
+			<select class="dropdown" bind:value={$settings.topicOpenOnWrite}>
 				<option value={true}>Yes</option>
 				<option value={false}>No</option>
 			</select>
@@ -46,7 +43,7 @@
 	<Suggest
 		name="Clipped Entry Template"
 		description="Choose the template to use for the clipped entry in a topic note"
-		initialValue={$chosenSettingStore.topicEntryTemplateLocation}
+		initialValue={$settings.topicEntryTemplateLocation}
 		dataProvider={() => app.vault.getMarkdownFiles()}
 		{onChange}
 	/>

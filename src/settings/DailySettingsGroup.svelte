@@ -2,13 +2,13 @@
 	import type { App } from 'obsidian';
 	import { slide } from 'svelte/transition';
 	import Suggest from './components/TemplateSuggest.svelte';
-	import { settings } from './settingsstore';
-	import { propertyStore } from 'svelte-writable-derived';
+	import type { ObsidianClipperSettings } from './types';
+	import type { Writable } from 'svelte/store';
 
 	export let app: App;
-	let chosenSettingStore = propertyStore(settings, ['clippers', 0]);
+	export let settings: Writable<ObsidianClipperSettings>;
 	const onChange = (entry: string) => {
-		$chosenSettingStore.dailyEntryTemplateLocation = entry;
+		$settings.dailyEntryTemplateLocation = entry;
 	};
 </script>
 
@@ -20,16 +20,13 @@
 		<div class="setting-item-control">
 			<label
 				class="checkbox-container"
-				class:is-enabled={$chosenSettingStore.useDailyNote}
+				class:is-enabled={$settings.useDailyNote}
 			>
-				<input
-					type="checkbox"
-					bind:checked={$chosenSettingStore.useDailyNote}
-				/>
+				<input type="checkbox" bind:checked={$settings.useDailyNote} />
 			</label>
 		</div>
 	</div>
-	{#if $chosenSettingStore.useDailyNote}
+	{#if $settings.useDailyNote}
 		<div in:slide|local={{ duration: 300 }} out:slide|local={{ duration: 300 }}>
 			<div class="setting-item">
 				<div class="setting-item-info">
@@ -42,7 +39,7 @@
 				<div class="setting-item-control">
 					<input
 						type="text"
-						bind:value={$chosenSettingStore.dailyNoteHeading}
+						bind:value={$settings.dailyNoteHeading}
 						spellcheck="false"
 						placeholder=""
 					/>
@@ -57,10 +54,7 @@
 					</div>
 				</div>
 				<div class="setting-item-control">
-					<select
-						class="dropdown"
-						bind:value={$chosenSettingStore.dailyPosition}
-					>
+					<select class="dropdown" bind:value={$settings.dailyPosition}>
 						<option value="prepend">prepend</option>
 						<option value="append">append</option>
 					</select>
@@ -74,10 +68,7 @@
 					</div>
 				</div>
 				<div class="setting-item-control">
-					<select
-						class="dropdown"
-						bind:value={$chosenSettingStore.dailyOpenOnWrite}
-					>
+					<select class="dropdown" bind:value={$settings.dailyOpenOnWrite}>
 						<option value={true}>Yes</option>
 						<option value={false}>No</option>
 					</select>
@@ -87,7 +78,7 @@
 				name="Clipped Entry Template - Daily"
 				description="Choose the template to use as for the clipped entry in the daily 
 			periodic note"
-				initialValue={$chosenSettingStore.dailyEntryTemplateLocation}
+				initialValue={$settings.dailyEntryTemplateLocation}
 				dataProvider={() => app.vault.getMarkdownFiles()}
 				{onChange}
 			/>

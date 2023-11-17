@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { settings } from './settingsstore';
 	import { getFileName } from 'src/utils/fileutils';
 	import { BookmarketlGenerator } from 'src/bookmarkletlink/bookmarkletgenerator';
 
 	import BookmarkletSettingsGroup from './BookmarkletSettingsGroup.svelte';
 	import ExtensionSettingsGroup from './ExtensionSettingsGroup.svelte';
-	import { propertyStore } from 'svelte-writable-derived';
+	import type { ObsidianClipperSettings } from './types';
+	import type { Writable } from 'svelte/store';
 
+	export let settings: Writable<ObsidianClipperSettings>;
 	export let vaultName = '';
 
 	export let filePath = '';
-	let chosenSettingStore = propertyStore(settings, ['clippers', 0]);
 
 	let fileName = '';
 
@@ -22,10 +22,9 @@
 	let clipperHref = new BookmarketlGenerator(
 		vaultName,
 		filePath,
-		$chosenSettingStore.markdownSettings,
+		$settings.markdownSettings,
 		(
-			$chosenSettingStore.experimentalBookmarkletComment &&
-			$chosenSettingStore.captureComments
+			$settings.experimentalBookmarkletComment && $settings.captureComments
 		).toString()
 	).generateBookmarklet();
 
@@ -33,10 +32,9 @@
 		clipperHref = new BookmarketlGenerator(
 			vaultName,
 			filePath,
-			$chosenSettingStore.markdownSettings,
+			$settings.markdownSettings,
 			(
-				$chosenSettingStore.experimentalBookmarkletComment &&
-				$chosenSettingStore.captureComments
+				$settings.experimentalBookmarkletComment && $settings.captureComments
 			).toString()
 		).generateBookmarklet();
 	};
@@ -49,7 +47,7 @@
 
 <div class="clp_section_margin">
 	<h1>Bookmarklet Settings</h1>
-	{#if $chosenSettingStore.experimentalBookmarkletComment}
+	{#if $settings.experimentalBookmarkletComment}
 		<div class="setting-item">
 			<div class="setting-item-info">
 				<div class="setting-item-name">Capture Comment in Browser</div>
@@ -61,7 +59,7 @@
 			<div class="setting-item-control">
 				<input
 					type="checkbox"
-					bind:checked={$chosenSettingStore.captureComments}
+					bind:checked={$settings.captureComments}
 					on:change={updateClipperHref}
 				/>
 			</div>
@@ -82,7 +80,7 @@
 		<div class="setting-item-control">
 			<input
 				type="text"
-				bind:value={$chosenSettingStore.markdownSettings.h2}
+				bind:value={$settings.markdownSettings.h2}
 				spellcheck="false"
 				placeholder=""
 			/>
@@ -98,7 +96,7 @@
 		<div class="setting-item-control">
 			<input
 				type="text"
-				bind:value={$chosenSettingStore.markdownSettings.h3}
+				bind:value={$settings.markdownSettings.h3}
 				spellcheck="false"
 				placeholder=""
 			/>
@@ -114,7 +112,7 @@
 		<div class="setting-item-control">
 			<input
 				type="text"
-				bind:value={$chosenSettingStore.markdownSettings.h4}
+				bind:value={$settings.markdownSettings.h4}
 				spellcheck="false"
 				placeholder=""
 			/>
@@ -130,7 +128,7 @@
 		<div class="setting-item-control">
 			<input
 				type="text"
-				bind:value={$chosenSettingStore.markdownSettings.h5}
+				bind:value={$settings.markdownSettings.h5}
 				spellcheck="false"
 				placeholder=""
 			/>
@@ -146,7 +144,7 @@
 		<div class="setting-item-control">
 			<input
 				type="text"
-				bind:value={$chosenSettingStore.markdownSettings.h6}
+				bind:value={$settings.markdownSettings.h6}
 				spellcheck="false"
 				placeholder=""
 			/>

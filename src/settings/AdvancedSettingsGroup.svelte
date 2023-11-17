@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
-	import { settings } from './settingsstore';
-	import { propertyStore } from 'svelte-writable-derived';
+	import type { ObsidianClipperSettings } from './types';
+	import type { Writable } from 'svelte/store';
 
-	let chosenSettingStore = propertyStore(settings, ['clippers', 0]);
+	export let settings: Writable<ObsidianClipperSettings>;
 </script>
 
 <div class="clp_section_margin">
@@ -18,15 +18,12 @@
 			</div>
 		</div>
 		<div class="setting-item-control">
-			<label
-				class="checkbox-container"
-				class:is-enabled={$chosenSettingStore.advanced}
-			>
-				<input type="checkbox" bind:checked={$chosenSettingStore.advanced} />
+			<label class="checkbox-container" class:is-enabled={$settings.advanced}>
+				<input type="checkbox" bind:checked={$settings.advanced} />
 			</label>
 		</div>
 	</div>
-	{#if $chosenSettingStore.advanced}
+	{#if $settings.advanced}
 		<div in:slide|local={{ duration: 300 }} out:slide|local={{ duration: 300 }}>
 			<div class="setting-item">
 				<div class="setting-item-info">
@@ -39,7 +36,7 @@
 				<div class="setting-item-control">
 					<input
 						type="text"
-						bind:value={$chosenSettingStore.advancedStorageFolder}
+						bind:value={$settings.advancedStorageFolder}
 						spellcheck="false"
 						placeholder=""
 					/>
@@ -57,12 +54,9 @@
 		<div class="setting-item-control">
 			<label
 				class="checkbox-container"
-				class:is-enabled={$chosenSettingStore.experimentalCanvas}
+				class:is-enabled={$settings.experimentalCanvas}
 			>
-				<input
-					type="checkbox"
-					bind:checked={$chosenSettingStore.experimentalCanvas}
-				/>
+				<input type="checkbox" bind:checked={$settings.experimentalCanvas} />
 			</label>
 		</div>
 	</div>
@@ -78,11 +72,11 @@
 		<div class="setting-item-control">
 			<label
 				class="checkbox-container"
-				class:is-enabled={$chosenSettingStore.experimentalBookmarkletComment}
+				class:is-enabled={$settings.experimentalBookmarkletComment}
 			>
 				<input
 					type="checkbox"
-					bind:checked={$chosenSettingStore.experimentalBookmarkletComment}
+					bind:checked={$settings.experimentalBookmarkletComment}
 				/>
 			</label>
 		</div>
