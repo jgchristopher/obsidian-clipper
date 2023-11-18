@@ -6,6 +6,7 @@ import {
 	type ObsidianClipperPluginSettings,
 	DEFAULT_SETTINGS,
 	type ObsidianClipperSettings,
+	DEFAULT_DAILY_NOTE_SETTING,
 } from './settings/types';
 import { ClippedData } from './clippeddata';
 import { DailyPeriodicNoteEntry } from './periodicnotes/dailyperiodicnoteentry';
@@ -13,12 +14,15 @@ import { WeeklyPeriodicNoteEntry } from './periodicnotes/weeklyperiodicnoteentry
 import SettingsComponent from './settings/SettingsComponent.svelte';
 import { init } from './settings/settingsstore';
 import type { SvelteComponent } from 'svelte';
+import AddTopicNoteCommandComponent from './settings/AddTopicNoteCommandComponent.svelte';
 import BookmarkletModalComponent from './modals/BookmarkletModalComponent.svelte';
 import { TopicNoteEntry } from './topicnoteentry';
 import { BookmarketlGenerator } from './bookmarkletlink/bookmarkletgenerator';
 import { AdvancedNoteEntry } from './advancednotes/advancednoteentry';
 import { CanvasEntry } from './canvasentry';
 import { Utility } from './utils/utility';
+import { randomUUID } from 'crypto';
+import { getFileName } from './utils/fileutils';
 
 export default class ObsidianClipperPlugin extends Plugin {
 	settings: ObsidianClipperPluginSettings;
@@ -47,13 +51,21 @@ export default class ObsidianClipperPlugin extends Plugin {
 		// 	},
 		// });
 		//
-		// this.addCommand({
-		// 	id: 'copy-note-bookmarklet-address',
-		// 	name: 'Topic Bookmarklet',
-		// 	editorCallback: (_editor, ctx) => {
-		// 		this.handleCopyBookmarkletCommand(false, ctx.file?.path);
-		// 	},
-		// });
+		this.addCommand({
+			id: 'create-topic-bookmarklet',
+			name: 'Create Topic Bookmarklet',
+			editorCallback: (_editor, ctx) => {
+				const filePath = ctx.file?.path;
+				Utility.assertNotNull(filePath);
+				new AddTopicNoteCommandComponent({
+					target: createEl('div'),
+					props: {
+						app: this.app,
+						filePath: getFileName(filePath),
+					},
+				});
+			},
+		});
 
 		// this.addCommand({
 		// 	id: 'copy-note-bookmarklet-address-canvas',

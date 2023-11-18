@@ -17,6 +17,7 @@ export interface ObsidianClipperSettings {
 	name: string;
 	clipperId: string;
 	createdAt: Date;
+	vaultName: string;
 	notePath: string;
 	tags: string;
 	timestampFormat: string;
@@ -55,6 +56,7 @@ export const DEFAULT_DAILY_NOTE_SETTING: ObsidianClipperSettings = {
 	name: 'Default',
 	clipperId: randomUUID(),
 	createdAt: new Date(Date.now()),
+	vaultName: '',
 	notePath: '',
 	dailyNoteHeading: '',
 	weeklyNoteHeading: '',
@@ -63,6 +65,43 @@ export const DEFAULT_DAILY_NOTE_SETTING: ObsidianClipperSettings = {
 	dateFormat: 'MM/DD/YY',
 	dailyOpenOnWrite: false,
 	useDailyNote: true,
+	dailyPosition: SectionPosition.APPEND,
+	useWeeklyNote: false,
+	weeklyPosition: SectionPosition.APPEND,
+	weeklyOpenOnWrite: false,
+	dailyEntryTemplateLocation: '',
+	weeklyEntryTemplateLocation: '',
+	topicEntryTemplateLocation: '',
+	topicPosition: SectionPosition.APPEND,
+	topicOpenOnWrite: false,
+	markdownSettings: {
+		h1: '##',
+		h2: '##',
+		h3: '###',
+		h4: '####',
+		h5: '#####',
+		h6: '######',
+	},
+	advanced: false,
+	advancedStorageFolder: 'clippings',
+	captureComments: false,
+	experimentalCanvas: false,
+	experimentalBookmarkletComment: false,
+};
+
+export const DEFAULT_TOPIC_NOTE_SETTING: ObsidianClipperSettings = {
+	name: 'Default Topic',
+	clipperId: randomUUID(),
+	createdAt: new Date(Date.now()),
+	vaultName: '',
+	notePath: '',
+	dailyNoteHeading: '',
+	weeklyNoteHeading: '',
+	tags: '',
+	timestampFormat: 'HH:mm',
+	dateFormat: 'MM/DD/YY',
+	dailyOpenOnWrite: false,
+	useDailyNote: false,
 	dailyPosition: SectionPosition.APPEND,
 	useWeeklyNote: false,
 	weeklyPosition: SectionPosition.APPEND,
