@@ -83,23 +83,23 @@
 			<table class="min-w-full border-separate border-spacing-0">
 				<thead>
 					<tr>
-						<th scope="col" class="sticky top-0 z-10 text-left">Name</th>
-						<th scope="col" class="sticky top-0 z-10 text-left">Created On</th>
-						<th scope="col" class="sticky top-0 z-10 text-left" />
+						<th scope="col" class="sticky top-0 z-10 text-center">Name</th>
+						<th scope="col" class="sticky top-0 z-10 text-center">
+							Created On
+						</th>
+						<th scope="col" class="sticky top-0 z-10 text-center" />
 					</tr>
 				</thead>
 				<tbody>
 					{#each $settings.clippers as clipper}
 						<tr>
-							<td>{clipper.name}</td>
-							<td class="py-4 pl-4 text-sm"
-								><p>
-									Created on <time
-										datetime={moment(clipper.createdAt).toISOString()}
-									>
-										{moment(clipper.createdAt).format('MMMM DD, YYYY')}
-									</time>
-								</p>
+							<td class="text-center">{clipper.name}</td>
+							<td class="py-4 pl-4 text-sm text-center">
+								Created on <time
+									datetime={moment(clipper.createdAt).toISOString()}
+								>
+									{moment(clipper.createdAt).format('MMMM DD, YYYY')}
+								</time>
 							</td>
 
 							<td>

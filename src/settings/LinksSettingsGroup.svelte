@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { getFileName } from 'src/utils/fileutils';
 	import { BookmarketlGenerator } from 'src/bookmarkletlink/bookmarkletgenerator';
 
 	import BookmarkletSettingsGroup from './BookmarkletSettingsGroup.svelte';
@@ -9,17 +8,10 @@
 
 	export let settings: Writable<ObsidianClipperSettings>;
 	export let vaultName = '';
-
 	export let filePath = '';
 
-	let fileName = '';
-
-	if (filePath !== '') {
-		fileName = getFileName(filePath);
-	}
-
-	let noteOrVault = fileName !== '' ? `${fileName} file` : `${vaultName} vault`;
 	let clipperHref = new BookmarketlGenerator(
+		$settings.clipperId,
 		vaultName,
 		filePath,
 		$settings.markdownSettings,
@@ -30,6 +22,7 @@
 
 	let updateClipperHref = () => {
 		clipperHref = new BookmarketlGenerator(
+			$settings.clipperId,
 			vaultName,
 			filePath,
 			$settings.markdownSettings,
@@ -41,8 +34,8 @@
 </script>
 
 <div class="clp_section_margin">
-	<BookmarkletSettingsGroup {clipperHref} {noteOrVault} />
-	<ExtensionSettingsGroup {clipperHref} {noteOrVault} />
+	<BookmarkletSettingsGroup {clipperHref} clipperName={$settings.name} />
+	<ExtensionSettingsGroup {clipperHref} clipperName={$settings.name} />
 </div>
 
 <div class="clp_section_margin">

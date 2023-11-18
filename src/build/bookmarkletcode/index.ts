@@ -12,6 +12,7 @@ interface HeadingSettings {
 }
 
 ((
+	clipperId: string,
 	vault: string,
 	note: string,
 	headingSettings: HeadingSettings,
@@ -117,7 +118,9 @@ interface HeadingSettings {
 		const title = document.title;
 		// Turn the content into Markdown
 
-		const obsidianUrl = `obsidian://obsidian-clipper?vault=${vaultName}&notePath=${notePath}&url=${encodeURIComponent(
+		const obsidianUrl = `obsidian://obsidian-clipper?clipperId=${encodeURIComponent(
+			clipperId
+		)}&vault=${vaultName}&notePath=${notePath}&url=${encodeURIComponent(
 			url
 		)}&format=md&title=${encodeURIComponent(
 			title
@@ -265,6 +268,7 @@ border-radius: 0.5rem !important;
 		sendToObsidian();
 	}
 })(
+	'~ClipperIdFiller~',
 	'~VaultNameFiller~',
 	'~NotePath~',
 	{

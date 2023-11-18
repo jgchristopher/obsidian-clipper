@@ -27,33 +27,33 @@ export default class ObsidianClipperPlugin extends Plugin {
 		await this.loadSettings();
 		this.addSettingTab(new SettingTab(this.app, this));
 
-		this.addCommand({
-			id: 'copy-bookmarklet-address-clipboard',
-			name: 'Vault Bookmarklet to Clipboard',
-			callback: () => this.handleCopyBookmarkletToClipboard(),
-		});
-
-		this.addCommand({
-			id: 'copy-bookmarklet-address',
-			name: 'Vault Bookmarklet',
-			callback: () => this.handleCopyBookmarkletCommand(),
-		});
-
-		this.addCommand({
-			id: 'copy-note-bookmarklet-address-clipboard',
-			name: 'Topic Bookmarklet to Clipboard',
-			editorCallback: (_editor, ctx) => {
-				this.handleCopyBookmarkletToClipboard(ctx.file?.path);
-			},
-		});
-
-		this.addCommand({
-			id: 'copy-note-bookmarklet-address',
-			name: 'Topic Bookmarklet',
-			editorCallback: (_editor, ctx) => {
-				this.handleCopyBookmarkletCommand(false, ctx.file?.path);
-			},
-		});
+		// this.addCommand({
+		// 	id: 'copy-bookmarklet-address-clipboard',
+		// 	name: 'Vault Bookmarklet to Clipboard',
+		// 	callback: () => this.handleCopyBookmarkletToClipboard(),
+		// });
+		//
+		// this.addCommand({
+		// 	id: 'copy-bookmarklet-address',
+		// 	name: 'Vault Bookmarklet',
+		// 	callback: () => this.handleCopyBookmarkletCommand(),
+		// });
+		//
+		// this.addCommand({
+		// 	id: 'copy-note-bookmarklet-address-clipboard',
+		// 	name: 'Topic Bookmarklet to Clipboard',
+		// 	editorCallback: (_editor, ctx) => {
+		// 		this.handleCopyBookmarkletToClipboard(ctx.file?.path);
+		// 	},
+		// });
+		//
+		// this.addCommand({
+		// 	id: 'copy-note-bookmarklet-address',
+		// 	name: 'Topic Bookmarklet',
+		// 	editorCallback: (_editor, ctx) => {
+		// 		this.handleCopyBookmarkletCommand(false, ctx.file?.path);
+		// 	},
+		// });
 
 		// this.addCommand({
 		// 	id: 'copy-note-bookmarklet-address-canvas',
@@ -84,7 +84,10 @@ export default class ObsidianClipperPlugin extends Plugin {
 			const comments = parameters.comments;
 			const clipperId = parameters.clipperId;
 
-			const clipperSettings = this.settings.clippers[clipperId];
+			const clipperSettings = this.settings.clippers.find(
+				(c) => c.clipperId === clipperId
+			);
+			Utility.assertNotNull(clipperSettings);
 
 			// For a brief time the bookmarklet was sending over raw html instead of processed markdown and we need to alert the user to reinstall the bookmarklet
 			if (parameters.format === 'html') {
@@ -172,15 +175,16 @@ export default class ObsidianClipperPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	handleCopyBookmarkletToClipboard(notePath = '') {
+	handleCopyBookmarkletToClipboard(clipperId: string, notePath = '') {
 		const clipperSettings = this.settings.clippers.find(
 			(settings: ObsidianClipperSettings) => {
-				return settings.notePath == notePath;
+				return settings.clipperId == clipperId;
 			}
 		);
 		Utility.assertNotNull(clipperSettings);
 		navigator.clipboard.writeText(
 			new BookmarketlGenerator(
+				clipperSettings.clipperId,
 				this.app.vault.getName(),
 				notePath,
 				clipperSettings.markdownSettings,
