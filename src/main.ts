@@ -6,7 +6,6 @@ import {
 	type ObsidianClipperPluginSettings,
 	DEFAULT_SETTINGS,
 	type ObsidianClipperSettings,
-	DEFAULT_DAILY_NOTE_SETTING,
 } from './settings/types';
 import { ClippedData } from './clippeddata';
 import { DailyPeriodicNoteEntry } from './periodicnotes/dailyperiodicnoteentry';
@@ -140,28 +139,28 @@ export default class ObsidianClipperPlugin extends Plugin {
 				} else {
 					new TopicNoteEntry(
 						this.app,
-						clipperSettings.topicOpenOnWrite,
-						clipperSettings.topicPosition,
-						clipperSettings.topicEntryTemplateLocation
+						clipperSettings.openOnWrite,
+						clipperSettings.position,
+						clipperSettings.entryTemplateLocation
 					).writeToNote(file, noteEntry);
 				}
 			} else {
 				if (clipperSettings.useDailyNote) {
 					new DailyPeriodicNoteEntry(
 						this.app,
-						clipperSettings.dailyOpenOnWrite,
-						clipperSettings.dailyPosition,
-						clipperSettings.dailyEntryTemplateLocation
-					).writeToPeriodicNote(noteEntry, clipperSettings.dailyNoteHeading);
+						clipperSettings.openOnWrite,
+						clipperSettings.position,
+						clipperSettings.entryTemplateLocation
+					).writeToPeriodicNote(noteEntry, clipperSettings.heading);
 				}
 
 				if (clipperSettings.useWeeklyNote) {
 					new WeeklyPeriodicNoteEntry(
 						this.app,
-						clipperSettings.weeklyOpenOnWrite,
-						clipperSettings.weeklyPosition,
-						clipperSettings.weeklyEntryTemplateLocation
-					).writeToPeriodicNote(noteEntry, clipperSettings.weeklyNoteHeading);
+						clipperSettings.openOnWrite,
+						clipperSettings.position,
+						clipperSettings.entryTemplateLocation
+					).writeToPeriodicNote(noteEntry, clipperSettings.heading);
 				}
 			}
 		});
@@ -201,7 +200,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 				notePath,
 				clipperSettings.markdownSettings,
 				(
-					clipperSettings.experimentalBookmarkletComment &&
+					this.settings.experimentalBookmarkletComment &&
 					clipperSettings.captureComments
 				).toString()
 			).generateBookmarklet()

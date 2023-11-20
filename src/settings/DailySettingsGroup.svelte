@@ -8,7 +8,7 @@
 	export let app: App;
 	export let settings: Writable<ObsidianClipperSettings>;
 	const onChange = (entry: string) => {
-		$settings.dailyEntryTemplateLocation = entry;
+		$settings.entryTemplateLocation = entry;
 	};
 </script>
 
@@ -39,7 +39,7 @@
 				<div class="setting-item-control">
 					<input
 						type="text"
-						bind:value={$settings.dailyNoteHeading}
+						bind:value={$settings.heading}
 						spellcheck="false"
 						placeholder=""
 					/>
@@ -54,7 +54,7 @@
 					</div>
 				</div>
 				<div class="setting-item-control">
-					<select class="dropdown" bind:value={$settings.dailyPosition}>
+					<select class="dropdown" bind:value={$settings.position}>
 						<option value="prepend">prepend</option>
 						<option value="append">append</option>
 					</select>
@@ -68,7 +68,7 @@
 					</div>
 				</div>
 				<div class="setting-item-control">
-					<select class="dropdown" bind:value={$settings.dailyOpenOnWrite}>
+					<select class="dropdown" bind:value={$settings.openOnWrite}>
 						<option value={true}>Yes</option>
 						<option value={false}>No</option>
 					</select>
@@ -78,7 +78,7 @@
 				name="Clipped Entry Template - Daily"
 				description="Choose the template to use as for the clipped entry in the daily 
 			periodic note"
-				initialValue={$settings.dailyEntryTemplateLocation}
+				initialValue={$settings.entryTemplateLocation}
 				dataProvider={() => app.vault.getMarkdownFiles()}
 				{onChange}
 			/>

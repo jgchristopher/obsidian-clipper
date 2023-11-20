@@ -1,8 +1,12 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
-	import type { ObsidianClipperSettings } from './types';
+	import type {
+		ObsidianClipperPluginSettings,
+		ObsidianClipperSettings,
+	} from './types';
 	import type { Writable } from 'svelte/store';
 
+	export let pluginSettings: Writable<ObsidianClipperPluginSettings>;
 	export let settings: Writable<ObsidianClipperSettings>;
 </script>
 
@@ -54,9 +58,12 @@
 		<div class="setting-item-control">
 			<label
 				class="checkbox-container"
-				class:is-enabled={$settings.experimentalCanvas}
+				class:is-enabled={$pluginSettings.experimentalCanvas}
 			>
-				<input type="checkbox" bind:checked={$settings.experimentalCanvas} />
+				<input
+					type="checkbox"
+					bind:checked={$pluginSettings.experimentalCanvas}
+				/>
 			</label>
 		</div>
 	</div>
@@ -72,11 +79,11 @@
 		<div class="setting-item-control">
 			<label
 				class="checkbox-container"
-				class:is-enabled={$settings.experimentalBookmarkletComment}
+				class:is-enabled={$pluginSettings.experimentalBookmarkletComment}
 			>
 				<input
 					type="checkbox"
-					bind:checked={$settings.experimentalBookmarkletComment}
+					bind:checked={$pluginSettings.experimentalBookmarkletComment}
 				/>
 			</label>
 		</div>

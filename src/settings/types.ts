@@ -1,47 +1,53 @@
 import { randomUUID } from 'crypto';
+import { deepmerge } from 'deepmerge-ts';
 
 export const SectionPosition = {
 	PREPEND: 'prepend',
 	APPEND: 'append',
 } as const;
 
-export interface ObsidianClipperPluginSettings {
-	clippers: ObsidianClipperSettings[];
-	version: number;
-}
-
 export type SectionPosition =
 	(typeof SectionPosition)[keyof typeof SectionPosition];
 
-export interface ObsidianClipperSettings {
+export const ClipperType = {
+	DAILY: 'daily',
+	WEEKLY: 'weekly',
+	TOPIC: 'topic',
+	CANVAS: 'canvas',
+} as const;
+
+export type ClipperType = (typeof ClipperType)[keyof typeof ClipperType];
+
+export interface ObsidianClipperPluginSettings {
+	clippers: ObsidianClipperSettings[];
+	version: number;
+	experimentalCanvas: boolean;
+	experimentalBookmarkletComment: boolean;
+}
+
+export interface BaseClipperSettings {
+	type: ClipperType;
 	name: string;
 	clipperId: string;
 	createdAt: Date;
 	vaultName: string;
-	notePath: string;
+	notePath: string; // This will be empty if for a daily or weekly note
 	tags: string;
 	timestampFormat: string;
 	dateFormat: string;
-	dailyNoteHeading: string;
-	weeklyNoteHeading: string;
-	dailyOpenOnWrite: boolean;
+	heading: string;
+	openOnWrite: boolean;
 	useDailyNote: boolean;
-	dailyPosition: SectionPosition;
 	useWeeklyNote: boolean;
-	weeklyPosition: SectionPosition;
-	weeklyEntryTemplateLocation: string;
-	weeklyOpenOnWrite: boolean;
-	dailyEntryTemplateLocation: string;
+	position: SectionPosition;
+	entryTemplateLocation: string;
 	markdownSettings: ObsidianClipperMarkdownSettings;
-	topicPosition: SectionPosition;
-	topicEntryTemplateLocation: string;
-	topicOpenOnWrite: boolean;
 	advanced: boolean;
 	advancedStorageFolder: string;
 	captureComments: boolean;
-	experimentalCanvas: boolean;
-	experimentalBookmarkletComment: boolean;
 }
+
+export type ObsidianClipperSettings = BaseClipperSettings;
 
 export interface ObsidianClipperMarkdownSettings {
 	h1: string;
@@ -52,28 +58,22 @@ export interface ObsidianClipperMarkdownSettings {
 	h6: string;
 }
 
-export const DEFAULT_DAILY_NOTE_SETTING: ObsidianClipperSettings = {
-	name: 'Default',
+export const DEFAULT_CLIPPER_SETTING: ObsidianClipperSettings = {
+	type: ClipperType.DAILY,
+	name: 'Default Clipper',
 	clipperId: randomUUID(),
 	createdAt: new Date(Date.now()),
 	vaultName: '',
 	notePath: '',
-	dailyNoteHeading: '',
-	weeklyNoteHeading: '',
+	heading: '',
 	tags: '',
 	timestampFormat: 'HH:mm',
 	dateFormat: 'MM/DD/YY',
-	dailyOpenOnWrite: false,
-	useDailyNote: true,
-	dailyPosition: SectionPosition.APPEND,
+	openOnWrite: false,
+	useDailyNote: false,
+	position: SectionPosition.APPEND,
 	useWeeklyNote: false,
-	weeklyPosition: SectionPosition.APPEND,
-	weeklyOpenOnWrite: false,
-	dailyEntryTemplateLocation: '',
-	weeklyEntryTemplateLocation: '',
-	topicEntryTemplateLocation: '',
-	topicPosition: SectionPosition.APPEND,
-	topicOpenOnWrite: false,
+	entryTemplateLocation: '',
 	markdownSettings: {
 		h1: '##',
 		h2: '##',
@@ -85,48 +85,14 @@ export const DEFAULT_DAILY_NOTE_SETTING: ObsidianClipperSettings = {
 	advanced: false,
 	advancedStorageFolder: 'clippings',
 	captureComments: false,
-	experimentalCanvas: false,
-	experimentalBookmarkletComment: false,
 };
 
-export const DEFAULT_TOPIC_NOTE_SETTING: ObsidianClipperSettings = {
-	name: 'Default Topic',
-	clipperId: randomUUID(),
-	createdAt: new Date(Date.now()),
-	vaultName: '',
-	notePath: '',
-	dailyNoteHeading: '',
-	weeklyNoteHeading: '',
-	tags: '',
-	timestampFormat: 'HH:mm',
-	dateFormat: 'MM/DD/YY',
-	dailyOpenOnWrite: false,
-	useDailyNote: false,
-	dailyPosition: SectionPosition.APPEND,
-	useWeeklyNote: false,
-	weeklyPosition: SectionPosition.APPEND,
-	weeklyOpenOnWrite: false,
-	dailyEntryTemplateLocation: '',
-	weeklyEntryTemplateLocation: '',
-	topicEntryTemplateLocation: '',
-	topicPosition: SectionPosition.APPEND,
-	topicOpenOnWrite: false,
-	markdownSettings: {
-		h1: '##',
-		h2: '##',
-		h3: '###',
-		h4: '####',
-		h5: '#####',
-		h6: '######',
-	},
-	advanced: false,
-	advancedStorageFolder: 'clippings',
-	captureComments: false,
-	experimentalCanvas: false,
-	experimentalBookmarkletComment: false,
-};
+const default_daily = deepmerge({}, DEFAULT_CLIPPER_SETTING);
+default_daily.useDailyNote = true;
 
 export const DEFAULT_SETTINGS: ObsidianClipperPluginSettings = {
-	clippers: [DEFAULT_DAILY_NOTE_SETTING],
+	clippers: [default_daily],
 	version: 2.0,
+	experimentalBookmarkletComment: false,
+	experimentalCanvas: false,
 };

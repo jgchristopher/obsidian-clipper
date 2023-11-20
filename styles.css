@@ -95,6 +95,10 @@
   flex-wrap: wrap;
 }
 
+.gap-2 {
+  gap: 0.5rem;
+}
+
 .whitespace-nowrap {
   white-space: nowrap;
 }
@@ -128,6 +132,10 @@
 
 .py-4 {
   padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.pb-4 {
   padding-bottom: 1rem;
 }
 

@@ -2,10 +2,14 @@
 	import Notice from './Notice.svelte';
 	import ModalComponent from './components/ModalComponent.svelte';
 	import { Modal, type App } from 'obsidian';
-	import { settings } from './settingsstore';
+	import { pluginSettings } from './settingsstore';
 	import { propertyStore } from 'svelte-writable-derived';
 	import { get } from 'svelte/store';
-	import { DEFAULT_DAILY_NOTE_SETTING } from './types';
+	import {
+		DEFAULT_CLIPPER_SETTING,
+		type ObsidianClipperSettings,
+		ClipperType,
+	} from './types';
 	import { deepmerge } from 'deepmerge-ts';
 	import { randomUUID } from 'crypto';
 
@@ -13,20 +17,33 @@
 	const noticeText =
 		'Lost on how to get started? Check out the new documentation website';
 
+	let addClipperName: string;
+	let addClipperType: ClipperType;
+	const ALL_TYPES = [
+		ClipperType.DAILY,
+		ClipperType.WEEKLY,
+		ClipperType.TOPIC,
+		ClipperType.CANVAS,
+	];
+
 	const addClipper = () => {
 		console.log('Adding a Clipper');
-		let clipperPlaceholderSettings = deepmerge({}, DEFAULT_DAILY_NOTE_SETTING);
+		let clipperPlaceholderSettings = deepmerge({}, DEFAULT_CLIPPER_SETTING);
 		clipperPlaceholderSettings.clipperId = randomUUID();
-		$settings.clippers.push(clipperPlaceholderSettings);
-		$settings = $settings; //eslint-disable-line
+		clipperPlaceholderSettings.name = addClipperName;
+		clipperPlaceholderSettings.type = addClipperType;
+		$pluginSettings.clippers.push(clipperPlaceholderSettings);
+		$pluginSettings = $pluginSettings; //eslint-disable-line
 	};
 
 	const handleClick = (id: string) => {
 		console.log(id);
 
-		let settingsIndex = $settings.clippers.findIndex((c) => c.clipperId === id);
+		let settingsIndex = $pluginSettings.clippers.findIndex(
+			(c) => c.clipperId === id
+		);
 		if (settingsIndex !== -1) {
-			const settingsStore = propertyStore(settings, [
+			const settingsStore = propertyStore(pluginSettings, [
 				'clippers',
 				settingsIndex,
 			]);
@@ -49,8 +66,10 @@
 
 	const handleDelete = (id: string) => {
 		console.log('Deleting: ', id);
-		$settings.clippers = $settings.clippers.filter((c) => c.clipperId !== id);
-		$settings = $settings; //eslint-disable-line
+		$pluginSettings.clippers = $pluginSettings.clippers.filter(
+			(c: ObsidianClipperSettings) => c.clipperId !== id
+		);
+		$pluginSettings = $pluginSettings; //eslint-disable-line
 	};
 </script>
 
@@ -71,10 +90,21 @@
 
 <br />
 
-<div class="flex flex-row-reverse text-sm font-semibold leading-6">
+<div class="flex flex-row-reverse text-sm font-semibold leading-6 gap-2 pb-4">
 	<button on:keypress={() => addClipper()} on:click={() => addClipper()}>
 		+ New Clipper
 	</button>
+	<select bind:value={addClipperType}>
+		<option value="">Select Clipper Type</option>
+		{#each ALL_TYPES as type}
+			<option value={type}>{type}</option>
+		{/each}
+	</select>
+	<input
+		type="text"
+		bind:value={addClipperName}
+		placeholder="New Clipper Name"
+	/>
 </div>
 
 <div class="px-4 sm:px-6 lg:px-8">
@@ -91,7 +121,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each $settings.clippers as clipper}
+					{#each $pluginSettings.clippers as clipper}
 						<tr>
 							<td class="text-center">{clipper.name}</td>
 							<td class="py-4 pl-4 text-sm text-center">
@@ -108,7 +138,7 @@
 									on:click={() => handleClick(clipper.clipperId)}
 									>Edit
 								</button>
-								{#if $settings.clippers.length > 1}
+								{#if $pluginSettings.clippers.length > 1}
 									<button
 										on:keypress={() => handleDelete(clipper.clipperId)}
 										on:click={() => handleDelete(clipper.clipperId)}

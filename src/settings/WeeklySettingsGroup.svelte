@@ -8,8 +8,7 @@
 	export let app: App;
 	export let settings: Writable<ObsidianClipperSettings>;
 
-	const onChange = (entry: string) =>
-		($settings.weeklyEntryTemplateLocation = entry);
+	const onChange = (entry: string) => ($settings.entryTemplateLocation = entry);
 </script>
 
 <div class="clp_section_margin">
@@ -39,7 +38,7 @@
 				<div class="setting-item-control">
 					<input
 						type="text"
-						bind:value={$settings.weeklyNoteHeading}
+						bind:value={$settings.heading}
 						spellcheck="false"
 						placeholder=""
 					/>
@@ -54,7 +53,7 @@
 					</div>
 				</div>
 				<div class="setting-item-control">
-					<select class="dropdown" bind:value={$settings.weeklyPosition}>
+					<select class="dropdown" bind:value={$settings.position}>
 						<option value="prepend">prepend</option>
 						<option value="append">append</option>
 					</select>
@@ -68,7 +67,7 @@
 					</div>
 				</div>
 				<div class="setting-item-control">
-					<select class="dropdown" bind:value={$settings.weeklyOpenOnWrite}>
+					<select class="dropdown" bind:value={$settings.openOnWrite}>
 						<option value={true}>Yes</option>
 						<option value={false}>No</option>
 					</select>
@@ -78,7 +77,7 @@
 				name="Clipped Entry Template - Weekly"
 				description="Choose the template to use as for the clipped entry in the weekly
 			periodic note"
-				initialValue={$settings.weeklyEntryTemplateLocation}
+				initialValue={$settings.entryTemplateLocation}
 				dataProvider={() => app.vault.getMarkdownFiles()}
 				{onChange}
 			/>

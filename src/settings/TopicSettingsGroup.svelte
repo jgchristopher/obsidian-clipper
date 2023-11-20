@@ -7,7 +7,7 @@
 	export let app: App;
 	export let settings: Writable<ObsidianClipperSettings>;
 	const onChange = (entry: string) => {
-		$settings.topicEntryTemplateLocation = entry;
+		$settings.entryTemplateLocation = entry;
 	};
 </script>
 
@@ -20,7 +20,7 @@
 			</div>
 		</div>
 		<div class="setting-item-control">
-			<select class="dropdown" bind:value={$settings.topicPosition}>
+			<select class="dropdown" bind:value={$settings.position}>
 				<option value="prepend">prepend</option>
 				<option value="append">append</option>
 			</select>
@@ -34,7 +34,7 @@
 			</div>
 		</div>
 		<div class="setting-item-control">
-			<select class="dropdown" bind:value={$settings.topicOpenOnWrite}>
+			<select class="dropdown" bind:value={$settings.openOnWrite}>
 				<option value={true}>Yes</option>
 				<option value={false}>No</option>
 			</select>
@@ -43,7 +43,7 @@
 	<Suggest
 		name="Clipped Entry Template"
 		description="Choose the template to use for the clipped entry in a topic note"
-		initialValue={$settings.topicEntryTemplateLocation}
+		initialValue={$settings.entryTemplateLocation}
 		dataProvider={() => app.vault.getMarkdownFiles()}
 		{onChange}
 	/>

@@ -8,6 +8,7 @@
 	import AdvancedSettingsGroup from '../AdvancedSettingsGroup.svelte';
 	import type { ObsidianClipperSettings } from '../types';
 	import type { Writable } from 'svelte/store';
+	import { pluginSettings } from '../settingsstore';
 
 	export let app: App;
 	export let settings: Writable<ObsidianClipperSettings>;
@@ -47,6 +48,7 @@
 			value: 4,
 			component: AdvancedSettingsGroup,
 			props: {
+				pluginSettings: pluginSettings,
 				settings: settings,
 				app: app,
 			},
