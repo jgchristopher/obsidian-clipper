@@ -13,6 +13,7 @@
 	} from './types';
 	import { deepmerge } from 'deepmerge-ts';
 	import { randomUUID } from 'crypto';
+	import moment from 'moment';
 
 	export let app: App;
 	const noticeText =
@@ -45,6 +46,8 @@
 	};
 
 	let showAddClipperPopup = false;
+
+	const plusButtonClicked = () => (showAddClipperPopup = !showAddClipperPopup);
 
 	const cancelAdd = () => {
 		showAddClipperPopup = false;
@@ -118,9 +121,7 @@
 <br />
 
 <div class="flex flex-row-reverse text-sm font-semibold leading-6 gap-2 pb-4">
-	<button use:popperRef on:click={() => (showAddClipperPopup = true)}>
-		+
-	</button>
+	<button use:popperRef on:click={plusButtonClicked}> + </button>
 	{#if showAddClipperPopup}
 		<div class="addPopOver" use:popperContent={extraOpts}>
 			<div class="clp_section_margin">
@@ -218,6 +219,8 @@
 
 <style>
 	.addPopOver {
+		border-radius: var(--modal-radius);
+		border: var(--modal-border-width) solid var(--modal-border-color);
 		padding: 2rem;
 		background: var(--background-primary) !important;
 		z-index: 100 !important;
