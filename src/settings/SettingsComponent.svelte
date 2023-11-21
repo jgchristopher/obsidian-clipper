@@ -5,6 +5,7 @@
 	import { pluginSettings } from './settingsstore';
 	import { propertyStore } from 'svelte-writable-derived';
 	import { get } from 'svelte/store';
+	import { createPopperActions } from 'svelte-popperjs';
 	import {
 		DEFAULT_CLIPPER_SETTING,
 		type ObsidianClipperSettings,
@@ -26,6 +27,30 @@
 		ClipperType.CANVAS,
 	];
 
+	const [popperRef, popperContent] = createPopperActions({
+		placement: 'left-end',
+		strategy: 'fixed',
+	});
+
+	const extraOpts = {
+		modifiers: [
+			{ name: 'offset', options: { offset: [0, 5] } },
+			{
+				name: 'preventOverflow',
+				options: {
+					padding: 4,
+				},
+			},
+		],
+	};
+
+	let showAddClipperPopup = false;
+
+	const cancelAdd = () => {
+		showAddClipperPopup = false;
+		addClipperName = '';
+	};
+
 	const addClipper = () => {
 		console.log('Adding a Clipper');
 		let clipperPlaceholderSettings = deepmerge({}, DEFAULT_CLIPPER_SETTING);
@@ -34,6 +59,8 @@
 		clipperPlaceholderSettings.type = addClipperType;
 		$pluginSettings.clippers.push(clipperPlaceholderSettings);
 		$pluginSettings = $pluginSettings; //eslint-disable-line
+		showAddClipperPopup = false;
+		addClipperName = '';
 	};
 
 	const handleClick = (id: string) => {
@@ -91,20 +118,55 @@
 <br />
 
 <div class="flex flex-row-reverse text-sm font-semibold leading-6 gap-2 pb-4">
-	<button on:keypress={() => addClipper()} on:click={() => addClipper()}>
-		+ New Clipper
+	<button use:popperRef on:click={() => (showAddClipperPopup = true)}>
+		+
 	</button>
-	<select bind:value={addClipperType}>
-		<option value="">Select Clipper Type</option>
-		{#each ALL_TYPES as type}
-			<option value={type}>{type}</option>
-		{/each}
-	</select>
-	<input
-		type="text"
-		bind:value={addClipperName}
-		placeholder="New Clipper Name"
-	/>
+	{#if showAddClipperPopup}
+		<div class="addPopOver" use:popperContent={extraOpts}>
+			<div class="clp_section_margin">
+				<h1>Add New Clipper</h1>
+				<div class="setting-item">
+					<div class="setting-item-info">
+						<div class="setting-item-name">Clipper Name</div>
+						<div class="setting-item-description">Name of the new clipper?</div>
+					</div>
+					<div class="setting-item-control">
+						<input
+							type="text"
+							bind:value={addClipperName}
+							spellcheck="false"
+							placeholder="Daily Clipper"
+						/>
+					</div>
+				</div>
+			</div>
+			<div class="setting-item">
+				<div class="setting-item-info">
+					<div class="setting-item-name">Clipper Type</div>
+					<div class="setting-item-description">
+						What type of note are you clipping to?
+					</div>
+				</div>
+				<div class="setting-item-control">
+					<select bind:value={addClipperType}>
+						<option value="">Select Clipper Type</option>
+						{#each ALL_TYPES as type}
+							<option value={type}>{type}</option>
+						{/each}
+					</select>
+				</div>
+			</div>
+			<div class="setting-item">
+				<div class="setting-item-control">
+					<button on:click={() => cancelAdd()}>Cancel</button>
+
+					<button on:click={() => addClipper()}>Add Clipper</button>
+				</div>
+			</div>
+
+			<div id="arrow" data-popper-arrow />
+		</div>
+	{/if}
 </div>
 
 <div class="px-4 sm:px-6 lg:px-8">
@@ -153,3 +215,11 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	.addPopOver {
+		padding: 2rem;
+		background: var(--background-primary) !important;
+		z-index: 100 !important;
+	}
+</style>

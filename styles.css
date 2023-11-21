@@ -1,3 +1,7 @@
+.fixed {
+  position: fixed;
+}
+
 .sticky {
   position: sticky;
 }
