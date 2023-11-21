@@ -4,7 +4,7 @@
 	import { Modal, type App } from 'obsidian';
 	import { pluginSettings } from './settingsstore';
 	import { propertyStore } from 'svelte-writable-derived';
-	import { get } from 'svelte/store';
+	import { get, type Writable } from 'svelte/store';
 	import { createPopperActions } from 'svelte-popperjs';
 	import {
 		DEFAULT_CLIPPER_SETTING,
@@ -29,7 +29,7 @@
 	];
 
 	const [popperRef, popperContent] = createPopperActions({
-		placement: 'left-end',
+		placement: 'left-start',
 		strategy: 'fixed',
 	});
 
@@ -47,23 +47,23 @@
 
 	let showAddClipperPopup = false;
 
-	const plusButtonClicked = () => (showAddClipperPopup = !showAddClipperPopup);
-
-	const cancelAdd = () => {
-		showAddClipperPopup = false;
-		addClipperName = '';
+	const plusButtonClicked = () => {
+		showAddClipperPopup = !showAddClipperPopup;
 	};
 
 	const addClipper = () => {
-		console.log('Adding a Clipper');
 		let clipperPlaceholderSettings = deepmerge({}, DEFAULT_CLIPPER_SETTING);
 		clipperPlaceholderSettings.clipperId = randomUUID();
 		clipperPlaceholderSettings.name = addClipperName;
 		clipperPlaceholderSettings.type = addClipperType;
-		$pluginSettings.clippers.push(clipperPlaceholderSettings);
+		const length = $pluginSettings.clippers.push(clipperPlaceholderSettings);
 		$pluginSettings = $pluginSettings; //eslint-disable-line
 		showAddClipperPopup = false;
 		addClipperName = '';
+
+		const settingsStore = getSettingStore(length - 1);
+
+		editSetting(settingsStore);
 	};
 
 	const handleClick = (id: string) => {
@@ -73,33 +73,39 @@
 			(c) => c.clipperId === id
 		);
 		if (settingsIndex !== -1) {
-			const settingsStore = propertyStore(pluginSettings, [
-				'clippers',
-				settingsIndex,
-			]);
-			const settingsScreen = new Modal(this.app);
-			settingsScreen.titleEl.createEl('h2', {
-				text: get(settingsStore).name,
-			});
-
-			new ModalComponent({
-				target: settingsScreen.contentEl,
-				props: {
-					app: app,
-					settings: settingsStore,
-				},
-			});
-
-			settingsScreen.open();
+			const settingsStore = getSettingStore(settingsIndex);
+			editSetting(settingsStore);
 		}
 	};
 
 	const handleDelete = (id: string) => {
-		console.log('Deleting: ', id);
-		$pluginSettings.clippers = $pluginSettings.clippers.filter(
+		debugger;
+		const remainingClippers = $pluginSettings.clippers.filter(
 			(c: ObsidianClipperSettings) => c.clipperId !== id
 		);
+		$pluginSettings.clippers = remainingClippers;
 		$pluginSettings = $pluginSettings; //eslint-disable-line
+	};
+
+	const editSetting = (settingsStore: Writable<ObsidianClipperSettings>) => {
+		const settingsScreen = new Modal(this.app);
+		settingsScreen.titleEl.createEl('h2', {
+			text: get(settingsStore).name,
+		});
+
+		new ModalComponent({
+			target: settingsScreen.contentEl,
+			props: {
+				app: app,
+				settings: settingsStore,
+			},
+		});
+
+		settingsScreen.open();
+	};
+
+	const getSettingStore = (index: number) => {
+		return propertyStore(pluginSettings, ['clippers', index]);
 	};
 </script>
 
@@ -121,7 +127,9 @@
 <br />
 
 <div class="flex flex-row-reverse text-sm font-semibold leading-6 gap-2 pb-4">
-	<button use:popperRef on:click={plusButtonClicked}> + </button>
+	<button use:popperRef on:click={plusButtonClicked}>
+		{@html showAddClipperPopup ? '&#215;' : '+'}
+	</button>
 	{#if showAddClipperPopup}
 		<div class="addPopOver" use:popperContent={extraOpts}>
 			<div class="clp_section_margin">
@@ -159,8 +167,6 @@
 			</div>
 			<div class="setting-item">
 				<div class="setting-item-control">
-					<button on:click={() => cancelAdd()}>Cancel</button>
-
 					<button on:click={() => addClipper()}>Add Clipper</button>
 				</div>
 			</div>
@@ -221,7 +227,7 @@
 	.addPopOver {
 		border-radius: var(--modal-radius);
 		border: var(--modal-border-width) solid var(--modal-border-color);
-		padding: 2rem;
+		padding: 1rem;
 		background: var(--background-primary) !important;
 		z-index: 100 !important;
 	}
