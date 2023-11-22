@@ -5,66 +5,13 @@
 	import { pluginSettings } from './settingsstore';
 	import { propertyStore } from 'svelte-writable-derived';
 	import { get, type Writable } from 'svelte/store';
-	import { createPopperActions } from 'svelte-popperjs';
-	import {
-		DEFAULT_CLIPPER_SETTING,
-		type ObsidianClipperSettings,
-		ClipperType,
-	} from './types';
-	import { deepmerge } from 'deepmerge-ts';
-	import { randomUUID } from 'crypto';
 	import moment from 'moment';
+	import AddClipperComponent from './components/AddClipperComponent.svelte';
+	import type { ObsidianClipperSettings } from './types';
 
 	export let app: App;
 	const noticeText =
 		'Lost on how to get started? Check out the new documentation website';
-
-	let addClipperName: string;
-	let addClipperType: ClipperType;
-	const ALL_TYPES = [
-		ClipperType.DAILY,
-		ClipperType.WEEKLY,
-		ClipperType.TOPIC,
-		ClipperType.CANVAS,
-	];
-
-	const [popperRef, popperContent] = createPopperActions({
-		placement: 'left-start',
-		strategy: 'fixed',
-	});
-
-	const extraOpts = {
-		modifiers: [
-			{ name: 'offset', options: { offset: [0, 5] } },
-			{
-				name: 'preventOverflow',
-				options: {
-					padding: 4,
-				},
-			},
-		],
-	};
-
-	let showAddClipperPopup = false;
-
-	const plusButtonClicked = () => {
-		showAddClipperPopup = !showAddClipperPopup;
-	};
-
-	const addClipper = () => {
-		let clipperPlaceholderSettings = deepmerge({}, DEFAULT_CLIPPER_SETTING);
-		clipperPlaceholderSettings.clipperId = randomUUID();
-		clipperPlaceholderSettings.name = addClipperName;
-		clipperPlaceholderSettings.type = addClipperType;
-		const length = $pluginSettings.clippers.push(clipperPlaceholderSettings);
-		$pluginSettings = $pluginSettings; //eslint-disable-line
-		showAddClipperPopup = false;
-		addClipperName = '';
-
-		const settingsStore = getSettingStore(length - 1);
-
-		editSetting(settingsStore);
-	};
 
 	const handleClick = (id: string) => {
 		console.log(id);
@@ -79,12 +26,11 @@
 	};
 
 	const handleDelete = (id: string) => {
-		debugger;
 		const remainingClippers = $pluginSettings.clippers.filter(
 			(c: ObsidianClipperSettings) => c.clipperId !== id
 		);
 		$pluginSettings.clippers = remainingClippers;
-		$pluginSettings = $pluginSettings; //eslint-disable-line
+		pluginSettings.set($pluginSettings);
 	};
 
 	const editSetting = (settingsStore: Writable<ObsidianClipperSettings>) => {
@@ -127,53 +73,7 @@
 <br />
 
 <div class="flex flex-row-reverse text-sm font-semibold leading-6 gap-2 pb-4">
-	<button use:popperRef on:click={plusButtonClicked}>
-		{@html showAddClipperPopup ? '&#215;' : '+'}
-	</button>
-	{#if showAddClipperPopup}
-		<div class="addPopOver" use:popperContent={extraOpts}>
-			<div class="clp_section_margin">
-				<h1>Add New Clipper</h1>
-				<div class="setting-item">
-					<div class="setting-item-info">
-						<div class="setting-item-name">Clipper Name</div>
-						<div class="setting-item-description">Name of the new clipper?</div>
-					</div>
-					<div class="setting-item-control">
-						<input
-							type="text"
-							bind:value={addClipperName}
-							spellcheck="false"
-							placeholder="Daily Clipper"
-						/>
-					</div>
-				</div>
-			</div>
-			<div class="setting-item">
-				<div class="setting-item-info">
-					<div class="setting-item-name">Clipper Type</div>
-					<div class="setting-item-description">
-						What type of note are you clipping to?
-					</div>
-				</div>
-				<div class="setting-item-control">
-					<select bind:value={addClipperType}>
-						<option value="">Select Clipper Type</option>
-						{#each ALL_TYPES as type}
-							<option value={type}>{type}</option>
-						{/each}
-					</select>
-				</div>
-			</div>
-			<div class="setting-item">
-				<div class="setting-item-control">
-					<button on:click={() => addClipper()}>Add Clipper</button>
-				</div>
-			</div>
-
-			<div id="arrow" data-popper-arrow />
-		</div>
-	{/if}
+	<AddClipperComponent />
 </div>
 
 <div class="px-4 sm:px-6 lg:px-8">
@@ -190,7 +90,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each $pluginSettings.clippers as clipper}
+					{#each $pluginSettings.clippers as clipper (clipper.clipperId)}
 						<tr>
 							<td class="text-center">{clipper.name}</td>
 							<td class="py-4 pl-4 text-sm text-center">
@@ -222,13 +122,3 @@
 		</div>
 	</div>
 </div>
-
-<style>
-	.addPopOver {
-		border-radius: var(--modal-radius);
-		border: var(--modal-border-width) solid var(--modal-border-color);
-		padding: 1rem;
-		background: var(--background-primary) !important;
-		z-index: 100 !important;
-	}
-</style>
