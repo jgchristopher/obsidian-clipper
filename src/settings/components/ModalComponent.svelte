@@ -6,12 +6,13 @@
 	import TopicSettingsTab from '../TopicSettingsTab.svelte';
 	import LinksSettingsGroup from '../LinksSettingsGroup.svelte';
 	import AdvancedSettingsGroup from '../AdvancedSettingsGroup.svelte';
-	import type { ObsidianClipperSettings } from '../types';
-	import type { Writable } from 'svelte/store';
 	import { pluginSettings } from '../settingsstore';
+	import { propertyStore } from 'svelte-writable-derived';
 
 	export let app: App;
-	export let settings: Writable<ObsidianClipperSettings>;
+	export let settingsIndex: number;
+
+	const settings = propertyStore(pluginSettings, ['clippers', settingsIndex]);
 
 	const vaultName = app.vault.getName();
 

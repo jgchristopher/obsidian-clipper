@@ -4,7 +4,6 @@
 	import { Modal, type App } from 'obsidian';
 	import { pluginSettings } from './settingsstore';
 	import { propertyStore } from 'svelte-writable-derived';
-	import { get, type Writable } from 'svelte/store';
 	import moment from 'moment';
 	import AddClipperComponent from './components/AddClipperComponent.svelte';
 	import type { ObsidianClipperSettings } from './types';
@@ -20,8 +19,7 @@
 			(c) => c.clipperId === id
 		);
 		if (settingsIndex !== -1) {
-			const settingsStore = getSettingStore(settingsIndex);
-			editSetting(settingsStore);
+			editSetting(settingsIndex);
 		}
 	};
 
@@ -33,17 +31,17 @@
 		pluginSettings.set($pluginSettings);
 	};
 
-	const editSetting = (settingsStore: Writable<ObsidianClipperSettings>) => {
+	const editSetting = (settingsIndex: number) => {
 		const settingsScreen = new Modal(this.app);
 		settingsScreen.titleEl.createEl('h2', {
-			text: get(settingsStore).name,
+			text: 'Edit Clipper Settings',
 		});
 
 		new ModalComponent({
 			target: settingsScreen.contentEl,
 			props: {
 				app: app,
-				settings: settingsStore,
+				settingsIndex,
 			},
 		});
 
