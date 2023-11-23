@@ -57,6 +57,7 @@
 	];
 </script>
 
+{#if $settings} <!-- Gross Hack -->
 <div class="setting-item">
 	<div class="setting-item-info">
 		<div class="setting-item-name">Clipper Name</div>
@@ -73,3 +74,4 @@
 </div>
 
 <Tabs {tabs} />
+{/if}
