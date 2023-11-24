@@ -1,20 +1,19 @@
 <script lang="ts">
 	import Notice from './Notice.svelte';
-	import ModalComponent from './components/ModalComponent.svelte';
+	import ClipperSettingsComponent from './components/ClipperSettingsComponent.svelte';
 	import { Modal, type App } from 'obsidian';
 	import { pluginSettings } from './settingsstore';
-	import { propertyStore } from 'svelte-writable-derived';
 	import moment from 'moment';
 	import AddClipperComponent from './components/AddClipperComponent.svelte';
 	import type { ObsidianClipperSettings } from './types';
 
 	export let app: App;
+
+	let vaultName = app.vault.getName();
 	const noticeText =
 		'Lost on how to get started? Check out the new documentation website';
 
 	const handleClick = (id: string) => {
-		console.log(id);
-
 		let settingsIndex = $pluginSettings.clippers.findIndex(
 			(c) => c.clipperId === id
 		);
@@ -37,7 +36,7 @@
 			text: 'Edit Clipper Settings',
 		});
 
-		new ModalComponent({
+		new ClipperSettingsComponent({
 			target: settingsScreen.contentEl,
 			props: {
 				app: app,
@@ -46,10 +45,6 @@
 		});
 
 		settingsScreen.open();
-	};
-
-	const getSettingStore = (index: number) => {
-		return propertyStore(pluginSettings, ['clippers', index]);
 	};
 </script>
 
@@ -71,7 +66,7 @@
 <br />
 
 <div class="flex flex-row-reverse text-sm font-semibold leading-6 gap-2 pb-4">
-	<AddClipperComponent />
+	<AddClipperComponent {vaultName} />
 </div>
 
 <div class="px-4 sm:px-6 lg:px-8">

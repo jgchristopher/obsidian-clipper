@@ -5,9 +5,7 @@
 	import { deepmerge } from 'deepmerge-ts';
 	import { pluginSettings } from './settingsstore';
 	import { DEFAULT_CLIPPER_SETTING } from './types';
-	import { propertyStore } from 'svelte-writable-derived';
-	import { get } from 'svelte/store';
-	import ModalComponent from './components/ModalComponent.svelte';
+	import ClipperSettingsComponent from './components/ClipperSettingsComponent.svelte';
 
 	export let app: App;
 	export let filePath: string;
@@ -24,21 +22,16 @@
 		(c) => c.clipperId === clipperPlaceholderSettings.clipperId
 	);
 	if (settingsIndex !== -1) {
-		const settingsStore = propertyStore(pluginSettings, [
-			'clippers',
-			settingsIndex,
-		]);
-
 		const settingsScreen = new Modal(this.app);
 		settingsScreen.titleEl.createEl('h2', {
-			text: get(settingsStore).name,
+			text: 'Edit Clipper Settings',
 		});
 
-		new ModalComponent({
+		new ClipperSettingsComponent({
 			target: settingsScreen.contentEl,
 			props: {
-				app: app,
-				settings: settingsStore,
+				app,
+				settingsIndex,
 			},
 		});
 

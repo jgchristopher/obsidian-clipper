@@ -1,11 +1,11 @@
 import { App, PluginSettingTab, Plugin, Modal, Notice, TFile } from 'obsidian';
-import { deepmerge } from 'deepmerge-ts';
 
 import type { Parameters } from './types';
 import {
 	type ObsidianClipperPluginSettings,
 	DEFAULT_SETTINGS,
 	type ObsidianClipperSettings,
+	ClipperType,
 } from './settings/types';
 import { ClippedData } from './clippeddata';
 import { DailyPeriodicNoteEntry } from './periodicnotes/dailyperiodicnoteentry';
@@ -20,7 +20,6 @@ import { BookmarketlGenerator } from './bookmarkletlink/bookmarkletgenerator';
 import { AdvancedNoteEntry } from './advancednotes/advancednoteentry';
 import { CanvasEntry } from './canvasentry';
 import { Utility } from './utils/utility';
-import { randomUUID } from 'crypto';
 import { getFileName } from './utils/fileutils';
 
 export default class ObsidianClipperPlugin extends Plugin {
@@ -72,7 +71,6 @@ export default class ObsidianClipperPlugin extends Plugin {
 		// 	checkCallback: (_checking: boolean) => {
 		// 		if (checking) {
 		// 			return (
-		// 				this.settings.experimentalCanvas &&
 		// 				this.app.workspace.getActiveViewOfType(View)?.file.extension ===
 		// 					'canvas'
 		// 			);
@@ -115,7 +113,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 			let entryReference = highlightData;
 
-			if (clipperSettings.advanced && highlightData) {
+			if (clipperSettings.advancedStorage && highlightData) {
 				const domain = Utility.parseDomainFromUrl(url);
 				entryReference = await new AdvancedNoteEntry(
 					this.app,
@@ -145,7 +143,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 					).writeToNote(file, noteEntry);
 				}
 			} else {
-				if (clipperSettings.useDailyNote) {
+				if (clipperSettings.type === ClipperType.DAILY) {
 					new DailyPeriodicNoteEntry(
 						this.app,
 						clipperSettings.openOnWrite,
@@ -154,7 +152,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 					).writeToPeriodicNote(noteEntry, clipperSettings.heading);
 				}
 
-				if (clipperSettings.useWeeklyNote) {
+				if (clipperSettings.type === ClipperType.WEEKLY) {
 					new WeeklyPeriodicNoteEntry(
 						this.app,
 						clipperSettings.openOnWrite,

@@ -58,7 +58,7 @@ export class ClippedData {
 			if (!this.data) {
 				formattedData = `- [ ] [${this.title}](${this.url}) ${this.tags}\n\n---`;
 			} else {
-				if (this.settings.advanced) {
+				if (this.settings.advancedStorage) {
 					// The Advanced format has the url as a footnote of the clipped data
 					formattedData = `- [ ] ${this.title} ${this.tags}\n${this.data}\n\n---`;
 				} else {

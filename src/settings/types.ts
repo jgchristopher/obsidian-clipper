@@ -21,7 +21,6 @@ export type ClipperType = (typeof ClipperType)[keyof typeof ClipperType];
 export interface ObsidianClipperPluginSettings {
 	clippers: ObsidianClipperSettings[];
 	version: number;
-	experimentalCanvas: boolean;
 	experimentalBookmarkletComment: boolean;
 }
 
@@ -37,12 +36,10 @@ export interface BaseClipperSettings {
 	dateFormat: string;
 	heading: string;
 	openOnWrite: boolean;
-	useDailyNote: boolean;
-	useWeeklyNote: boolean;
 	position: SectionPosition;
 	entryTemplateLocation: string;
 	markdownSettings: ObsidianClipperMarkdownSettings;
-	advanced: boolean;
+	advancedStorage: boolean;
 	advancedStorageFolder: string;
 	captureComments: boolean;
 }
@@ -70,9 +67,7 @@ export const DEFAULT_CLIPPER_SETTING: ObsidianClipperSettings = {
 	timestampFormat: 'HH:mm',
 	dateFormat: 'MM/DD/YY',
 	openOnWrite: false,
-	useDailyNote: false,
 	position: SectionPosition.APPEND,
-	useWeeklyNote: false,
 	entryTemplateLocation: '',
 	markdownSettings: {
 		h1: '##',
@@ -82,17 +77,16 @@ export const DEFAULT_CLIPPER_SETTING: ObsidianClipperSettings = {
 		h5: '#####',
 		h6: '######',
 	},
-	advanced: false,
+	advancedStorage: false,
 	advancedStorageFolder: 'clippings',
 	captureComments: false,
 };
 
 const default_daily = deepmerge({}, DEFAULT_CLIPPER_SETTING);
-default_daily.useDailyNote = true;
+default_daily.type = ClipperType.DAILY;
 
 export const DEFAULT_SETTINGS: ObsidianClipperPluginSettings = {
 	clippers: [default_daily],
 	version: 2.0,
 	experimentalBookmarkletComment: false,
-	experimentalCanvas: false,
 };

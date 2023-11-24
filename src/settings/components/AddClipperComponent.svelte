@@ -5,6 +5,7 @@
 	import { randomUUID } from 'crypto';
 	import { pluginSettings } from '../settingsstore';
 
+	export let vaultName: string;
 	let addClipperName: string;
 	let addClipperType: ClipperType;
 	const ALL_TYPES = [
@@ -42,6 +43,7 @@
 		clipperPlaceholderSettings.clipperId = randomUUID();
 		clipperPlaceholderSettings.name = addClipperName;
 		clipperPlaceholderSettings.type = addClipperType;
+		clipperPlaceholderSettings.vaultName = vaultName;
 		$pluginSettings.clippers.push(clipperPlaceholderSettings);
 		$pluginSettings = $pluginSettings; //eslint-disable-line
 		showAddClipperPopup = false;
