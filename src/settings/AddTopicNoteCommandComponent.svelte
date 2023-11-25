@@ -4,17 +4,20 @@
 	import { randomUUID } from 'crypto';
 	import { deepmerge } from 'deepmerge-ts';
 	import { pluginSettings } from './settingsstore';
-	import { DEFAULT_CLIPPER_SETTING } from './types';
+	import { ClipperType, DEFAULT_CLIPPER_SETTING } from './types';
 	import ClipperSettingsComponent from './components/ClipperSettingsComponent.svelte';
+	import { getFileName } from 'src/utils/fileutils';
 
 	export let app: App;
 	export let filePath: string;
 
-	// create new setting
+	// create new setting TODO: Make a utility for this and update all cases being duplicated
 	let clipperPlaceholderSettings = deepmerge({}, DEFAULT_CLIPPER_SETTING);
 	clipperPlaceholderSettings.clipperId = randomUUID();
 	clipperPlaceholderSettings.vaultName = app.vault.getName();
 	clipperPlaceholderSettings.notePath = filePath;
+	clipperPlaceholderSettings.name = getFileName(filePath);
+	clipperPlaceholderSettings.type = ClipperType.TOPIC;
 	$pluginSettings.clippers.push(clipperPlaceholderSettings);
 	$pluginSettings = $pluginSettings; //eslint-disable-line
 
