@@ -30,7 +30,7 @@ export class ClippedData {
 		this.comment = comment;
 		const tagJoins: string[] = [];
 		settings.tags.split(',').forEach((t) => {
-			tagJoins.push(`#${t}`);
+			tagJoins.push(`#${t.replaceAll(' ', '')}`);
 		});
 		this.tags = tagJoins.join(' ');
 		this.settings = settings;
