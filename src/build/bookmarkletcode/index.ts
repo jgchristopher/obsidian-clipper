@@ -69,6 +69,16 @@ interface HeadingSettings {
 			return `${headingSettings.h6} ${content}`;
 		},
 	});
+	markdownService.addRule('fix_relative_links', {
+		filter: ['a'],
+		replacement: function (content: string, node: HTMLAnchorElement) {
+			let href = node.href;
+			if (!href.includes('://')) {
+				href = window.location.protocol + '//' + window.location.host + href;
+			}
+			return `[${content}](${href})`;
+		},
+	});
 
 	const content = markdownService.turndown(getSelectionHtml());
 
