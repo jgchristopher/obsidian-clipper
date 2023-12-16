@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { App } from 'obsidian';
+	import { TFile, type App } from 'obsidian';
 	import Tabs from '../Tabs.svelte';
 	import type { TabItem } from '../sveltesettingstypes';
 	import BaseSettingsTab from '../BaseSettingsTab.svelte';
@@ -9,6 +9,7 @@
 	import { propertyStore } from 'svelte-writable-derived';
 	import { ClipperType } from '../types';
 	import Suggest from './TemplateSuggest.svelte';
+	import { CanvasEntry } from 'src/canvasentry';
 
 	export let app: App;
 	export let settingsIndex: number;
@@ -51,6 +52,15 @@
 	const onChange = (entry: string) => {
 		$settings.notePath = entry;
 	};
+
+	const getCanvasFiles = () => {
+		return app.vault.getAllLoadedFiles().filter((file) => {
+			if (file instanceof TFile) {
+				return file.extension === 'canvas';
+			}
+			return false;
+		});
+	};
 </script>
 
 {#if $settings}
@@ -69,12 +79,21 @@
 			/>
 		</div>
 	</div>
-	{#if $settings.type === ClipperType.TOPIC || $settings.type === ClipperType.CANVAS}
+	{#if $settings.type === ClipperType.TOPIC}
 		<Suggest
 			name="Topic Note"
 			description="Choose the note/canvas to add clipped entries to"
 			initialValue={$settings.notePath}
 			dataProvider={() => app.vault.getMarkdownFiles()}
+			{onChange}
+		/>
+	{/if}
+	{#if $settings.type === ClipperType.CANVAS}
+		<Suggest
+			name="Topic Note"
+			description="Choose the note/canvas to add clipped entries to"
+			initialValue={$settings.notePath}
+			dataProvider={() => getCanvasFiles()}
 			{onChange}
 		/>
 	{/if}
