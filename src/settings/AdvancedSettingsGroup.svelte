@@ -5,9 +5,24 @@
 		ObsidianClipperSettings,
 	} from './types';
 	import type { Writable } from 'svelte/store';
+	import { TAbstractFile, type App, TFolder } from 'obsidian';
+	import Suggest from './components/TemplateSuggest.svelte';
+
+	export let app: App;
 
 	export let pluginSettings: Writable<ObsidianClipperPluginSettings>;
 	export let settings: Writable<ObsidianClipperSettings>;
+
+	const onChange = (entry: string) => {
+		$settings.advancedStorageFolder = entry;
+	};
+
+	const getFolders = (files: TAbstractFile[]) => {
+		const folders = files.filter((file) => {
+			return file instanceof TFolder;
+		});
+		return folders;
+	};
 </script>
 
 <div class="clp_section_margin">
@@ -22,30 +37,24 @@
 			</div>
 		</div>
 		<div class="setting-item-control">
-			<label class="checkbox-container" class:is-enabled={$settings.advanced}>
-				<input type="checkbox" bind:checked={$settings.advanced} />
+			<label
+				class="checkbox-container"
+				class:is-enabled={$settings.advancedStorage}
+			>
+				<input type="checkbox" bind:checked={$settings.advancedStorage} />
 			</label>
 		</div>
 	</div>
-	{#if $settings.advanced}
+	{#if $settings.advancedStorage}
 		<div in:slide|local={{ duration: 300 }} out:slide|local={{ duration: 300 }}>
-			<div class="setting-item">
-				<div class="setting-item-info">
-					<div class="setting-item-name">Clipped Entry Storage Location</div>
-					<div class="setting-item-description">
-						Choose the folder to store all of your clippings. A note per domain
-						clipped from. Default is a `clippings`
-					</div>
-				</div>
-				<div class="setting-item-control">
-					<input
-						type="text"
-						bind:value={$settings.advancedStorageFolder}
-						spellcheck="false"
-						placeholder=""
-					/>
-				</div>
-			</div>
+			<Suggest
+				name="Clipped Entry Storage Location"
+				description="Choose the folder to store all of your clippings. A note per domain
+						clipped from. Default is a `clippings`"
+				initialValue={$settings.advancedStorageFolder}
+				dataProvider={() => getFolders(app.vault.getAllLoadedFiles())}
+				{onChange}
+			/>
 		</div>
 	{/if}
 </div>
