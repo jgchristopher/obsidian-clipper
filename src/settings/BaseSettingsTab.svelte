@@ -83,7 +83,13 @@
 			initialValue={$settings.entryTemplateLocation}
 			dataProvider={() => app.vault.getMarkdownFiles()}
 			{onChange}
-		/>
+		>
+			<a
+				slot="message"
+				href="https://raw.githubusercontent.com/jgchristopher/obsidian-clipper/main/docs/example-template.md"
+				>Template Example</a
+			>
+		</Suggest>
 	</div>
 
 	<div class="clp_section_margin">

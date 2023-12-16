@@ -7,6 +7,8 @@
 	import AdvancedSettingsGroup from '../AdvancedSettingsGroup.svelte';
 	import { pluginSettings } from '../settingsstore';
 	import { propertyStore } from 'svelte-writable-derived';
+	import { ClipperType } from '../types';
+	import Suggest from './TemplateSuggest.svelte';
 
 	export let app: App;
 	export let settingsIndex: number;
@@ -45,6 +47,10 @@
 			},
 		},
 	];
+
+	const onChange = (entry: string) => {
+		$settings.notePath = entry;
+	};
 </script>
 
 {#if $settings}
@@ -63,6 +69,15 @@
 			/>
 		</div>
 	</div>
+	{#if $settings.type === ClipperType.TOPIC || $settings.type === ClipperType.CANVAS}
+		<Suggest
+			name="Topic Note"
+			description="Choose the note/canvas to add clipped entries to"
+			initialValue={$settings.notePath}
+			dataProvider={() => app.vault.getMarkdownFiles()}
+			{onChange}
+		/>
+	{/if}
 
 	<Tabs {tabs} />
 {/if}

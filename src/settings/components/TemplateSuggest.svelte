@@ -81,11 +81,10 @@
 		<div class="setting-item-name">{name}</div>
 		<div class="setting-item-description">
 			{description}
+			{#if $$slots.message}
+				<slot name="message" />
+			{/if}
 		</div>
-		<a
-			href="https://raw.githubusercontent.com/jgchristopher/obsidian-clipper/main/docs/example-template.md"
-			>Template Example</a
-		>
 	</div>
 </div>
 <div class="setting-item-control">

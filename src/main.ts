@@ -184,6 +184,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 		clipperSettings: ObsidianClipperSettings,
 		noteEntry: ClippedData
 	) {
+		debugger;
 		const type = clipperSettings.type;
 
 		if (type === ClipperType.TOPIC || type === ClipperType.CANVAS) {
@@ -198,7 +199,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 					clipperSettings.openOnWrite,
 					clipperSettings.position,
 					clipperSettings.entryTemplateLocation
-				).writeToNote(file, noteEntry);
+				).writeToNote(file, noteEntry, clipperSettings.heading);
 			}
 		} else {
 			if (type === ClipperType.DAILY) {
