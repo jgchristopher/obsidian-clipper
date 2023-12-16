@@ -27,7 +27,6 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
-		this.addSettingTab(new SettingTab(this.app, this));
 
 		// this.addCommand({
 		// 	id: 'copy-bookmarklet-address-clipboard',
@@ -88,7 +87,6 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 			const url = parameters.url;
 			const title = parameters.title;
-			const notePath = parameters.notePath;
 			const highlightData = parameters.highlightdata;
 			const comments = parameters.comments;
 			const clipperId = parameters.clipperId;
@@ -97,19 +95,6 @@ export default class ObsidianClipperPlugin extends Plugin {
 				(c) => c.clipperId === clipperId
 			);
 			Utility.assertNotNull(clipperSettings);
-
-			// For a brief time the bookmarklet was sending over raw html instead of processed markdown and we need to alert the user to reinstall the bookmarklet
-			if (parameters.format === 'html') {
-				// Need to alert user
-				if (notePath !== '') {
-					// Was this a Topic Note bookMarklet?
-					this.handleCopyBookmarkletCommand(true, notePath);
-				} else {
-					// show vault modal
-					this.handleCopyBookmarkletCommand(true);
-				}
-				return;
-			}
 
 			let entryReference = highlightData;
 
@@ -130,38 +115,10 @@ export default class ObsidianClipperPlugin extends Plugin {
 				comments
 			);
 
-			if (notePath && notePath !== '') {
-				const file = this.app.vault.getAbstractFileByPath(notePath);
-				if ((file as TFile).extension === 'canvas') {
-					new CanvasEntry(this.app).writeToCanvas(file as TFile, noteEntry);
-				} else {
-					new TopicNoteEntry(
-						this.app,
-						clipperSettings.openOnWrite,
-						clipperSettings.position,
-						clipperSettings.entryTemplateLocation
-					).writeToNote(file, noteEntry);
-				}
-			} else {
-				if (clipperSettings.type === ClipperType.DAILY) {
-					new DailyPeriodicNoteEntry(
-						this.app,
-						clipperSettings.openOnWrite,
-						clipperSettings.position,
-						clipperSettings.entryTemplateLocation
-					).writeToPeriodicNote(noteEntry, clipperSettings.heading);
-				}
-
-				if (clipperSettings.type === ClipperType.WEEKLY) {
-					new WeeklyPeriodicNoteEntry(
-						this.app,
-						clipperSettings.openOnWrite,
-						clipperSettings.position,
-						clipperSettings.entryTemplateLocation
-					).writeToPeriodicNote(noteEntry, clipperSettings.heading);
-				}
-			}
+			this.writeNoteEntry(clipperSettings, noteEntry);
 		});
+
+		this.addSettingTab(new SettingTab(this.app, this));
 	}
 
 	async loadSettings() {
@@ -206,13 +163,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 		new Notice('Obsidian Clipper Bookmarklet copied to clipboard.');
 	}
 
-	handleCopyBookmarkletCommand(updateRequired = false, filePath = '') {
-		let noticeText = '';
-		if (updateRequired) {
-			noticeText = `Notice: Your Bookmarklet is out of date and needs to be updated.
-				Please Drag the link below to replace your current bookmarklet`;
-		}
-
+	handleCopyBookmarkletCommand(filePath = '') {
 		const bookmarkletLinkModal = new Modal(this.app);
 		bookmarkletLinkModal.titleEl.createEl('h2', {
 			text: 'Copy Your Bookmarklet',
@@ -221,13 +172,53 @@ export default class ObsidianClipperPlugin extends Plugin {
 		new BookmarkletModalComponent({
 			target: bookmarkletLinkModal.contentEl,
 			props: {
-				noticeText: noticeText,
 				vaultName: this.app.vault.getName(),
 				filePath: filePath,
 			},
 		});
 
 		bookmarkletLinkModal.open();
+	}
+
+	writeNoteEntry(
+		clipperSettings: ObsidianClipperSettings,
+		noteEntry: ClippedData
+	) {
+		const type = clipperSettings.type;
+
+		if (type === ClipperType.TOPIC || type === ClipperType.CANVAS) {
+			const file = this.app.vault.getAbstractFileByPath(
+				clipperSettings.notePath
+			);
+			if (type === ClipperType.CANVAS) {
+				new CanvasEntry(this.app).writeToCanvas(file as TFile, noteEntry);
+			} else {
+				new TopicNoteEntry(
+					this.app,
+					clipperSettings.openOnWrite,
+					clipperSettings.position,
+					clipperSettings.entryTemplateLocation
+				).writeToNote(file, noteEntry);
+			}
+		} else {
+			if (type === ClipperType.DAILY) {
+				new DailyPeriodicNoteEntry(
+					this.app,
+					clipperSettings.openOnWrite,
+					clipperSettings.position,
+					clipperSettings.entryTemplateLocation
+				).writeToPeriodicNote(noteEntry, clipperSettings.heading);
+			}
+
+			if (type === ClipperType.WEEKLY) {
+				new WeeklyPeriodicNoteEntry(
+					this.app,
+					clipperSettings.openOnWrite,
+					clipperSettings.position,
+					clipperSettings.entryTemplateLocation
+				).writeToPeriodicNote(noteEntry, clipperSettings.heading);
+			}
+		}
 	}
 }
 
