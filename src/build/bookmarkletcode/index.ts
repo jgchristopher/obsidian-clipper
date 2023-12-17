@@ -130,11 +130,9 @@ interface HeadingSettings {
 
 		const obsidianUrl = `obsidian://obsidian-clipper?clipperId=${encodeURIComponent(
 			clipperId
-		)}&vault=${vaultName}&notePath=${notePath}&url=${encodeURIComponent(
+		)}&vault=${vaultName}&url=${encodeURIComponent(
 			url
-		)}&format=md&title=${encodeURIComponent(
-			title
-		)}&highlightdata=${encodeURIComponent(
+		)}&title=${encodeURIComponent(title)}&highlightdata=${encodeURIComponent(
 			content
 		)}&comments=${encodeURIComponent(comment)}`;
 
