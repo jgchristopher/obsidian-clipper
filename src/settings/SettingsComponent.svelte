@@ -66,7 +66,7 @@
 <br />
 
 <div class="flex flex-row-reverse text-sm font-semibold leading-6 gap-2 pb-4">
-	<AddClipperComponent {vaultName} />
+	<AddClipperComponent {vaultName} /> Add Clipper
 </div>
 
 <div class="px-4 sm:px-6 lg:px-8">
@@ -75,7 +75,8 @@
 			<table class="min-w-full border-separate border-spacing-0">
 				<thead>
 					<tr>
-						<th scope="col" class="sticky top-0 z-10 text-center">Name</th>
+						<th scope="col" class="sticky top-0 z-10 text-left">Name</th>
+						<th scope="col" class="sticky top-0 z-10 text-center">Type</th>
 						<th scope="col" class="sticky top-0 z-10 text-center">
 							Created On
 						</th>
@@ -85,7 +86,8 @@
 				<tbody>
 					{#each $pluginSettings.clippers as clipper (clipper.clipperId)}
 						<tr>
-							<td class="text-center">{clipper.name}</td>
+							<td class="text-left">{clipper.name}</td>
+							<td class="text-center">{clipper.type}</td>
 							<td class="py-4 pl-4 text-sm text-center">
 								Created on <time
 									datetime={moment(clipper.createdAt).toISOString()}

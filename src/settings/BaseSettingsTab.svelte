@@ -35,34 +35,42 @@
 			</div>
 		</div>
 	{/if}
-
+	{#if $settings.type === ClipperType.CANVAS}
+		<div class="setting-item mod-toggle">
+			<div class="setting-item-info">
+				<h1 class="setting-item-name">Canvas Entry</h1>
+			</div>
+		</div>
+	{/if}
 	<div class="clp_section_margin">
-		<SettingItem>
-			<span slot="name">Note Header</span>
-			<span slot="description">
-				What header should highlight data be prepended/appended under? <br
-				/>(Don't include the '#')
-			</span>
-			<input
-				slot="control"
-				type="text"
-				bind:value={$settings.heading}
-				spellcheck="false"
-				placeholder=""
-			/>
-		</SettingItem>
+		{#if $settings.type !== ClipperType.CANVAS}
+			<SettingItem>
+				<span slot="name">Note Header</span>
+				<span slot="description">
+					What header should highlight data be prepended/appended under? <br
+					/>(Don't include the '#')
+				</span>
+				<input
+					slot="control"
+					type="text"
+					bind:value={$settings.heading}
+					spellcheck="false"
+					placeholder=""
+				/>
+			</SettingItem>
 
-		<SettingItem>
-			<span slot="name">Note Position</span>
-			<span slot="description"
-				>Prepend clippings to the top of the section or append them to the
-				bottom of the section?</span
-			>
-			<select slot="control" class="dropdown" bind:value={$settings.position}>
-				<option value="prepend">prepend</option>
-				<option value="append">append</option>
-			</select>
-		</SettingItem>
+			<SettingItem>
+				<span slot="name">Note Position</span>
+				<span slot="description"
+					>Prepend clippings to the top of the section or append them to the
+					bottom of the section?</span
+				>
+				<select slot="control" class="dropdown" bind:value={$settings.position}>
+					<option value="prepend">prepend</option>
+					<option value="append">append</option>
+				</select>
+			</SettingItem>
+		{/if}
 
 		<SettingItem>
 			<span slot="name">Open Note After Adding Clipping?</span>
