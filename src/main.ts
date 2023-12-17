@@ -184,7 +184,6 @@ export default class ObsidianClipperPlugin extends Plugin {
 		clipperSettings: ObsidianClipperSettings,
 		noteEntry: ClippedData
 	) {
-		debugger;
 		const type = clipperSettings.type;
 
 		if (type === ClipperType.TOPIC || type === ClipperType.CANVAS) {
