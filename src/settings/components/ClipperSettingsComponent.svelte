@@ -9,7 +9,6 @@
 	import { propertyStore } from 'svelte-writable-derived';
 	import { ClipperType } from '../types';
 	import Suggest from './TemplateSuggest.svelte';
-	import { CanvasEntry } from 'src/canvasentry';
 
 	export let app: App;
 	export let settingsIndex: number;

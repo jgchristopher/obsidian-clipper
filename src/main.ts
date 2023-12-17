@@ -1,4 +1,12 @@
-import { App, PluginSettingTab, Plugin, Modal, Notice, TFile } from 'obsidian';
+import {
+	App,
+	PluginSettingTab,
+	Plugin,
+	Modal,
+	Notice,
+	TFile,
+	View,
+} from 'obsidian';
 
 import type { Parameters } from './types';
 import {
@@ -13,7 +21,7 @@ import { WeeklyPeriodicNoteEntry } from './periodicnotes/weeklyperiodicnoteentry
 import SettingsComponent from './settings/SettingsComponent.svelte';
 import { init } from './settings/settingsstore';
 import type { SvelteComponent } from 'svelte';
-import AddTopicNoteCommandComponent from './settings/AddTopicNoteCommandComponent.svelte';
+import AddNoteCommandComponent from './settings/AddNoteCommandComponent.svelte';
 import BookmarkletModalComponent from './modals/BookmarkletModalComponent.svelte';
 import { TopicNoteEntry } from './topicnoteentry';
 import { BookmarketlGenerator } from './bookmarkletlink/bookmarkletgenerator';
@@ -28,59 +36,59 @@ export default class ObsidianClipperPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		// this.addCommand({
-		// 	id: 'copy-bookmarklet-address-clipboard',
-		// 	name: 'Vault Bookmarklet to Clipboard',
-		// 	callback: () => this.handleCopyBookmarkletToClipboard(),
-		// });
-		//
-		// this.addCommand({
-		// 	id: 'copy-bookmarklet-address',
-		// 	name: 'Vault Bookmarklet',
-		// 	callback: () => this.handleCopyBookmarkletCommand(),
-		// });
-		//
-		// this.addCommand({
-		// 	id: 'copy-note-bookmarklet-address-clipboard',
-		// 	name: 'Topic Bookmarklet to Clipboard',
-		// 	editorCallback: (_editor, ctx) => {
-		// 		this.handleCopyBookmarkletToClipboard(ctx.file?.path);
-		// 	},
-		// });
-		//
 		this.addCommand({
 			id: 'create-topic-bookmarklet',
 			name: 'Create Topic Bookmarklet',
-			editorCallback: (_editor, ctx) => {
-				const filePath = ctx.file?.path;
-				Utility.assertNotNull(filePath);
-				new AddTopicNoteCommandComponent({
-					target: createEl('div'),
-					props: {
-						app: this.app,
-						filePath: getFileName(filePath),
-					},
-				});
+			checkCallback: (checking: boolean) => {
+				if (checking) {
+					return (
+						this.app.workspace.getActiveViewOfType(View)?.file.extension ===
+						'md'
+					);
+				} else {
+					const ctx = this.app.workspace.getActiveViewOfType(View);
+					if (ctx) {
+						const filePath = ctx.file?.path;
+						Utility.assertNotNull(filePath);
+						new AddNoteCommandComponent({
+							target: createEl('div'),
+							props: {
+								app: this.app,
+								filePath: getFileName(filePath),
+								type: ClipperType.TOPIC,
+							},
+						});
+					}
+				}
 			},
 		});
 
-		// this.addCommand({
-		// 	id: 'copy-note-bookmarklet-address-canvas',
-		// 	name: 'Canvas Bookmarklet',
-		// 	checkCallback: (_checking: boolean) => {
-		// 		if (checking) {
-		// 			return (
-		// 				this.app.workspace.getActiveViewOfType(View)?.file.extension ===
-		// 					'canvas'
-		// 			);
-		// 		} else {
-		// 			const ctx = this.app.workspace.getActiveViewOfType(View);
-		// 			if (ctx) {
-		// 				this.handleCopyBookmarkletCommand(false, ctx.file.path);
-		// 			}
-		// 		}
-		// 	},
-		// });
+		this.addCommand({
+			id: 'copy-note-bookmarklet-address-canvas',
+			name: 'Canvas Bookmarklet',
+			checkCallback: (checking: boolean) => {
+				if (checking) {
+					return (
+						this.app.workspace.getActiveViewOfType(View)?.file.extension ===
+						'canvas'
+					);
+				} else {
+					const ctx = this.app.workspace.getActiveViewOfType(View);
+					if (ctx) {
+						const filePath = ctx.file?.path;
+						Utility.assertNotNull(filePath);
+						new AddNoteCommandComponent({
+							target: createEl('div'),
+							props: {
+								app: this.app,
+								filePath: getFileName(filePath),
+								type: ClipperType.CANVAS,
+							},
+						});
+					}
+				}
+			},
+		});
 
 		this.registerObsidianProtocolHandler('obsidian-clipper', async (e) => {
 			const parameters = e as unknown as Parameters;
