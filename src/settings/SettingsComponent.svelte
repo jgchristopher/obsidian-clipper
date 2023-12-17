@@ -67,7 +67,7 @@
 
 <div class="flex flex-row-reverse text-sm font-semibold leading-6 gap-2 pb-4">
 	<AddClipperComponent {vaultName} />
-	<!-- 	<span class="inline-block align-text-bottom">Add Clipper</span> -->
+	<!-- 	<span class="inline-block align-middle">Add Clipper</span> -->
 </div>
 
 <div class="px-4 sm:px-6 lg:px-8">
