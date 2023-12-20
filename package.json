@@ -12,6 +12,7 @@
 		"version": "node ./src/build/version-bump.mjs && git add manifest.json versions.json",
 		"webpack": "webpack",
 		"build": "npm run build:bookmarklet && npm run build:bookmarkletgen && npm run compile && npm run tailwindcss &&  node esbuild.config.mjs production",
+		"dev": "npm run build && cp main.js styles.css manifest.json ~/gitprojects/obsidian-plugins/obsidian-clipper-projects/dev/",
 		"clean": "rimraf ./src/build/bookmarkletcode/index.js && rimraf ./src/build/bookmarkletcode/obsidian-clipper.min.js && rimraf ./src/build/bookmarkletcode/dist/*"
 	},
 	"keywords": [],

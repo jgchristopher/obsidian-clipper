@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto';
 import dagre from '@dagrejs/dagre';
 import type { App, TFile } from 'obsidian';
 import type {
@@ -84,7 +83,7 @@ export class CanvasEntry {
 		const { x, y } = this.getPositionCoordinatesForNewNode(nodes);
 
 		return {
-			id: randomUUID(),
+			id: crypto.randomUUID(),
 			type: 'text',
 			text: content,
 			x,
@@ -95,7 +94,7 @@ export class CanvasEntry {
 		};
 	}
 
-	private getPositionCoordinatesForNewNode(nodes: AllCanvasNodeData[]) {
+	private getPositionCoordinatesForNewNode(_nodes: AllCanvasNodeData[]) {
 		// TODO: Need to figure out a viable creation position algorithm?
 		return { x: -1300, y: -800 };
 	}
@@ -106,7 +105,7 @@ export class CanvasEntry {
 		newNode: CanvasNodeData
 	) {
 		const edge: CanvasEdgeData = {
-			id: randomUUID(),
+			id: self.crypto.randomUUID(),
 			fromNode: newNode.id,
 			fromSide: 'top',
 			toNode: domainNode.id,

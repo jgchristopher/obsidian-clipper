@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { App, Modal } from 'obsidian';
 
-	import { randomUUID } from 'crypto';
 	import { deepmerge } from 'deepmerge-ts';
 	import { pluginSettings } from './settingsstore';
 	import { DEFAULT_CLIPPER_SETTING } from './types';
@@ -22,7 +21,7 @@
 	// We don't, so genrate a new clipper
 	if (settingsIndex === -1) {
 		// create new setting
-		clipperPlaceholderSettings.clipperId = randomUUID();
+		clipperPlaceholderSettings.clipperId = crypto.randomUUID();
 		clipperPlaceholderSettings.vaultName = app.vault.getName();
 		clipperPlaceholderSettings.notePath = filePath;
 		clipperPlaceholderSettings.name = getFileName(filePath);

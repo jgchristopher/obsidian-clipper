@@ -151,6 +151,10 @@
   text-align: center;
 }
 
+.text-right {
+  text-align: right;
+}
+
 .align-middle {
   vertical-align: middle;
 }
@@ -198,8 +202,12 @@ div.clp_section_margin {
   margin: 0 0 20px 0 !important;
 }
 
-.internal-embed[alt="clipped"] h1 {
+.internal-embed[alt='clipped'] h1 {
   display: none;
+}
+
+.theme-dark .clp_action_buttons {
+  stroke: white;
 }
 
 .hover\:text-blue-600:hover {

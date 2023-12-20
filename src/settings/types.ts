@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto';
 import { deepmerge } from 'deepmerge-ts';
 
 export const SectionPosition = {
@@ -58,7 +57,7 @@ export interface ObsidianClipperMarkdownSettings {
 export const DEFAULT_CLIPPER_SETTING: ObsidianClipperSettings = {
 	type: ClipperType.DAILY,
 	name: 'Default Clipper',
-	clipperId: randomUUID(),
+	clipperId: crypto.randomUUID(),
 	createdAt: new Date(Date.now()),
 	vaultName: '',
 	notePath: '',
