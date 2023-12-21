@@ -14,12 +14,10 @@ interface HeadingSettings {
 ((
 	clipperId: string,
 	vault: string,
-	note: string,
 	headingSettings: HeadingSettings,
 	captureComment: string
 ) => {
 	const vaultName = encodeURIComponent(vault);
-	const notePath = encodeURIComponent(note);
 	const useComment = encodeURIComponent(captureComment);
 
 	let comment = '';
@@ -278,7 +276,6 @@ border-radius: 0.5rem !important;
 })(
 	'~ClipperIdFiller~',
 	'~VaultNameFiller~',
-	'~NotePath~',
 	{
 		h1: '~H1Setting~',
 		h2: '~H2Setting~',

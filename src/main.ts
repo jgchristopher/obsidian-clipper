@@ -6,6 +6,7 @@ import {
 	Notice,
 	TFile,
 	View,
+	WorkspaceLeaf,
 } from 'obsidian';
 
 import type { Parameters } from './types';
@@ -29,13 +30,19 @@ import { AdvancedNoteEntry } from './advancednotes/advancednoteentry';
 import { CanvasEntry } from './canvasentry';
 import { Utility } from './utils/utility';
 import { getFileName } from './utils/fileutils';
+import {
+	BookmarkletLinksView,
+	VIEW_TYPE_EXAMPLE,
+} from './views/BookmarkletLinksView';
 
 export default class ObsidianClipperPlugin extends Plugin {
 	settings: ObsidianClipperPluginSettings;
 
 	async onload() {
 		await this.loadSettings();
+		this.addSettingTab(new SettingTab(this.app, this));
 
+		// Are we looking at a markdown note?
 		this.addCommand({
 			id: 'create-topic-bookmarklet',
 			name: 'Create Topic Bookmarklet',
@@ -63,6 +70,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 			},
 		});
 
+		// Are we looking at a canvas note?
 		this.addCommand({
 			id: 'copy-note-bookmarklet-address-canvas',
 			name: 'Canvas Bookmarklet',
@@ -126,7 +134,34 @@ export default class ObsidianClipperPlugin extends Plugin {
 			this.writeNoteEntry(clipperSettings, noteEntry);
 		});
 
-		this.addSettingTab(new SettingTab(this.app, this));
+		this.registerView(
+			VIEW_TYPE_EXAMPLE,
+			(leaf) => new BookmarkletLinksView(leaf)
+		);
+
+		this.addRibbonIcon('paperclip', 'Activate view', () => {
+			this.activateView();
+		});
+	}
+
+	async activateView() {
+		const { workspace } = this.app;
+
+		let leaf: WorkspaceLeaf | null = null;
+		const leaves = workspace.getLeavesOfType(VIEW_TYPE_EXAMPLE);
+
+		if (leaves.length > 0) {
+			// A leaf with our view already exists, use that
+			leaf = leaves[0];
+		} else {
+			// Our view could not be found in the workspace, create a new leaf
+			// in the right sidebar for it
+			leaf = workspace.getRightLeaf(false);
+			await leaf.setViewState({ type: VIEW_TYPE_EXAMPLE, active: true });
+		}
+
+		// "Reveal" the leaf in case it is in a collapsed sidebar
+		workspace.revealLeaf(leaf);
 	}
 
 	async loadSettings() {

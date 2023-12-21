@@ -18,13 +18,11 @@ import type { ObsidianClipperMarkdownSettings } from 'src/settings/types';
 export class BookmarketlGenerator {
 	clipperId: string;
   vaultName: string;
-  notePath: string;
   markdownSettings: ObsidianClipperMarkdownSettings; 
 	captureComments: string;  
 constructor(clipperId: string, vaultName: string, notePath = '', markdownSettings: ObsidianClipperMarkdownSettings, captureComments: string ) {
 		this.clipperId = clipperId;
     this.vaultName = vaultName;
-    this.notePath = notePath;
     this.markdownSettings = markdownSettings;
 		this.captureComments = captureComments;
   }
@@ -46,8 +44,6 @@ try {
 		'~VaultNameFiller~',
 		'${this.vaultName}'
 	);
-
-	bookmarkletData = bookmarkletData.replace('~NotePath~', '${this.notePath}');
 
 	bookmarkletData = bookmarkletData.replace(
 		'~H1Setting~',

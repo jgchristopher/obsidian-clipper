@@ -7,9 +7,6 @@
 	import type { Writable } from 'svelte/store';
 
 	export let settings: Writable<ObsidianClipperSettings>;
-	// Should pull this out of settings
-	// export let vaultName = '';
-	// export let filePath = '';
 
 	let clipperHref = new BookmarketlGenerator(
 		$settings.clipperId,
