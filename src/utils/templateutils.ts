@@ -19,7 +19,7 @@ export async function getTemplateContents(
 		if (templateFile) {
 			templateContents = await vault.cachedRead(templateFile);
 		}
-		return `${templateContents}\n`;
+		return `${templateContents}`;
 	} catch (err) {
 		console.error(
 			`Failed to read the clipper entry template '${normalizedTemplatePath}'`,

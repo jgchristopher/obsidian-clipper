@@ -228,7 +228,6 @@ export default class ObsidianClipperPlugin extends Plugin {
 		noteEntry: ClippedData
 	) {
 		const type = clipperSettings.type;
-
 		if (type === ClipperType.TOPIC || type === ClipperType.CANVAS) {
 			const file = this.app.vault.getAbstractFileByPath(
 				clipperSettings.notePath
