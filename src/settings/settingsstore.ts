@@ -1,19 +1,19 @@
 import type ObsidianClipperPlugin from 'src/main';
-import type { ObsidianClipperSettings } from 'src/settings/types';
+import type { ObsidianClipperPluginSettings } from 'src/settings/types';
 import { type Writable, writable } from 'svelte/store';
 
-export let settings: Writable<ObsidianClipperSettings>;
+export let pluginSettings: Writable<ObsidianClipperPluginSettings>;
 
 export function init(plugin: ObsidianClipperPlugin) {
-	if (settings) {
+	if (pluginSettings) {
 		return;
 	}
 	const { subscribe, set, update } = writable(plugin.settings);
-	settings = {
+	pluginSettings = {
 		subscribe,
 		update,
 		// save the plugin values when setting the store
-		set: (value: ObsidianClipperSettings) => {
+		set: (value: ObsidianClipperPluginSettings) => {
 			set(value);
 			plugin.saveSettings();
 		},

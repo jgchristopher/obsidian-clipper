@@ -2,7 +2,7 @@
 	import { requestUrl } from 'obsidian';
 
 	export let clipperHref: string;
-	export let noteOrVault: string;
+	export let clipperName: string;
 	// eslint-disable-next-line
 	let s3LinkContainer: HTMLElement;
 
@@ -12,7 +12,7 @@
 			contentType: 'application/json',
 			method: 'POST',
 			body: JSON.stringify({
-				name: noteOrVault,
+				name: clipperName,
 				bookmarklet_code: clipperHref,
 			}),
 		});
@@ -29,11 +29,11 @@
 	<div>
 		<div>
 			Click the button below to generate a personalized Chrome-based extension
-			for the <span class="font-extrabold">{noteOrVault}</span>. After clicking
+			for the <span class="font-extrabold">{clipperName}</span>. After clicking
 			the button, use the link to download the .zip file.
 		</div>
 		<div class="my-4" bind:this={s3LinkContainer}>
-			<button on:click={getExtension}>Chrome Extension ({noteOrVault})</button>
+			<button on:click={getExtension}>Chrome Extension ({clipperName})</button>
 		</div>
 	</div>
 </div>

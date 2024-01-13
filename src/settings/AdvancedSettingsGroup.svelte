@@ -1,6 +1,28 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
-	import { settings } from './settingsstore';
+	import type {
+		ObsidianClipperPluginSettings,
+		ObsidianClipperSettings,
+	} from './types';
+	import type { Writable } from 'svelte/store';
+	import { TAbstractFile, type App, TFolder } from 'obsidian';
+	import Suggest from './components/TemplateSuggest.svelte';
+
+	export let app: App;
+
+	export let pluginSettings: Writable<ObsidianClipperPluginSettings>;
+	export let settings: Writable<ObsidianClipperSettings>;
+
+	const onChange = (entry: string) => {
+		$settings.advancedStorageFolder = entry;
+	};
+
+	const getFolders = (files: TAbstractFile[]) => {
+		const folders = files.filter((file) => {
+			return file instanceof TFolder;
+		});
+		return folders;
+	};
 </script>
 
 <div class="clp_section_margin">
@@ -15,48 +37,29 @@
 			</div>
 		</div>
 		<div class="setting-item-control">
-			<label class="checkbox-container" class:is-enabled={$settings.advanced}>
-				<input type="checkbox" bind:checked={$settings.advanced} />
+			<label
+				class="checkbox-container"
+				class:is-enabled={$settings.advancedStorage}
+			>
+				<input type="checkbox" bind:checked={$settings.advancedStorage} />
 			</label>
 		</div>
 	</div>
-	{#if $settings.advanced}
+	{#if $settings.advancedStorage}
 		<div in:slide|local={{ duration: 300 }} out:slide|local={{ duration: 300 }}>
-			<div class="setting-item">
-				<div class="setting-item-info">
-					<div class="setting-item-name">Clipped Entry Storage Location</div>
-					<div class="setting-item-description">
-						Choose the folder to store all of your clippings. A note per domain
-						clipped from. Default is a `clippings`
-					</div>
-				</div>
-				<div class="setting-item-control">
-					<input
-						type="text"
-						bind:value={$settings.advancedStorageFolder}
-						spellcheck="false"
-						placeholder=""
-					/>
-				</div>
-			</div>
+			<Suggest
+				name="Clipped Entry Storage Location"
+				description="Choose the folder to store all of your clippings. A note per domain
+						clipped from. Default is a `clippings`"
+				initialValue={$settings.advancedStorageFolder}
+				dataProvider={() => getFolders(app.vault.getAllLoadedFiles())}
+				{onChange}
+			/>
 		</div>
 	{/if}
 </div>
 <div class="clp_section_margin">
 	<h1>Experimental Settings</h1>
-	<div class="setting-item mod-toggle">
-		<div class="setting-item-info">
-			<h1 class="setting-item-name">Support Canvas</h1>
-		</div>
-		<div class="setting-item-control">
-			<label
-				class="checkbox-container"
-				class:is-enabled={$settings.experimentalCanvas}
-			>
-				<input type="checkbox" bind:checked={$settings.experimentalCanvas} />
-			</label>
-		</div>
-	</div>
 	<div class="setting-item mod-toggle" style="border-top: none !important;">
 		<div class="setting-item-info">
 			<h1 class="setting-item-name">Comment Support in Browser</h1>
@@ -69,11 +72,11 @@
 		<div class="setting-item-control">
 			<label
 				class="checkbox-container"
-				class:is-enabled={$settings.experimentalBookmarkletComment}
+				class:is-enabled={$pluginSettings.experimentalBookmarkletComment}
 			>
 				<input
 					type="checkbox"
-					bind:checked={$settings.experimentalBookmarkletComment}
+					bind:checked={$pluginSettings.experimentalBookmarkletComment}
 				/>
 			</label>
 		</div>

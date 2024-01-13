@@ -14,5 +14,5 @@
 		"lib": ["DOM", "ES2021"],
 		"types": ["svelte", "node"]
 	},
-	"include": ["**/*.ts"]
+	"include": ["**/*.ts", "**/*.svelte"]
 }

@@ -56,11 +56,24 @@ export abstract class FileWriter {
 				throw Error('Missing Expected Heading');
 			}
 
-			const preSectionContent = fileLines.slice(0, insertSection.firstLine);
-			let targetSection = fileLines.slice(
-				insertSection.firstLine,
-				insertSection.lastLine
-			);
+			const preSectionContent = fileLines.slice(0, insertSection.firstLine); // This should include the header
+			let targetSection: string[];
+
+			// This is the last Section in the document
+			if (insertSection.lastLine === -1) {
+				targetSection = fileLines.slice(insertSection.firstLine); // This should not include the header
+			} else {
+				// There is another section in the document
+				targetSection = fileLines.slice(
+					insertSection.firstLine,
+					insertSection.lastLine
+				);
+			}
+
+			// Going to remove blank lines TODO: This may not be a great idea
+			targetSection = targetSection.filter((line) => {
+				return line !== '';
+			});
 
 			targetSection = this.positionDataWithHeader(targetSection, clippedData);
 			let lines: string[] = [];
@@ -73,6 +86,7 @@ export abstract class FileWriter {
 				// We should append to the end of the file
 				lines = [...preSectionContent, ...targetSection];
 			}
+
 			return this.writeAndOpenFile(file.path, lines.join('\n'));
 		}
 	}
@@ -133,35 +147,42 @@ export abstract class FileWriter {
 		try {
 			const cachedHeadings = cache.headings;
 			Utility.assertNotNull(cachedHeadings);
-			// We need to see if the configured heading exists in the document
-			const foundHeadingIndex = cachedHeadings.findIndex((cachedHeading) => {
-				return cachedHeading.heading === heading && cachedHeading.level === 1;
-			});
-
-			if (foundHeadingIndex !== -1) {
-				const foundHeading = cachedHeadings[foundHeadingIndex];
-				let nextHeading: HeadingCache | null = null;
-				// Need to find the next level 1 heading, if any
-				for (let i = foundHeadingIndex + 1; i < cachedHeadings?.length; i++) {
-					const cachedHeading = cachedHeadings[i];
-					if (cachedHeading.level === 1) {
-						nextHeading = cachedHeading;
-						break;
-					}
-				}
-
-				const prependLine = foundHeading.position.start.line;
-				let appendLine = -1;
-				if (nextHeading) {
-					// Figure out Append location based on the nextHeading
-					appendLine = nextHeading.position.start.line;
-				}
-				return { lastLine: appendLine, firstLine: prependLine };
-			} else {
-				throw Error('Heading not found');
-			}
+			return this.findStartAndAppendFromHeadingInCache(heading, cachedHeadings);
 		} catch (e) {
 			new Notice("Can't find heading");
+			throw Error('Heading not found');
+		}
+	}
+
+	private findStartAndAppendFromHeadingInCache(
+		heading: string,
+		cachedHeadings: HeadingCache[]
+	) {
+		// We need to see if the configured heading exists in the document
+		const foundHeadingIndex = cachedHeadings.findIndex((cachedHeading) => {
+			return cachedHeading.heading === heading && cachedHeading.level === 1;
+		});
+
+		if (foundHeadingIndex !== -1) {
+			const foundHeading = cachedHeadings[foundHeadingIndex];
+			let nextHeading: HeadingCache | null = null;
+			// Need to find the next level 1 heading, if any
+			for (let i = foundHeadingIndex + 1; i < cachedHeadings?.length; i++) {
+				const cachedHeading = cachedHeadings[i];
+				if (cachedHeading.level === 1) {
+					nextHeading = cachedHeading;
+					break;
+				}
+			}
+
+			const prependLine = foundHeading.position.start.line; // line after the Heading
+			let appendLine = -1;
+			if (nextHeading) {
+				// Figure out Append location based on the nextHeading
+				appendLine = nextHeading.position.start.line; // The line before the next heading
+			}
+			return { lastLine: appendLine, firstLine: prependLine };
+		} else {
 			throw Error('Heading not found');
 		}
 	}

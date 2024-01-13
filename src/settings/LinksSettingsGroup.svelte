@@ -1,67 +1,55 @@
 <script lang="ts">
-	import { settings } from './settingsstore';
-	import { getFileName } from 'src/utils/fileutils';
 	import { BookmarketlGenerator } from 'src/bookmarkletlink/bookmarkletgenerator';
 
 	import BookmarkletSettingsGroup from './BookmarkletSettingsGroup.svelte';
 	import ExtensionSettingsGroup from './ExtensionSettingsGroup.svelte';
+	import type { ObsidianClipperSettings } from './types';
+	import type { Writable } from 'svelte/store';
 
-	export let vaultName = '';
+	export let settings: Writable<ObsidianClipperSettings>;
 
-	export let filePath = '';
-	let fileName = '';
-
-	if (filePath !== '') {
-		fileName = getFileName(filePath);
-	}
-
-	let noteOrVault = fileName !== '' ? `${fileName} file` : `${vaultName} vault`;
 	let clipperHref = new BookmarketlGenerator(
-		vaultName,
-		filePath,
+		$settings.clipperId,
+		$settings.vaultName,
+		$settings.notePath,
 		$settings.markdownSettings,
-		(
-			$settings.experimentalBookmarkletComment && $settings.captureComments
-		).toString()
+		$settings.captureComments.toString()
 	).generateBookmarklet();
 
 	let updateClipperHref = () => {
 		clipperHref = new BookmarketlGenerator(
-			vaultName,
-			filePath,
+			$settings.clipperId,
+			$settings.vaultName,
+			$settings.notePath,
 			$settings.markdownSettings,
-			(
-				$settings.experimentalBookmarkletComment && $settings.captureComments
-			).toString()
+			$settings.captureComments.toString()
 		).generateBookmarklet();
 	};
 </script>
 
 <div class="clp_section_margin">
-	<BookmarkletSettingsGroup {clipperHref} {noteOrVault} />
-	<ExtensionSettingsGroup {clipperHref} {noteOrVault} />
+	<BookmarkletSettingsGroup {clipperHref} clipperName={$settings.name} />
+	<ExtensionSettingsGroup {clipperHref} clipperName={$settings.name} />
 </div>
 
 <div class="clp_section_margin">
 	<h1>Bookmarklet Settings</h1>
-	{#if $settings.experimentalBookmarkletComment}
-		<div class="setting-item">
-			<div class="setting-item-info">
-				<div class="setting-item-name">Capture Comment in Browser</div>
-				<div class="setting-item-description">
-					Display a modal in the browser to capture any comments before sending
-					to Obsidian?
-				</div>
-			</div>
-			<div class="setting-item-control">
-				<input
-					type="checkbox"
-					bind:checked={$settings.captureComments}
-					on:change={updateClipperHref}
-				/>
+	<div class="setting-item">
+		<div class="setting-item-info">
+			<div class="setting-item-name">Capture Comment in Browser</div>
+			<div class="setting-item-description">
+				Display a modal in the browser to capture any comments before sending to
+				Obsidian?
 			</div>
 		</div>
-	{/if}
+		<div class="setting-item-control">
+			<input
+				type="checkbox"
+				bind:checked={$settings.captureComments}
+				on:change={updateClipperHref}
+			/>
+		</div>
+	</div>
 	<div class="setting-item">
 		<div class="setting-item-info">
 			<h1 class="setting-item-name">Markdown Headings</h1>
