@@ -175,7 +175,7 @@ export abstract class FileWriter {
 				}
 			}
 
-			const prependLine = foundHeading.position.start.line + 1; // line after the Heading
+			const prependLine = foundHeading.position.start.line; // line after the Heading
 			let appendLine = -1;
 			if (nextHeading) {
 				// Figure out Append location based on the nextHeading
