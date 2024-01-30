@@ -15,6 +15,9 @@ import {
 	DEFAULT_SETTINGS,
 	type ObsidianClipperSettings,
 	ClipperType,
+	DEFAULT_CLIPPER_SETTING,
+	type OldClipperSettings,
+	DEFAULT_SETTINGS_EMPTY,
 } from './settings/types';
 import { ClippedData } from './clippeddata';
 import { DailyPeriodicNoteEntry } from './periodicnotes/dailyperiodicnoteentry';
@@ -34,6 +37,8 @@ import {
 	BookmarkletLinksView,
 	VIEW_TYPE_EXAMPLE,
 } from './views/BookmarkletLinksView';
+import { deepmerge } from 'deepmerge-ts';
+import { randomUUID } from 'crypto';
 
 export default class ObsidianClipperPlugin extends Plugin {
 	settings: ObsidianClipperPluginSettings;
@@ -165,23 +170,82 @@ export default class ObsidianClipperPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		const mergedSettings = DEFAULT_SETTINGS;
 		const settingsData = await this.loadData();
+
+		// Existing data
 		if (settingsData !== null) {
 			if (!settingsData.hasOwnProperty('version')) {
 				console.log(
 					"Settings exist and haven't been migrated to version 2 or higher"
 				);
-				// mergedSettings = deepmerge(DEFAULT_SETTINGS, settingsData);
+				this.settings = this.mergeExistingSetting(settingsData);
+				this.saveSettings();
+			} else {
+				this.settings = settingsData;
 			}
-			this.settings = settingsData;
 		} else {
-			this.settings = mergedSettings;
+			this.settings = Object.assign({}, DEFAULT_SETTINGS, null);
 		}
 	}
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+	}
+
+	mergeExistingSetting(
+		settingsData: OldClipperSettings
+	): ObsidianClipperPluginSettings {
+		const mergedSettings = deepmerge(
+			DEFAULT_SETTINGS_EMPTY,
+			{}
+		) as ObsidianClipperPluginSettings;
+		if (settingsData.useDailyNote === true) {
+			const transfered = deepmerge(
+				DEFAULT_CLIPPER_SETTING,
+				{}
+			) as ObsidianClipperSettings;
+			transfered.clipperId = randomUUID();
+			transfered.type = 'daily';
+			transfered.name = settingsData.dailyNoteHeading;
+			transfered.vaultName = this.app.vault.getName();
+			transfered.heading = settingsData.dailyNoteHeading;
+			transfered.tags = settingsData.tags;
+			transfered.timestampFormat = settingsData.timestampFormat;
+			transfered.dateFormat = settingsData.dateFormat;
+			transfered.openOnWrite = settingsData.dailyOpenOnWrite;
+			transfered.position = settingsData.dailyPosition;
+			transfered.entryTemplateLocation =
+				settingsData.dailyEntryTemplateLocation;
+			transfered.markdownSettings = settingsData.markdownSettings;
+			transfered.advancedStorage = settingsData.advanced;
+			transfered.advancedStorageFolder = settingsData.advancedStorageFolder;
+			mergedSettings.clippers.push(transfered);
+		}
+
+		if (settingsData.useWeeklyNote === true) {
+			const transfered = deepmerge(
+				DEFAULT_CLIPPER_SETTING,
+				{}
+			) as ObsidianClipperSettings;
+			transfered.clipperId = randomUUID();
+			transfered.type = 'weekly';
+			transfered.name = settingsData.weeklyNoteHeading;
+			transfered.vaultName = this.app.vault.getName();
+			transfered.heading = settingsData.weeklyNoteHeading;
+			transfered.tags = settingsData.tags;
+			transfered.timestampFormat = settingsData.timestampFormat;
+			transfered.dateFormat = settingsData.dateFormat;
+			transfered.openOnWrite = settingsData.weeklyOpenOnWrite;
+			transfered.position = settingsData.weeklyPosition;
+			transfered.entryTemplateLocation =
+				settingsData.weeklyEntryTemplateLocation;
+			transfered.markdownSettings = settingsData.markdownSettings;
+			transfered.advancedStorage = settingsData.advanced;
+			transfered.advancedStorageFolder = settingsData.advancedStorageFolder;
+			mergedSettings.clippers.push(transfered);
+		}
+
+		return mergedSettings;
 	}
 
 	handleCopyBookmarkletToClipboard(clipperId: string, notePath = '') {

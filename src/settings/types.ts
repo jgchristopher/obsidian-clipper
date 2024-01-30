@@ -23,6 +23,31 @@ export interface ObsidianClipperPluginSettings {
 	experimentalBookmarkletComment: boolean;
 }
 
+export interface OldClipperSettings {
+	tags: string;
+	timestampFormat: string;
+	dateFormat: string;
+	dailyNoteHeading: string;
+	weeklyNoteHeading: string;
+	dailyOpenOnWrite: boolean;
+	useDailyNote: boolean;
+	dailyPosition: SectionPosition;
+	useWeeklyNote: boolean;
+	weeklyPosition: SectionPosition;
+	weeklyEntryTemplateLocation: string;
+	weeklyOpenOnWrite: boolean;
+	dailyEntryTemplateLocation: string;
+	markdownSettings: ObsidianClipperMarkdownSettings;
+	topicPosition: SectionPosition;
+	topicEntryTemplateLocation: string;
+	topicOpenOnWrite: boolean;
+	advanced: boolean;
+	advancedStorageFolder: string;
+	captureComments: boolean;
+	experimentalCanvas: boolean;
+	experimentalBookmarkletComment: boolean;
+}
+
 export interface BaseClipperSettings {
 	type: ClipperType;
 	name: string;
@@ -86,6 +111,12 @@ default_daily.type = ClipperType.DAILY;
 
 export const DEFAULT_SETTINGS: ObsidianClipperPluginSettings = {
 	clippers: [default_daily],
+	version: 2.0,
+	experimentalBookmarkletComment: false,
+};
+
+export const DEFAULT_SETTINGS_EMPTY: ObsidianClipperPluginSettings = {
+	clippers: [],
 	version: 2.0,
 	experimentalBookmarkletComment: false,
 };
