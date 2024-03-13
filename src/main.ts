@@ -66,7 +66,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 							target: createEl('div'),
 							props: {
 								app: this.app,
-								filePath: getFileName(filePath),
+								filePath: filePath,
 								type: ClipperType.TOPIC,
 							},
 						});
