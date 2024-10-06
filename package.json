@@ -1,5 +1,5 @@
 {
-	"name": "obsidian-clipper",
+	"name": "obsidian-clipper-dev",
 	"version": "0.2.9",
 	"description": "This plugin helps you capture highlights from the web.",
 	"main": "main.js",
@@ -18,8 +18,9 @@
 	"author": "jgchristopher",
 	"license": "MIT",
 	"devDependencies": {
+		"@popperjs/core": "^2.11.6",
 		"@tsconfig/svelte": "3.0.0",
-		"@types/node": "16.11.6",
+		"@types/node": "22.0.0",
 		"@types/turndown": "5.0.1",
 		"@typescript-eslint/eslint-plugin": "5.29.0",
 		"@typescript-eslint/parser": "5.29.0",
@@ -28,8 +29,12 @@
 		"esbuild": "0.14.47",
 		"esbuild-svelte": "^0.7.3",
 		"eslint": "^8.34.0",
+		"highlight.js": "^11.10.0",
 		"jsdom": "^22.1.0",
+		"moment": "^2.29.4",
 		"obsidian": "obsidianmd/obsidian-api#master",
+		"obsidian-dev-utils": "latest",
+		"obsidian-typings": "latest",
 		"rimraf": "^4.4.1",
 		"svelte": "3.55.1",
 		"svelte-eslint-parser": "^0.23.0",
@@ -40,8 +45,7 @@
 		"typescript": "4.7.4",
 		"vitest": "^0.31.4",
 		"webpack": "^5.75.0",
-		"webpack-cli": "^5.0.1",
-		"moment": "^2.29.4"
+		"webpack-cli": "^5.0.1"
 	},
 	"dependencies": {
 		"@dagrejs/dagre": "^1.0.2",

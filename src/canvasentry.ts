@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+//@ts-ignore
 import dagre from '@dagrejs/dagre';
 import type { App, TFile } from 'obsidian';
 import type {
@@ -14,10 +15,10 @@ import { Utility } from './utils/utility';
 export class CanvasEntry {
 	private app: App;
 
-	constructor(app: App) {
+	constructor (app: App) {
 		this.app = app;
 	}
-	public async writeToCanvas(file: TFile, noteEntry: ClippedData) {
+	public async writeToCanvas (file: TFile, noteEntry: ClippedData) {
 		const content = noteEntry.getEntryContent();
 		Utility.assertNotNull(content);
 		const fileData = await this.app.vault.read(file);
@@ -41,9 +42,10 @@ export class CanvasEntry {
 
 		const layout = this.processWithDagre(canvasData);
 		const nodesWithLayout: CanvasTextData[] = [];
-		layout.nodes().forEach((element) => {
+		//@ts-ignore
+		layout.nodes().forEach(element => {
 			const nodeData = layout.node(element);
-			console.log(nodeData);
+			//console.log(nodeData);
 			const label = nodeData.label;
 			Utility.assertNotNull(label);
 			nodesWithLayout.push({
@@ -60,15 +62,15 @@ export class CanvasEntry {
 		canvasData.nodes = nodesWithLayout;
 
 		await this.app.vault.modify(file, JSON.stringify(canvasData));
-		await new Promise((r) => setTimeout(r, 50));
+		await new Promise(r => setTimeout(r, 50));
 	}
 
-	private findDomainNodeOrCreate(canvasData: CanvasData, domain: string) {
+	private findDomainNodeOrCreate (canvasData: CanvasData, domain: string) {
 		if (!canvasData.nodes) {
 			canvasData.nodes = [];
 		}
 
-		let domainNode = canvasData.nodes.find((node) => node.text === domain);
+		let domainNode = canvasData.nodes.find(node => node.text === domain);
 		if (!domainNode) {
 			domainNode = this.createTextNode(canvasData.nodes, domain);
 			canvasData.nodes.push(domainNode);
@@ -76,7 +78,7 @@ export class CanvasEntry {
 		return domainNode;
 	}
 
-	private createTextNode(
+	private createTextNode (
 		nodes: AllCanvasNodeData[],
 		content: string,
 		options = { width: 240, height: 50 }
@@ -95,12 +97,12 @@ export class CanvasEntry {
 		};
 	}
 
-	private getPositionCoordinatesForNewNode(nodes: AllCanvasNodeData[]) {
+	private getPositionCoordinatesForNewNode (nodes: AllCanvasNodeData[]) {
 		// TODO: Need to figure out a viable creation position algorithm?
 		return { x: -1300, y: -800 };
 	}
 
-	private linkNewNodeToDomainNode(
+	private linkNewNodeToDomainNode (
 		canvasData: CanvasData,
 		domainNode: CanvasNodeData,
 		newNode: CanvasNodeData
@@ -118,14 +120,14 @@ export class CanvasEntry {
 		canvasData.edges.push(edge);
 	}
 
-	private processWithDagre(canvasData: CanvasData) {
+	private processWithDagre (canvasData: CanvasData) {
 		const g = new dagre.graphlib.Graph({ directed: true, multigraph: true });
 		g.setGraph({});
 		g.setDefaultEdgeLabel(function () {
 			return {};
 		});
 
-		canvasData.nodes.forEach((node) => {
+		canvasData.nodes.forEach(node => {
 			g.setNode(node.id, {
 				label: node.text,
 				width: node.width,
@@ -137,7 +139,7 @@ export class CanvasEntry {
 			});
 		});
 
-		canvasData.edges.forEach((edge) => {
+		canvasData.edges.forEach(edge => {
 			g.setEdge(edge.toNode, edge.fromNode);
 		});
 

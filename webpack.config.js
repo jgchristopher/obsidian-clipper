@@ -8,4 +8,9 @@ module.exports = {
 		filename: 'bookmarklet.js',
 	},
 	mode: 'production',
+	resolve: {
+		alias: {
+			src: path.resolve(__dirname, './src'),
+		}
+	}
 };

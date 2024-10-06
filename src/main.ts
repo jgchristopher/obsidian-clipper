@@ -6,9 +6,9 @@ import {
 	Notice,
 	TFile,
 	View,
+	type PluginManifest,
 } from 'obsidian';
 import { deepmerge } from 'deepmerge-ts';
-
 import type { Parameters } from './types';
 import {
 	type ObsidianClipperSettings,
@@ -22,22 +22,39 @@ import { init } from './settings/settingsstore';
 import type { SvelteComponent } from 'svelte';
 import BookmarkletModalComponent from './modals/BookmarkletModalComponent.svelte';
 import { TopicNoteEntry } from './topicnoteentry';
-import { BookmarketlGenerator } from './bookmarkletlink/bookmarkletgenerator';
+// @ts-ignore
+import { BookmarketlGenerator } from './bookmarkletlink/build-bookmarkletgenerator';
 import { AdvancedNoteEntry } from './advancednotes/advancednoteentry';
 import { CanvasEntry } from './canvasentry';
 import { Utility } from './utils/utility';
 
-export default class ObsidianClipperPlugin extends Plugin {
-	settings: ObsidianClipperSettings;
+export function hasAdmonitions (app: App): boolean {
+	//@ts-ignore
+	return app.plugins.enabledPlugins.has('obsidian-admonition');
+}
 
-	async onload() {
+export default class ObsidianClipperPlugin extends Plugin {
+	app: App;
+	settings: ObsidianClipperSettings;
+	manifest: PluginManifest;
+	hasAdmonitionsPlugin: boolean;
+
+	constructor (app: App, manifest: PluginManifest) {
+		super(app, manifest ?? app.plugins.manifests['obsidian-clipper-dev']);
+		this.app = app;
+	}
+
+	async onload () {
 		await this.loadSettings();
 		this.addSettingTab(new SettingTab(this.app, this));
+
+		// determine formatting for highlighted content formatting within quotes
+		this.hasAdmonitionsPlugin = hasAdmonitions(this.app);
 
 		this.addCommand({
 			id: 'copy-bookmarklet-address-clipboard',
 			name: 'Vault Bookmarklet to Clipboard',
-			callback: () => this.handleCopyBookmarkletToClipboard(),
+			callback: async () => await this.handleCopyBookmarkletToClipboard(),
 		});
 
 		this.addCommand({
@@ -49,8 +66,8 @@ export default class ObsidianClipperPlugin extends Plugin {
 		this.addCommand({
 			id: 'copy-note-bookmarklet-address-clipboard',
 			name: 'Topic Bookmarklet to Clipboard',
-			editorCallback: (_editor, ctx) => {
-				this.handleCopyBookmarkletToClipboard(ctx.file?.path);
+			editorCallback: async (_editor, ctx) => {
+				await this.handleCopyBookmarkletToClipboard(ctx.file?.path);
 			},
 		});
 
@@ -81,19 +98,23 @@ export default class ObsidianClipperPlugin extends Plugin {
 			},
 		});
 
-		this.registerObsidianProtocolHandler('obsidian-clipper', async (e) => {
+		this.registerObsidianProtocolHandler('obsidian-clipper', async e => {
 			const parameters = e as unknown as Parameters;
 
 			const url = parameters.url;
-			const title = parameters.title;
-			const notePath = parameters.notePath;
 			const highlightData = parameters.highlightdata;
+			const title = parameters.title;
 			const comments = parameters.comments;
+			const description = parameters.description;
+			const notePath = parameters.notePath;
+			let baseURI = parameters.baseURI ?? Utility.parseDomainFromUrl(url);
+			const uriHasPrefix = baseURI.match(/^[\w:/]+?\.(?=\S+?\.)/);
+			if (uriHasPrefix) baseURI = baseURI.slice(uriHasPrefix[0].length);
 
 			// For a brief time the bookmarklet was sending over raw html instead of processed markdown and we need to alert the user to reinstall the bookmarklet
 			if (parameters.format === 'html') {
 				// Need to alert user
-				if (notePath !== '') {
+				if (notePath?.length > 0) {
 					// Was this a Topic Note bookMarklet?
 					this.handleCopyBookmarkletCommand(true, notePath);
 				} else {
@@ -105,12 +126,19 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 			let entryReference = highlightData;
 
-			if (this.settings.advanced && highlightData) {
-				const domain = Utility.parseDomainFromUrl(url);
+			if (this.settings.advanced) {
 				entryReference = await new AdvancedNoteEntry(
 					this.app,
+					this,
 					this.settings.advancedStorageFolder
-				).writeToAdvancedNoteStorage(domain, highlightData, url);
+				).writeToAdvancedNoteStorage(
+					baseURI,
+					url,
+					title,
+					description,
+					highlightData,
+					comments
+				);
 			}
 
 			const noteEntry = new ClippedData(
@@ -119,44 +147,49 @@ export default class ObsidianClipperPlugin extends Plugin {
 				this.settings,
 				this.app,
 				entryReference,
-				comments
+				comments,
+				description
 			);
 
-			if (notePath && notePath !== '') {
-				const file = this.app.vault.getAbstractFileByPath(notePath);
+			if (this.settings.useDailyNote) {
+				await new DailyPeriodicNoteEntry(
+					this.app,
+					this.settings.dailyOpenOnWrite,
+					this.settings.dailyPosition,
+					this.settings.dailyEntryTemplateLocation
+				).writeToPeriodicNote(noteEntry, this.settings.dailyNoteHeading);
+			} else if (this.settings.useWeeklyNote) {
+				await new WeeklyPeriodicNoteEntry(
+					this.app,
+					this.settings.weeklyOpenOnWrite,
+					this.settings.weeklyPosition,
+					this.settings.weeklyEntryTemplateLocation
+				).writeToPeriodicNote(noteEntry, this.settings.weeklyNoteHeading);
+			} else if (notePath?.length > 0) {
+				let file = this.app.vault.getAbstractFileByPath(notePath);
+				if (!(file instanceof TFile)) {
+					file = await this.app.vault.create(notePath, '');
+					if (!file) throw new Error('Failed to create note.');
+				}
+
 				if ((file as TFile).extension === 'canvas') {
-					new CanvasEntry(this.app).writeToCanvas(file as TFile, noteEntry);
+					await new CanvasEntry(this.app).writeToCanvas(
+						file as TFile,
+						noteEntry
+					);
 				} else {
-					new TopicNoteEntry(
+					await new TopicNoteEntry(
 						this.app,
 						this.settings.topicOpenOnWrite,
 						this.settings.topicPosition,
 						this.settings.topicEntryTemplateLocation
 					).writeToNote(file, noteEntry);
 				}
-			} else {
-				if (this.settings.useDailyNote) {
-					new DailyPeriodicNoteEntry(
-						this.app,
-						this.settings.dailyOpenOnWrite,
-						this.settings.dailyPosition,
-						this.settings.dailyEntryTemplateLocation
-					).writeToPeriodicNote(noteEntry, this.settings.dailyNoteHeading);
-				}
-
-				if (this.settings.useWeeklyNote) {
-					new WeeklyPeriodicNoteEntry(
-						this.app,
-						this.settings.weeklyOpenOnWrite,
-						this.settings.weeklyPosition,
-						this.settings.weeklyEntryTemplateLocation
-					).writeToPeriodicNote(noteEntry, this.settings.weeklyNoteHeading);
-				}
 			}
 		});
 	}
 
-	async loadSettings() {
+	async loadSettings () {
 		let mergedSettings = DEFAULT_SETTINGS;
 		const settingsData = await this.loadData();
 		if (settingsData !== null) {
@@ -165,12 +198,12 @@ export default class ObsidianClipperPlugin extends Plugin {
 		this.settings = mergedSettings;
 	}
 
-	async saveSettings() {
+	async saveSettings () {
 		await this.saveData(this.settings);
 	}
 
-	handleCopyBookmarkletToClipboard(notePath = '') {
-		navigator.clipboard.writeText(
+	async handleCopyBookmarkletToClipboard (notePath = '', description = '') {
+		await navigator.clipboard.writeText(
 			new BookmarketlGenerator(
 				this.app.vault.getName(),
 				notePath,
@@ -184,7 +217,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 		new Notice('Obsidian Clipper Bookmarklet copied to clipboard.');
 	}
 
-	handleCopyBookmarkletCommand(updateRequired = false, filePath = '') {
+	handleCopyBookmarkletCommand (updateRequired = false, filePath = '') {
 		let noticeText = '';
 		if (updateRequired) {
 			noticeText = `Notice: Your Bookmarklet is out of date and needs to be updated.
@@ -213,13 +246,13 @@ class SettingTab extends PluginSettingTab {
 	plugin: ObsidianClipperPlugin;
 	private view: SvelteComponent;
 
-	constructor(app: App, plugin: ObsidianClipperPlugin) {
+	constructor (app: App, plugin: ObsidianClipperPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 		init(this.plugin);
 	}
 
-	display(): void {
+	display (): void {
 		const { containerEl } = this;
 
 		containerEl.empty();
@@ -232,7 +265,7 @@ class SettingTab extends PluginSettingTab {
 		});
 	}
 
-	async hide() {
+	async hide () {
 		super.hide();
 		this.view.$destroy();
 	}

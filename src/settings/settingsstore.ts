@@ -13,9 +13,9 @@ export function init(plugin: ObsidianClipperPlugin) {
 		subscribe,
 		update,
 		// save the plugin values when setting the store
-		set: (value: ObsidianClipperSettings) => {
+		set: async (value: ObsidianClipperSettings) => {
 			set(value);
-			plugin.saveSettings();
+			await plugin.saveSettings();
 		},
 	};
 }

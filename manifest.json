@@ -1,9 +1,9 @@
 {
-	"id": "obsidian-clipper",
-	"name": "Clipper",
-	"version": "0.2.9",
+	"id": "obsidian-clipper-dev",
+	"name": "Obsidian Clipper Beta",
+	"version" : "0.2.9",
 	"minAppVersion": "0.15.0",
-	"description": "This plugin helps you capture highlights from the web.",
+	"description": "Forked development version.",
 	"author": "John Christopher",
 	"authorUrl": "https://github.com/jgchristopher/",
 	"fundingUrl": "https://www.buymeacoffee.com/jgchristopher",

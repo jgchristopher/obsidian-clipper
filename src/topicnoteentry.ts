@@ -6,6 +6,7 @@ import { Utility } from './utils/utility';
 export class TopicNoteEntry extends NoteEntry {
 	async writeToNote(file: TAbstractFile | null, noteEntry: ClippedData) {
 		Utility.assertNotNull(file);
-		this.handleWrite(file.path, await noteEntry.formattedEntry(this.template));
+		const formattedEntry = await noteEntry.formattedEntry(this.template);
+		await this.handleWrite(file.path, formattedEntry);
 	}
 }

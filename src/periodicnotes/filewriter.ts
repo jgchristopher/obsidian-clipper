@@ -40,8 +40,7 @@ export abstract class FileWriter {
 
 		if (!heading) {
 			const startLine = this.getEndOfFrontmatter(file);
-
-			return this.writeAndOpenFile(
+			return await this.writeAndOpenFile(
 				file.path,
 				this.positionDataWithNoHeader(fileData, clippedData, startLine)
 			);
@@ -73,7 +72,7 @@ export abstract class FileWriter {
 				// We should append to the end of the file
 				lines = [...preSectionContent, ...targetSection];
 			}
-			return this.writeAndOpenFile(file.path, lines.join('\n'));
+			return await this.writeAndOpenFile(file.path, lines.join('\n'));
 		}
 	}
 

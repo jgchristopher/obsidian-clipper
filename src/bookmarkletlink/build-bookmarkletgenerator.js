@@ -1,11 +1,12 @@
 //@ts-ignore
 /* eslint @typescript-eslint/no-var-requires: "off" */
 const fs = require('fs');
+
 const bookmarkletFilePath =
 	'./src/build/bookmarkletcode/dist/obsidian-clipper.min.js';
-//'../build/bookmarkletcode/dist/obsidian-clipper.min.js';
 const bookmarkletGeneratorFilePath =
 	'./src/bookmarkletlink/bookmarkletgenerator.ts';
+
 const bookmarkletGeneratorTemplate = `
 /**
 * DO NOT EDIT THIS IS GENERATED CODE!
@@ -19,13 +20,14 @@ export class BookmarketlGenerator {
   vaultName: string;
   notePath: string;
   markdownSettings: ObsidianClipperMarkdownSettings; 
-	captureComments: string;  
-constructor(vaultName: string, notePath = '', markdownSettings: ObsidianClipperMarkdownSettings, captureComments: string ) {
+  captureComments: string;
+  constructor(vaultName: string, notePath: string = '', captureComments: string, markdownSettings: ObsidianClipperMarkdownSettings) {
     this.vaultName = vaultName;
     this.notePath = notePath;
     this.markdownSettings = markdownSettings;
-		this.captureComments = captureComments;
+	  this.captureComments = captureComments;
   }
+
   public generateBookmarklet(): string {
     return \`~BookmarkletReplace~\`;
   }
@@ -40,7 +42,10 @@ try {
 		'${this.vaultName}'
 	);
 
-	bookmarkletData = bookmarkletData.replace('~NotePath~', '${this.notePath}');
+	bookmarkletData = bookmarkletData.replace(
+		'~NotePath~',
+		'${this.notePath}'
+	);
 
 	bookmarkletData = bookmarkletData.replace(
 		'~H1Setting~',

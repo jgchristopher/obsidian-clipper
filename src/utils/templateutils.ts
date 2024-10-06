@@ -40,6 +40,7 @@ export function applyTemplateTransformations(
 	date: string,
 	content = '',
 	comment = '',
+	description = '',
 	rawTemplateContents: string
 ): string {
 	const templateContents = rawTemplateContents
@@ -48,6 +49,7 @@ export function applyTemplateTransformations(
 		.replace(/{{\s*tags\s*}}/gi, tags)
 		.replace(/{{\s*content\s*}}/gi, content)
 		.replace(/{{\s*comment\s*}}/gi, comment)
+		.replace(/{{\s*description\s*}}/gi, description)
 		.replace(/{{\s*time\s*}}/gi, time)
 		.replace(/{{\s*date\s*}}/gi, date);
 

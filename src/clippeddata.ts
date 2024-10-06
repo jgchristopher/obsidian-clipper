@@ -13,6 +13,7 @@ export class ClippedData {
 	private timeStamp: string;
 	private date: string;
 	private comment: string;
+	private description: string;
 
 	constructor(
 		private title: string,
@@ -20,21 +21,23 @@ export class ClippedData {
 		settings: ObsidianClipperSettings,
 		app: App,
 		data = '',
-		comment = ''
+		comment = '',
+		description = ''
 	) {
+		this.app = app;
 		this.title = title;
 		this.url = url;
 		if (data !== '') {
 			this.data = data;
 		}
 		this.comment = comment;
+		this.description = description;
 		const tagJoins: string[] = [];
 		settings.tags.split(',').forEach((t) => {
 			tagJoins.push(`#${t}`);
 		});
 		this.tags = tagJoins.join(' ');
 		this.settings = settings;
-		this.app = app;
 		this.timeStamp = window.moment().format(this.settings.timestampFormat);
 		this.date = window.moment().format(this.settings.dateFormat);
 	}
@@ -52,18 +55,25 @@ export class ClippedData {
 				this.date,
 				this.data,
 				this.comment,
+				this.description,
 				rawTemplateContents
 			);
 		} else {
 			if (!this.data) {
-				formattedData = `- [ ] [${this.title}](${this.url}) ${this.tags}\n\n---`;
+				formattedData = `- [ ] [${this.title}](${this.url})${
+					this.tags ? ' ' + this.tags + '\n' : '\n'
+				}- ${this.description}\n\n---`;
 			} else {
 				if (this.settings.advanced) {
 					// The Advanced format has the url as a footnote of the clipped data
-					formattedData = `- [ ] ${this.title} ${this.tags}\n${this.data}\n\n---`;
+					formattedData = `- [ ] ${this.title} ${this.tags}\n${
+						this.tags ? ' ' + this.tags : ''
+					}\n\n---`;
 				} else {
 					// Else make the title a link
-					formattedData = `- [ ] [${this.title}](${this.url}) ${this.tags}\n${this.data}\n\n---`;
+					formattedData = `- [ ] [${this.title}](${this.url})${
+						this.tags ? ' ' + this.tags : ''
+					}\n${this.data}\n\n---`;
 				}
 			}
 		}

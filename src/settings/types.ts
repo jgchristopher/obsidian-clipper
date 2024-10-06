@@ -20,6 +20,7 @@ export interface ObsidianClipperSettings {
 	weeklyEntryTemplateLocation: string;
 	weeklyOpenOnWrite: boolean;
 	dailyEntryTemplateLocation: string;
+	advancedEntryTemplateLocation: string;
 	markdownSettings: ObsidianClipperMarkdownSettings;
 	topicPosition: SectionPosition;
 	topicEntryTemplateLocation: string;
@@ -53,6 +54,7 @@ export const DEFAULT_SETTINGS: ObsidianClipperSettings = {
 	weeklyPosition: SectionPosition.APPEND,
 	weeklyOpenOnWrite: false,
 	dailyEntryTemplateLocation: '',
+	advancedEntryTemplateLocation: '',
 	weeklyEntryTemplateLocation: '',
 	topicEntryTemplateLocation: '',
 	topicPosition: SectionPosition.APPEND,
