@@ -55,7 +55,7 @@
 	<span slot="calloutLink">
 		<a
 			href="https://docs.obsidianclipper.com"
-			class="whitespace-nowrap font-medium text-blue-700 hover:text-blue-600"
+			class="clp-whitespace-nowrap clp-font-medium clp-text-blue-700 hover:clp-text-blue-600"
 		>
 			Details
 			<span aria-hidden="true"> &rarr;</span>
@@ -65,34 +65,47 @@
 
 <br />
 
-<div class="flex flex-row-reverse text-sm font-semibold leading-6 gap-2 pb-4">
+<div
+	class="clp-flex clp-flex-row-reverse clp-text-sm clp-font-semibold clp-leading-6 clp-gap-2 clp-pb-4"
+>
 	<AddClipperComponent {vaultName} />
 	<!-- 	<span class="inline-block align-middle">Add Clipper</span> -->
 </div>
 
-<div class="px-4 sm:px-6 lg:px-8">
-	<div class="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
-		<div class="inline-block min-w-full py-2 align-middle">
-			<table class="min-w-full border-separate border-spacing-0">
+<div class="clp-px-4 sm:clp-px-6 lg:clp-px-8">
+	<div class="-clp-mx-4 -clp-my-2 sm:-clp-mx-6 lg:-clp-mx-8">
+		<div class="clp-inline-block clp-min-w-full clp-py-2 clp-align-middle">
+			<table class="clp-min-w-full clp-border-separate clp-border-spacing-0">
 				<thead>
 					<tr>
-						<th scope="col" class="sticky top-0 z-10 text-left">Name</th>
-						<th scope="col" class="sticky top-0 z-10 text-center">Type</th>
+						<th scope="col" class="clp-sticky clp-top-0 clp-z-10 clp-text-left"
+							>Name</th
+						>
+						<th
+							scope="col"
+							class="clp-sticky clp-top-0 clp-z-10 clp-text-center">Type</th
+						>
 						{#if Platform.isDesktop}
-							<th scope="col" class="sticky top-0 z-10 text-center">
+							<th
+								scope="col"
+								class="clp-sticky clp-top-0 clp-z-10 clp-text-center"
+							>
 								Created On
 							</th>
 						{/if}
-						<th scope="col" class="sticky top-0 z-10 text-center" />
+						<th
+							scope="col"
+							class="clp-sticky clp-top-0 clp-z-10 clp-text-center"
+						/>
 					</tr>
 				</thead>
 				<tbody>
 					{#each $pluginSettings.clippers as clipper (clipper.clipperId)}
 						<tr>
-							<td class="text-left">{clipper.name}</td>
-							<td class="text-center">{clipper.type}</td>
+							<td class="clp-text-left">{clipper.name}</td>
+							<td class="clp-text-center">{clipper.type}</td>
 							{#if Platform.isDesktop}
-								<td class="py-4 pl-4 text-sm text-center">
+								<td class="clp-py-4 clp-pl-4 clp-text-sm clp-text-center">
 									Created on <time
 										datetime={moment(clipper.createdAt).toISOString()}
 									>
@@ -100,7 +113,7 @@
 									</time>
 								</td>
 							{/if}
-							<td class="text-right">
+							<td class="clp-text-right">
 								<div class="setting-item-control">
 									<span
 										class="clickable-icon setting-editor-extra-setting-button"

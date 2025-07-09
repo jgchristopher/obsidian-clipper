@@ -34,7 +34,7 @@
 <h2>Clipper Bookmarklets</h2>
 {#each $pluginSettings.clippers as clipper (clipper.clipperId)}
 	<h4>{clipper.name}</h4>
-	<div class="px-4 py-2">
+	<div class="clp-px-4 clp-py-2">
 		<li>
 			<a
 				href="#top"

@@ -9,12 +9,9 @@ export class MigrateTopicNoteModal extends Modal {
 	constructor(app: App, notePath: string) {
 		super(app);
 		this.notePath = notePath;
-		this.titleEl.createEl('h2', {
-			text: 'Bookmarklet Migration Needed',
-		});
 
 		new MigrateTopicNoteComponent({
-			target: this.contentEl,
+			target: this.modalEl,
 			props: {
 				notePath: notePath,
 			},

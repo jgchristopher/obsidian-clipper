@@ -29,10 +29,10 @@
 	<div>
 		<div>
 			Click the button below to generate a personalized Chrome-based extension
-			for the <span class="font-extrabold">{clipperName}</span>. After clicking
-			the button, use the link to download the .zip file.
+			for the <span class="clp-font-extrabold">{clipperName}</span>. After
+			clicking the button, use the link to download the .zip file.
 		</div>
-		<div class="my-4" bind:this={s3LinkContainer}>
+		<div class="clp-my-4" bind:this={s3LinkContainer}>
 			<button on:click={getExtension}>Chrome Extension ({clipperName})</button>
 		</div>
 	</div>
