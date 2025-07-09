@@ -35,6 +35,7 @@ import { ShortcutLinkGenerator } from './shortcutslink/ShortcutLinkGenerator';
 import { Utility } from './utils/utility';
 import { BookmarkletLinksView, VIEW_TYPE } from './views/BookmarkletLinksView';
 import { MigrateTopicNoteModal } from './settings/components/migratetopicnote/migratetopicnotemodal';
+import { MigrateDailyNoteModal } from './settings/components/migratedailynote/migratedailynotemodal';
 
 export default class ObsidianClipperPlugin extends Plugin {
 	settings: ObsidianClipperPluginSettings;
@@ -183,10 +184,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 					modal.open();
 				} else {
-					// Just notify the user that they should replace the use bookmarklet with either their Daily or Weekly depending on how they were using the previous version
-					new Notice(
-						'Old Daily or Weekly Bookmarklet used. Please reinstall the bookmarklet from settings'
-					);
+					new MigrateDailyNoteModal(this.app).open();
 				}
 			} else {
 				const clipperSettings = this.settings.clippers.find(
