@@ -68,6 +68,16 @@ import { MarkdownTables } from './markdown/tables';
 			return `[${content}](${href})`;
 		},
 	});
+	markdownService.addRule('fix_relative_links', {
+		filter: ['a'],
+		replacement: function (content: string, node: HTMLAnchorElement) {
+			let href = node.href;
+			if (!href.includes('://')) {
+				href = window.location.protocol + '//' + window.location.host + href;
+			}
+			return `[${content}](${href})`;
+		},
+	});
 
 	const content = markdownService.turndown(getSelectionHtml());
 
