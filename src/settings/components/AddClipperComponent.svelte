@@ -16,7 +16,6 @@
 
 	const [popperRef, popperContent] = createPopperActions({
 		placement: 'left-start',
-		strategy: 'fixed',
 	});
 
 	const extraOpts = {
