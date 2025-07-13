@@ -28,11 +28,16 @@ export class ClippedData {
 			this.data = data;
 		}
 		this.comment = comment;
-		const tagJoins: string[] = [];
-		settings.tags.split(',').forEach((t) => {
-			tagJoins.push(`#${t}`);
-		});
-		this.tags = tagJoins.join(' ');
+		this.tags = '';
+
+		if (settings.tags !== '') {
+			const tagJoins: string[] = [];
+			settings.tags.split(',').forEach((t) => {
+				tagJoins.push(`#${t.replaceAll(' ', '')}`);
+			});
+			this.tags = tagJoins.join(' ');
+		}
+
 		this.settings = settings;
 		this.app = app;
 		this.timeStamp = window.moment().format(this.settings.timestampFormat);
@@ -58,12 +63,12 @@ export class ClippedData {
 			if (!this.data) {
 				formattedData = `- [ ] [${this.title}](${this.url}) ${this.tags}\n\n---`;
 			} else {
-				if (this.settings.advanced) {
+				if (this.settings.advancedStorage) {
 					// The Advanced format has the url as a footnote of the clipped data
-					formattedData = `- [ ] ${this.title} ${this.tags}\n${this.data}\n\n---`;
+					formattedData = `- [ ] ${this.title} ${this.tags}\n${this.data}\n >${this.comment} \n\n---`;
 				} else {
 					// Else make the title a link
-					formattedData = `- [ ] [${this.title}](${this.url}) ${this.tags}\n${this.data}\n\n---`;
+					formattedData = `- [ ] [${this.title}](${this.url}) ${this.tags}\n${this.data}\n >${this.comment} \n\n---`;
 				}
 			}
 		}

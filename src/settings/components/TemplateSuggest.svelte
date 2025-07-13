@@ -81,57 +81,54 @@
 		<div class="setting-item-name">{name}</div>
 		<div class="setting-item-description">
 			{description}
+			{#if $$slots.message}
+				<slot name="message" />
+			{/if}
 		</div>
-		<a
-			href="https://raw.githubusercontent.com/jgchristopher/obsidian-clipper/main/docs/example-template.md"
-			>Template Example</a
-		>
 	</div>
 </div>
-<div class="setting-item">
-	<div class="setting-item-control">
-		<div class="search_input">
-			<input
-				type="text"
-				use:popperRef
-				bind:value={initialValue}
-				on:input={filterFiles}
-				spellcheck="false"
-				class="search_input"
-				on:focusin={filterFiles}
-			/>
-		</div>
-		{#if templateOptions.length > 0}
-			<div class="suggestion-container" use:popperContent={extraOpts}>
-				<div class="suggestion">
+<div class="setting-item-control">
+	<div class="search_input">
+		<input
+			type="text"
+			use:popperRef
+			bind:value={initialValue}
+			on:input={filterFiles}
+			spellcheck="false"
+			class="search_input"
+			on:focusin={filterFiles}
+		/>
+	</div>
+	{#if templateOptions.length > 0}
+		<div class="suggestion-container" use:popperContent={extraOpts}>
+			<div class="suggestion">
+				<div
+					class="suggestion-item"
+					on:keydown
+					on:focus
+					on:blur
+					on:click={() => setInputVal('')}
+					on:mouseover={handleMouseOver}
+					on:mouseout={handleMouseOut}
+				>
+					None
+				</div>
+				{#each templateOptions as templateOption}
 					<div
 						class="suggestion-item"
 						on:keydown
 						on:focus
 						on:blur
-						on:click={() => setInputVal('')}
+						on:click={() => setInputVal(templateOption)}
 						on:mouseover={handleMouseOver}
 						on:mouseout={handleMouseOut}
 					>
-						None
+						{templateOption}
 					</div>
-					{#each templateOptions as templateOption}
-						<div
-							class="suggestion-item"
-							on:keydown
-							on:focus
-							on:blur
-							on:click={() => setInputVal(templateOption)}
-							on:mouseover={handleMouseOver}
-							on:mouseout={handleMouseOut}
-						>
-							{templateOption}
-						</div>
-					{/each}
-				</div>
+				{/each}
 			</div>
-		{/if}
-	</div>
+		</div>
+	{/if}
 </div>
 
 <style>

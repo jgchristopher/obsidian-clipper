@@ -2,23 +2,13 @@
 import TurndownService from 'turndown';
 import { MarkdownTables } from './markdown/tables';
 
-interface HeadingSettings {
-	h1: string;
-	h2: string;
-	h3: string;
-	h4: string;
-	h5: string;
-	h6: string;
-}
-
 ((
+	clipperId: string,
 	vault: string,
-	note: string,
-	headingSettings: HeadingSettings,
+	headerLevelBase: string,
 	captureComment: string
 ) => {
 	const vaultName = encodeURIComponent(vault);
-	const notePath = encodeURIComponent(note);
 	const useComment = encodeURIComponent(captureComment);
 
 	let comment = '';
@@ -35,37 +25,47 @@ interface HeadingSettings {
 	markdownService.addRule('heading_1_update', {
 		filter: ['h1'],
 		replacement: function (content: string) {
-			return `${headingSettings.h1} ${content}`;
+			return `${'#'.repeat(parseInt(headerLevelBase, 10) + 1)} ${content} \n\n`;
 		},
 	});
 	markdownService.addRule('heading_2_update', {
 		filter: ['h2'],
 		replacement: function (content: string) {
-			return `${headingSettings.h2} ${content}`;
+			return `${'#'.repeat(parseInt(headerLevelBase, 10) + 2)} ${content} \n\n`;
 		},
 	});
 	markdownService.addRule('heading_3_update', {
 		filter: ['h3'],
 		replacement: function (content: string) {
-			return `${headingSettings.h3} ${content}`;
+			return `${'#'.repeat(parseInt(headerLevelBase, 10) + 3)} ${content} \n\n`;
 		},
 	});
 	markdownService.addRule('heading_4_update', {
 		filter: ['h4'],
 		replacement: function (content: string) {
-			return `${headingSettings.h4} ${content}`;
+			return `${'#'.repeat(parseInt(headerLevelBase, 10) + 4)} ${content} \n\n`;
 		},
 	});
 	markdownService.addRule('heading_5_update', {
 		filter: ['h5'],
 		replacement: function (content: string) {
-			return `${headingSettings.h5} ${content}`;
+			return `${'#'.repeat(parseInt(headerLevelBase, 10) + 4)} ${content} \n\n`;
 		},
 	});
 	markdownService.addRule('heading_6_update', {
 		filter: ['h6'],
 		replacement: function (content: string) {
-			return `${headingSettings.h6} ${content}`;
+			return `${'#'.repeat(parseInt(headerLevelBase, 10) + 4)} ${content} \n\n`;
+		},
+	});
+	markdownService.addRule('fix_relative_links', {
+		filter: ['a'],
+		replacement: function (content: string, node: HTMLAnchorElement) {
+			let href = node.href;
+			if (!href.includes('://')) {
+				href = window.location.protocol + '//' + window.location.host + href;
+			}
+			return `[${content}](${href})`;
 		},
 	});
 	markdownService.addRule('fix_relative_links', {
@@ -127,11 +127,11 @@ interface HeadingSettings {
 		const title = document.title;
 		// Turn the content into Markdown
 
-		const obsidianUrl = `obsidian://obsidian-clipper?vault=${vaultName}&notePath=${notePath}&url=${encodeURIComponent(
+		const obsidianUrl = `obsidian://obsidian-clipper?clipperId=${encodeURIComponent(
+			clipperId
+		)}&vault=${vaultName}&url=${encodeURIComponent(
 			url
-		)}&format=md&title=${encodeURIComponent(
-			title
-		)}&highlightdata=${encodeURIComponent(
+		)}&title=${encodeURIComponent(title)}&highlightdata=${encodeURIComponent(
 			content
 		)}&comments=${encodeURIComponent(comment)}`;
 
@@ -275,15 +275,8 @@ border-radius: 0.5rem !important;
 		sendToObsidian();
 	}
 })(
+	'~ClipperIdFiller~',
 	'~VaultNameFiller~',
-	'~NotePath~',
-	{
-		h1: '~H1Setting~',
-		h2: '~H2Setting~',
-		h3: '~H3Setting~',
-		h4: '~H4Setting~',
-		h5: '~H5Setting~',
-		h6: '~H6Setting~',
-	},
+	'~HeaderLevelBase~',
 	'~CaptureComment~'
 );

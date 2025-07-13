@@ -1,8 +1,8 @@
-<div class="rounded-md bg-blue-50 p-4">
+<div class="clp-rounded-md clp-bg-blue-50 clp-p-4">
 	<div class="flex">
-		<div class="flex-shrink-0">
+		<div class="clp-flex-shrink-0">
 			<svg
-				class="h-5 w-5 text-blue-400"
+				class="clp-h-5 clp-w-5 clp-text-blue-400"
 				viewBox="0 0 20 20"
 				fill="currentColor"
 				aria-hidden="true"
@@ -14,13 +14,13 @@
 				/>
 			</svg>
 		</div>
-		<div class="ml-3 flex-1 md:flex md:justify-between">
-			<p class="text-sm text-blue-700">
+		<div class="clp-ml-3 clp-flex-1 md:clp-flex md:clp-justify-between">
+			<p class="clp-text-sm clp-text-blue-700">
 				<slot name="noticeText">
 					<span />
 				</slot>
 			</p>
-			<p class="mt-3 text-sm md:mt-0 md:ml-6">
+			<p class="clp-mt-3 clp-text-sm md:clp-mt-0 md:clp-ml-6">
 				<slot name="calloutLink" />
 			</p>
 		</div>

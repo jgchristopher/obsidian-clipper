@@ -13,17 +13,16 @@ const bookmarkletGeneratorTemplate = `
 *
 * SERIOUSLY! STOP GOING TO THIS FILE AND EDITING IT AND WONDERING WHY IT ISN'T WORKING :)
 **/
-import type { ObsidianClipperMarkdownSettings } from 'src/settings/types';
 
 export class BookmarketlGenerator {
+	clipperId: string;
   vaultName: string;
-  notePath: string;
-  markdownSettings: ObsidianClipperMarkdownSettings; 
+	headingLevel: number;
 	captureComments: string;  
-constructor(vaultName: string, notePath = '', markdownSettings: ObsidianClipperMarkdownSettings, captureComments: string ) {
+constructor(clipperId: string, vaultName: string, notePath = '', headingLevel: number, captureComments: string ) {
+		this.clipperId = clipperId;
     this.vaultName = vaultName;
-    this.notePath = notePath;
-    this.markdownSettings = markdownSettings;
+    this.headingLevel = headingLevel;
 		this.captureComments = captureComments;
   }
   public generateBookmarklet(): string {
@@ -36,40 +35,48 @@ try {
 	let bookmarkletData = fs.readFileSync(bookmarkletFilePath, 'utf8');
 
 	bookmarkletData = bookmarkletData.replace(
+		'~ClipperIdFiller~',
+		'${this.clipperId}'
+	);
+
+	bookmarkletData = bookmarkletData.replace(
 		'~VaultNameFiller~',
 		'${this.vaultName}'
 	);
 
-	bookmarkletData = bookmarkletData.replace('~NotePath~', '${this.notePath}');
+	bookmarkletData = bookmarkletData.replace(
+		'~HeaderLevelBase~',
+		'${this.headingLevel}'
+	);
 
 	bookmarkletData = bookmarkletData.replace(
 		'~H1Setting~',
-		'${this.markdownSettings.h1}'
+		'${"#".repeat(this.headingLevel + 1)}'
 	);
 
 	bookmarkletData = bookmarkletData.replace(
 		'~H2Setting~',
-		'${this.markdownSettings.h2}'
+		'${"#".repeat(this.headingLevel + 2)}'
 	);
 
 	bookmarkletData = bookmarkletData.replace(
 		'~H3Setting~',
-		'${this.markdownSettings.h3}'
+		'${"#".repeat(this.headingLevel + 3)}'
 	);
 
 	bookmarkletData = bookmarkletData.replace(
 		'~H4Setting~',
-		'${this.markdownSettings.h4}'
+		'${"#".repeat(this.headingLevel + 4)}'
 	);
 
 	bookmarkletData = bookmarkletData.replace(
 		'~H5Setting~',
-		'${this.markdownSettings.h5}'
+		'${"#".repeat(this.headingLevel + 5)}'
 	);
 
 	bookmarkletData = bookmarkletData.replace(
 		'~H6Setting~',
-		'${this.markdownSettings.h6}'
+		'${"#".repeat(this.headingLevel + 5)}'
 	);
 
 	bookmarkletData = bookmarkletData.replace(

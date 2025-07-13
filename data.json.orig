@@ -1,0 +1,86 @@
+{
+  "clippers": [
+    {
+      "type": "daily",
+      "name": "Default Clipper",
+      "clipperId": "9f84573e-89b0-4da1-b56d-0398d70f45e7",
+      "createdAt": "2024-05-29T12:04:04.001Z",
+      "vaultName": "",
+      "notePath": "",
+      "heading": "",
+      "headingLevel": 2,
+      "tags": "",
+      "timestampFormat": "HH:mm",
+      "dateFormat": "MM/DD/YY",
+      "openOnWrite": false,
+      "position": "append",
+      "entryTemplateLocation": "",
+      "markdownSettings": {
+        "h1": "##",
+        "h2": "##",
+        "h3": "###",
+        "h4": "####",
+        "h5": "#####",
+        "h6": "######"
+      },
+      "advancedStorage": false,
+      "advancedStorageFolder": "clippings",
+      "captureComments": true
+    },
+    {
+      "type": "canvas",
+      "name": "Clipper Canvas",
+      "clipperId": "ff4dbd0e-76b3-4dd2-bc75-637d8dab7477",
+      "createdAt": "2024-05-29T13:21:09.543Z",
+      "vaultName": "ClipperDocs",
+      "notePath": "Clipper Canvas.canvas",
+      "heading": "",
+      "headingLevel": 1,
+      "tags": "",
+      "timestampFormat": "HH:mm",
+      "dateFormat": "MM/DD/YY",
+      "openOnWrite": false,
+      "position": "append",
+      "entryTemplateLocation": "",
+      "markdownSettings": {
+        "h1": "##",
+        "h2": "##",
+        "h3": "###",
+        "h4": "####",
+        "h5": "#####",
+        "h6": "######"
+      },
+      "advancedStorage": false,
+      "advancedStorageFolder": "clippings",
+      "captureComments": false
+    },
+    {
+      "type": "topic",
+      "name": "JavaScript Arrays",
+      "clipperId": "24a6e5db-2842-45d1-8ed7-36b16e58add1",
+      "createdAt": "2024-05-29T13:21:09.543Z",
+      "vaultName": "ClipperDocs",
+      "notePath": "JavaScript Arrays.md",
+      "heading": "Arrays",
+      "headingLevel": 2,
+      "tags": "",
+      "timestampFormat": "HH:mm",
+      "dateFormat": "MM/DD/YY",
+      "openOnWrite": false,
+      "position": "prepend",
+      "entryTemplateLocation": "",
+      "markdownSettings": {
+        "h1": "##",
+        "h2": "##",
+        "h3": "###",
+        "h4": "####",
+        "h5": "#####",
+        "h6": "######"
+      },
+      "advancedStorage": false,
+      "advancedStorageFolder": "clippings",
+      "captureComments": false
+    }
+  ],
+  "version": 2
+}

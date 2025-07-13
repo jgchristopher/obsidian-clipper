@@ -6,6 +6,14 @@ import { SectionPosition } from 'src/settings/types';
 export class AdvancedNoteEntry extends NoteEntry {
 	private storageFolder: string;
 
+	private getEntry(sectionHeader: string, data: string, url: string): string {
+		if (url === "shortcut") {
+			return `\n# ${sectionHeader} \n ${data}\n`;
+		} else {
+			return `\n# ${sectionHeader} \n ${data}\n[^1] \n\n [^1]: ${url}  \n`;
+		}
+	}
+
 	constructor(app: App, storageFolder: string) {
 		super(app, false, SectionPosition.APPEND, '');
 		this.storageFolder = storageFolder;
@@ -21,7 +29,7 @@ export class AdvancedNoteEntry extends NoteEntry {
 		let file = this.app.vault.getAbstractFileByPath(noteFilePath);
 
 		const sectionHeader = window.moment().toISOString().replaceAll(':', '-');
-		const entry = `\n# ${sectionHeader} \n ${data}\n[^1] \n\n [^1]: ${url}  \n`;
+		const entry = this.getEntry(sectionHeader, data, url); //`\n# ${sectionHeader} \n ${data}\n[^1] \n\n [^1]: ${url}  \n`;
 
 		if (!(file instanceof TFile)) {
 			// create the file and write data

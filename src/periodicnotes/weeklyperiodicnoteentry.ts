@@ -31,7 +31,7 @@ export class WeeklyPeriodicNoteEntry extends PeriodicNoteEntry {
 
 	protected async waitForNoteCreation(moment: Moment) {
 		const weeklyNote = await createWeeklyNote(moment);
-		await new Promise((r) => setTimeout(r, 50));
+		await new Promise((r) => setTimeout(r, 150));
 		return weeklyNote;
 	}
 

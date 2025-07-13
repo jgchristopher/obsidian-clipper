@@ -1,83 +1,168 @@
 import {
 	App,
-	PluginSettingTab,
-	Plugin,
-	Modal,
 	Notice,
+	Plugin,
+	PluginSettingTab,
 	TFile,
 	View,
+	WorkspaceLeaf,
 } from 'obsidian';
-import { deepmerge } from 'deepmerge-ts';
 
-import type { Parameters } from './types';
-import {
-	type ObsidianClipperSettings,
-	DEFAULT_SETTINGS,
-} from './settings/types';
+import { randomUUID } from 'crypto';
+import type { SvelteComponent } from 'svelte';
+import { AdvancedNoteEntry } from './advancednotes/advancednoteentry';
+import { BookmarketlGenerator } from './bookmarkletlink/bookmarkletgenerator';
+import { CanvasEntry } from './canvasentry';
 import { ClippedData } from './clippeddata';
 import { DailyPeriodicNoteEntry } from './periodicnotes/dailyperiodicnoteentry';
 import { WeeklyPeriodicNoteEntry } from './periodicnotes/weeklyperiodicnoteentry';
+import AddNoteCommandComponent from './settings/components/addnotecommand/AddNoteCommandComponent.svelte';
 import SettingsComponent from './settings/SettingsComponent.svelte';
 import { init } from './settings/settingsstore';
-import type { SvelteComponent } from 'svelte';
-import BookmarkletModalComponent from './modals/BookmarkletModalComponent.svelte';
+import {
+	ClipperType,
+	DEFAULT_CLIPPER_SETTING,
+	DEFAULT_SETTINGS,
+	DEFAULT_SETTINGS_EMPTY,
+	type ObsidianClipperPluginSettings,
+	type ObsidianClipperSettings,
+	type OldClipperSettings,
+} from './settings/types';
 import { TopicNoteEntry } from './topicnoteentry';
-import { BookmarketlGenerator } from './bookmarkletlink/bookmarkletgenerator';
-import { AdvancedNoteEntry } from './advancednotes/advancednoteentry';
-import { CanvasEntry } from './canvasentry';
+import type { Parameters } from './types';
+import { getFileName } from './utils/fileutils';
+import { ShortcutLinkGenerator } from './shortcutslink/ShortcutLinkGenerator';
 import { Utility } from './utils/utility';
+import { BookmarkletLinksView, VIEW_TYPE } from './views/BookmarkletLinksView';
+import { MigrateTopicNoteModal } from './settings/components/migratetopicnote/migratetopicnotemodal';
+import { MigrateDailyNoteModal } from './settings/components/migratedailynote/migratedailynotemodal';
 
 export default class ObsidianClipperPlugin extends Plugin {
-	settings: ObsidianClipperSettings;
+	settings: ObsidianClipperPluginSettings;
 
 	async onload() {
 		await this.loadSettings();
 		this.addSettingTab(new SettingTab(this.app, this));
 
+		// Are we looking at a markdown note?
 		this.addCommand({
-			id: 'copy-bookmarklet-address-clipboard',
-			name: 'Vault Bookmarklet to Clipboard',
-			callback: () => this.handleCopyBookmarkletToClipboard(),
-		});
-
-		this.addCommand({
-			id: 'copy-bookmarklet-address',
-			name: 'Vault Bookmarklet',
-			callback: () => this.handleCopyBookmarkletCommand(),
-		});
-
-		this.addCommand({
-			id: 'copy-note-bookmarklet-address-clipboard',
-			name: 'Topic Bookmarklet to Clipboard',
-			editorCallback: (_editor, ctx) => {
-				this.handleCopyBookmarkletToClipboard(ctx.file?.path);
+			id: 'create-topic-bookmarklet',
+			name: 'Create Topic Bookmarklet',
+			checkCallback: (checking: boolean) => {
+				if (checking) {
+					return (
+						this.app.workspace.getActiveViewOfType(View)?.file.extension ===
+						'md'
+					);
+				} else {
+					const ctx = this.app.workspace.getActiveViewOfType(View);
+					if (ctx) {
+						const filePath = ctx.file?.path;
+						Utility.assertNotNull(filePath);
+						new AddNoteCommandComponent({
+							target: createEl('div'),
+							props: {
+								app: this.app,
+								filePath: filePath,
+								type: ClipperType.TOPIC,
+							},
+						});
+					}
+				}
 			},
 		});
 
-		this.addCommand({
-			id: 'copy-note-bookmarklet-address',
-			name: 'Topic Bookmarklet',
-			editorCallback: (_editor, ctx) => {
-				this.handleCopyBookmarkletCommand(false, ctx.file?.path);
-			},
-		});
-
+		// Are we looking at a canvas note?
 		this.addCommand({
 			id: 'copy-note-bookmarklet-address-canvas',
 			name: 'Canvas Bookmarklet',
 			checkCallback: (checking: boolean) => {
 				if (checking) {
 					return (
-						this.settings.experimentalCanvas &&
 						this.app.workspace.getActiveViewOfType(View)?.file.extension ===
-							'canvas'
+						'canvas'
 					);
 				} else {
 					const ctx = this.app.workspace.getActiveViewOfType(View);
 					if (ctx) {
-						this.handleCopyBookmarkletCommand(false, ctx.file.path);
+						const filePath = ctx.file?.path;
+						Utility.assertNotNull(filePath);
+						new AddNoteCommandComponent({
+							target: createEl('div'),
+							props: {
+								app: this.app,
+								filePath: getFileName(filePath),
+								type: ClipperType.CANVAS,
+							},
+						});
 					}
 				}
+			},
+		});
+
+		this.addCommand({
+			id: 'copy-topic-bookmarklet-clipboard',
+			name: 'Copy Topic Note Bookmarklet (Clipboard)',
+			checkCallback: (checking: boolean) => {
+				if (checking) {
+					return (
+						this.app.workspace.getActiveViewOfType(View)?.file.extension ===
+						'md'
+					);
+				} else {
+					const ctx = this.app.workspace.getActiveViewOfType(View);
+					if (ctx) {
+						const filePath = ctx.file?.path;
+						Utility.assertNotNull(filePath);
+						const foundClipper = this.settings.clippers.find((clipper) => {
+							return clipper.notePath === filePath;
+						});
+						if (foundClipper) {
+							this.handleCopyBookmarkletToClipboard(foundClipper);
+						} else {
+							new Notice("Couldn't find setting for this note");
+						}
+					}
+				}
+			},
+		});
+
+		this.addCommand({
+			id: 'copy-topic-apple-shortcut-clipboard',
+			name: 'Copy Topic Note Apple Shortcut (Clipboard)',
+			checkCallback: (checking: boolean) => {
+				if (checking) {
+					return (
+						this.app.workspace.getActiveViewOfType(View)?.file.extension ===
+						'md'
+					);
+				} else {
+					const ctx = this.app.workspace.getActiveViewOfType(View);
+					if (ctx) {
+						const filePath = ctx.file?.path;
+						Utility.assertNotNull(filePath);
+						const foundClipper = this.settings.clippers.find((clipper) => {
+							return clipper.notePath === filePath;
+						});
+						if (foundClipper) {
+							this.handleCopyShortcutToClipboard(foundClipper);
+						} else {
+							new Notice("Couldn't find setting for this note");
+						}
+					}
+				}
+			},
+		});
+
+		// Is the Clipper View Open?
+		this.addCommand({
+			id: 'show-clipper-view',
+			name: 'Open view',
+			checkCallback: (checking: boolean) => {
+				if (checking) {
+					return this.app.workspace.getLeavesOfType(VIEW_TYPE).length === 0;
+				}
+				this.activateView();
 			},
 		});
 
@@ -86,126 +171,224 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 			const url = parameters.url;
 			const title = parameters.title;
-			const notePath = parameters.notePath;
 			const highlightData = parameters.highlightdata;
 			const comments = parameters.comments;
+			const clipperId = parameters.clipperId;
 
-			// For a brief time the bookmarklet was sending over raw html instead of processed markdown and we need to alert the user to reinstall the bookmarklet
-			if (parameters.format === 'html') {
-				// Need to alert user
-				if (notePath !== '') {
-					// Was this a Topic Note bookMarklet?
-					this.handleCopyBookmarkletCommand(true, notePath);
-				} else {
-					// show vault modal
-					this.handleCopyBookmarkletCommand(true);
-				}
-				return;
-			}
-
-			let entryReference = highlightData;
-
-			if (this.settings.advanced && highlightData) {
-				const domain = Utility.parseDomainFromUrl(url);
-				entryReference = await new AdvancedNoteEntry(
-					this.app,
-					this.settings.advancedStorageFolder
-				).writeToAdvancedNoteStorage(domain, highlightData, url);
-			}
-
-			const noteEntry = new ClippedData(
-				title,
-				url,
-				this.settings,
-				this.app,
-				entryReference,
-				comments
-			);
-
-			if (notePath && notePath !== '') {
-				const file = this.app.vault.getAbstractFileByPath(notePath);
-				if ((file as TFile).extension === 'canvas') {
-					new CanvasEntry(this.app).writeToCanvas(file as TFile, noteEntry);
-				} else {
-					new TopicNoteEntry(
+			if (!clipperId) {
+				if (parameters.notePath) {
+					const modal = new MigrateTopicNoteModal(
 						this.app,
-						this.settings.topicOpenOnWrite,
-						this.settings.topicPosition,
-						this.settings.topicEntryTemplateLocation
-					).writeToNote(file, noteEntry);
+						parameters.notePath
+					);
+
+					modal.open();
+				} else {
+					new MigrateDailyNoteModal(this.app).open();
 				}
 			} else {
-				if (this.settings.useDailyNote) {
-					new DailyPeriodicNoteEntry(
+				const clipperSettings = this.settings.clippers.find(
+					(c) => c.clipperId === clipperId
+				);
+				Utility.assertNotNull(clipperSettings);
+
+				let entryReference = highlightData;
+
+				if (clipperSettings.advancedStorage && highlightData) {
+					const domain = Utility.parseDomainFromUrl(url);
+					entryReference = await new AdvancedNoteEntry(
 						this.app,
-						this.settings.dailyOpenOnWrite,
-						this.settings.dailyPosition,
-						this.settings.dailyEntryTemplateLocation
-					).writeToPeriodicNote(noteEntry, this.settings.dailyNoteHeading);
+						clipperSettings.advancedStorageFolder
+					).writeToAdvancedNoteStorage(domain, highlightData, url);
 				}
 
-				if (this.settings.useWeeklyNote) {
-					new WeeklyPeriodicNoteEntry(
-						this.app,
-						this.settings.weeklyOpenOnWrite,
-						this.settings.weeklyPosition,
-						this.settings.weeklyEntryTemplateLocation
-					).writeToPeriodicNote(noteEntry, this.settings.weeklyNoteHeading);
-				}
+				const noteEntry = new ClippedData(
+					title,
+					url,
+					clipperSettings,
+					this.app,
+					entryReference,
+					comments
+				);
+
+				this.writeNoteEntry(clipperSettings, noteEntry);
 			}
 		});
+
+		this.registerView(VIEW_TYPE, (leaf) => new BookmarkletLinksView(leaf));
+	}
+
+	async activateView() {
+		const { workspace } = this.app;
+
+		let leaf: WorkspaceLeaf | null = null;
+		const leaves = workspace.getLeavesOfType(VIEW_TYPE);
+
+		if (leaves.length > 0) {
+			// A leaf with our view already exists, use that
+			leaf = leaves[0];
+		} else {
+			// Our view could not be found in the workspace, create a new leaf
+			// in the right sidebar for it
+			leaf = workspace.getRightLeaf(false);
+
+			await leaf?.setViewState({ type: VIEW_TYPE, active: true });
+		}
+
+		// "Reveal" the leaf in case it is in a collapsed sidebar
+		if (leaf) {
+			workspace.revealLeaf(leaf);
+		}
 	}
 
 	async loadSettings() {
-		let mergedSettings = DEFAULT_SETTINGS;
 		const settingsData = await this.loadData();
+
+		// Existing data
 		if (settingsData !== null) {
-			mergedSettings = deepmerge(DEFAULT_SETTINGS, settingsData);
+			if (!settingsData.hasOwnProperty('version')) {
+				console.log(
+					"Settings exist and haven't been migrated to version 2 or higher"
+				);
+				this.settings = this.mergeExistingSetting(settingsData);
+				this.saveSettings();
+			} else {
+				this.settings = settingsData;
+			}
+		} else {
+			this.settings = Object.assign({}, DEFAULT_SETTINGS, null);
 		}
-		this.settings = mergedSettings;
 	}
 
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
 
-	handleCopyBookmarkletToClipboard(notePath = '') {
+	mergeExistingSetting(
+		settingsData: OldClipperSettings
+	): ObsidianClipperPluginSettings {
+		const mergedSettings = structuredClone(
+			DEFAULT_SETTINGS_EMPTY
+		) as ObsidianClipperPluginSettings;
+		if (settingsData.useDailyNote === true) {
+			const dailyTransfered = structuredClone(
+				DEFAULT_CLIPPER_SETTING
+			) as ObsidianClipperSettings;
+			dailyTransfered.clipperId = randomUUID();
+			dailyTransfered.type = 'daily';
+			dailyTransfered.name = settingsData.dailyNoteHeading;
+			dailyTransfered.vaultName = this.app.vault.getName();
+			dailyTransfered.heading = settingsData.dailyNoteHeading;
+			dailyTransfered.tags = settingsData.tags;
+			dailyTransfered.timestampFormat = settingsData.timestampFormat;
+			dailyTransfered.dateFormat = settingsData.dateFormat;
+			dailyTransfered.openOnWrite = settingsData.dailyOpenOnWrite;
+			dailyTransfered.position = settingsData.dailyPosition;
+			dailyTransfered.entryTemplateLocation =
+				settingsData.dailyEntryTemplateLocation;
+			dailyTransfered.markdownSettings = settingsData.markdownSettings;
+			dailyTransfered.advancedStorage = settingsData.advanced;
+			dailyTransfered.advancedStorageFolder =
+				settingsData.advancedStorageFolder;
+			mergedSettings.clippers.push(dailyTransfered);
+		}
+
+		if (settingsData.useWeeklyNote === true) {
+			const weeklyTransfered = structuredClone(
+				DEFAULT_CLIPPER_SETTING
+			) as ObsidianClipperSettings;
+			weeklyTransfered.clipperId = randomUUID();
+			weeklyTransfered.type = 'weekly';
+			weeklyTransfered.name = settingsData.weeklyNoteHeading;
+			weeklyTransfered.vaultName = this.app.vault.getName();
+			weeklyTransfered.heading = settingsData.weeklyNoteHeading;
+			weeklyTransfered.tags = settingsData.tags;
+			weeklyTransfered.timestampFormat = settingsData.timestampFormat;
+			weeklyTransfered.dateFormat = settingsData.dateFormat;
+			weeklyTransfered.openOnWrite = settingsData.weeklyOpenOnWrite;
+			weeklyTransfered.position = settingsData.weeklyPosition;
+			weeklyTransfered.entryTemplateLocation =
+				settingsData.weeklyEntryTemplateLocation;
+			weeklyTransfered.markdownSettings = settingsData.markdownSettings;
+			weeklyTransfered.advancedStorage = settingsData.advanced;
+			weeklyTransfered.advancedStorageFolder =
+				settingsData.advancedStorageFolder;
+			mergedSettings.clippers.push(weeklyTransfered);
+		}
+
+		return mergedSettings;
+	}
+
+	handleCopyBookmarkletToClipboard(clipper: ObsidianClipperSettings) {
 		navigator.clipboard.writeText(
 			new BookmarketlGenerator(
+				clipper.clipperId,
 				this.app.vault.getName(),
-				notePath,
-				this.settings.markdownSettings,
-				(
-					this.settings.experimentalBookmarkletComment &&
-					this.settings.captureComments
-				).toString()
+				clipper.notePath,
+				clipper.headingLevel,
+				clipper.captureComments.toString()
 			).generateBookmarklet()
 		);
 		new Notice('Obsidian Clipper Bookmarklet copied to clipboard.');
 	}
 
-	handleCopyBookmarkletCommand(updateRequired = false, filePath = '') {
-		let noticeText = '';
-		if (updateRequired) {
-			noticeText = `Notice: Your Bookmarklet is out of date and needs to be updated.
-				Please Drag the link below to replace your current bookmarklet`;
+	handleCopyShortcutToClipboard(clipper: ObsidianClipperSettings) {
+		navigator.clipboard.writeText(
+			new ShortcutLinkGenerator(clipper).generateShortcutLink()
+		);
+	}
+
+	writeNoteEntry(
+		clipperSettings: ObsidianClipperSettings,
+		noteEntry: ClippedData
+	) {
+		const type = clipperSettings.type;
+		if (type === ClipperType.TOPIC || type === ClipperType.CANVAS) {
+			const file = this.app.vault.getAbstractFileByPath(
+				clipperSettings.notePath
+			);
+			if (type === ClipperType.CANVAS) {
+				new CanvasEntry(this.app).writeToCanvas(file as TFile, noteEntry);
+			} else {
+				new TopicNoteEntry(
+					this.app,
+					clipperSettings.openOnWrite,
+					clipperSettings.position,
+					clipperSettings.entryTemplateLocation
+				).writeToNote(
+					file,
+					noteEntry,
+					clipperSettings.heading,
+					clipperSettings.headingLevel
+				);
+			}
+		} else {
+			if (type === ClipperType.DAILY) {
+				new DailyPeriodicNoteEntry(
+					this.app,
+					clipperSettings.openOnWrite,
+					clipperSettings.position,
+					clipperSettings.entryTemplateLocation
+				).writeToPeriodicNote(
+					noteEntry,
+					clipperSettings.heading,
+					clipperSettings.headingLevel
+				);
+			}
+
+			if (type === ClipperType.WEEKLY) {
+				new WeeklyPeriodicNoteEntry(
+					this.app,
+					clipperSettings.openOnWrite,
+					clipperSettings.position,
+					clipperSettings.entryTemplateLocation
+				).writeToPeriodicNote(
+					noteEntry,
+					clipperSettings.heading,
+					clipperSettings.headingLevel
+				);
+			}
 		}
-
-		const bookmarkletLinkModal = new Modal(this.app);
-		bookmarkletLinkModal.titleEl.createEl('h2', {
-			text: 'Copy Your Bookmarklet',
-		});
-
-		new BookmarkletModalComponent({
-			target: bookmarkletLinkModal.contentEl,
-			props: {
-				noticeText: noticeText,
-				vaultName: this.app.vault.getName(),
-				filePath: filePath,
-			},
-		});
-
-		bookmarkletLinkModal.open();
 	}
 }
 

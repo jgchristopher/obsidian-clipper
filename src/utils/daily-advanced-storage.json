@@ -1,0 +1,31 @@
+{
+	"dailyNoteHeading": "Clipped 1",
+	"weeklyNoteHeading": "",
+	"tags": "",
+	"timestampFormat": "HH:mm",
+	"dateFormat": "MM/DD/YY",
+	"dailyOpenOnWrite": false,
+	"useDailyNote": true,
+	"dailyPosition": "append",
+	"useWeeklyNote": false,
+	"weeklyPosition": "append",
+	"weeklyOpenOnWrite": false,
+	"dailyEntryTemplateLocation": "",
+	"weeklyEntryTemplateLocation": "",
+	"topicEntryTemplateLocation": "",
+	"topicPosition": "append",
+	"topicOpenOnWrite": false,
+	"markdownSettings": {
+		"h1": "##",
+		"h2": "##",
+		"h3": "###",
+		"h4": "####",
+		"h5": "#####",
+		"h6": "######"
+	},
+	"advanced": true,
+	"advancedStorageFolder": "clippings",
+	"captureComments": false,
+	"experimentalCanvas": false,
+	"experimentalBookmarkletComment": false
+}

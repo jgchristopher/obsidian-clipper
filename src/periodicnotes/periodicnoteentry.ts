@@ -25,7 +25,11 @@ export abstract class PeriodicNoteEntry extends NoteEntry {
 		this.template = template;
 	}
 
-	async writeToPeriodicNote(noteEntry: ClippedData, heading: string) {
+	async writeToPeriodicNote(
+		noteEntry: ClippedData,
+		heading: string,
+		headingLevel: number
+	) {
 		if (!this.hasPeriodicNoteEnabled()) {
 			new Notice(this.notice);
 			return;
@@ -36,7 +40,8 @@ export abstract class PeriodicNoteEntry extends NoteEntry {
 		this.handleWrite(
 			note.path,
 			await noteEntry.formattedEntry(this.template),
-			heading
+			heading,
+			headingLevel
 		);
 	}
 

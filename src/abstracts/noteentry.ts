@@ -24,7 +24,8 @@ export abstract class NoteEntry {
 	protected async handleWrite(
 		noteFilePath: string,
 		data: string,
-		heading?: string
+		heading?: string,
+		headingLevel?: number
 	) {
 		const file = this.app.vault.getAbstractFileByPath(noteFilePath);
 		if (file instanceof TFile) {
@@ -32,13 +33,15 @@ export abstract class NoteEntry {
 				new PrependWriter(this.app, this.openFileOnWrite).write(
 					file,
 					data,
-					heading
+					heading,
+					headingLevel
 				);
 			} else {
 				new AppendWriter(this.app, this.openFileOnWrite).write(
 					file,
 					data,
-					heading
+					heading,
+					headingLevel
 				);
 			}
 		} else {

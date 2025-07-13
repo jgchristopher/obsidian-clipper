@@ -1,6 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-	content: ['./src/modals/*.svelte', './src/settings/*.svelte'],
+	prefix: 'clp-',
+	content: [
+		'./src/modals/*.svelte',
+		'./src/settings/*.svelte',
+		'./src/settings/components/migratetopicnote/*.svelte',
+	],
 	theme: {
 		extend: {},
 	},

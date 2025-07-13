@@ -1,94 +1,206 @@
-.my-4 {
+.clp-sticky {
+  position: sticky;
+}
+
+.clp-top-0 {
+  top: 0px;
+}
+
+.clp-z-10 {
+  z-index: 10;
+}
+
+.-clp-mx-4 {
+  margin-left: -1rem;
+  margin-right: -1rem;
+}
+
+.-clp-my-2 {
+  margin-top: -0.5rem;
+  margin-bottom: -0.5rem;
+}
+
+.clp-my-4 {
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
 
-.ml-3 {
+.clp-ml-3 {
   margin-left: 0.75rem;
 }
 
-.mt-3 {
+.clp-mt-2 {
+  margin-top: 0.5rem;
+}
+
+.clp-mt-3 {
   margin-top: 0.75rem;
 }
 
-.block {
-  display: block;
+.clp-inline-block {
+  display: inline-block;
 }
 
-.flex {
+.clp-flex {
   display: flex;
 }
 
-.h-5 {
+.clp-h-5 {
   height: 1.25rem;
 }
 
-.w-5 {
+.clp-w-5 {
   width: 1.25rem;
 }
 
-.flex-1 {
+.clp-min-w-full {
+  min-width: 100%;
+}
+
+.clp-flex-1 {
   flex: 1 1 0%;
 }
 
-.flex-shrink-0 {
+.clp-flex-shrink-0 {
   flex-shrink: 0;
 }
 
-.basis-0 {
-  flex-basis: 0px;
+.clp-border-separate {
+  border-collapse: separate;
 }
 
-.flex-row {
-  flex-direction: row;
+.clp-border-spacing-0 {
+  --tw-border-spacing-x: 0px;
+  --tw-border-spacing-y: 0px;
+  border-spacing: var(--tw-border-spacing-x) var(--tw-border-spacing-y);
 }
 
-.flex-wrap {
-  flex-wrap: wrap;
+.clp-flex-row-reverse {
+  flex-direction: row-reverse;
 }
 
-.whitespace-nowrap {
+.clp-gap-2 {
+  gap: 0.5rem;
+}
+
+.clp-whitespace-nowrap {
   white-space: nowrap;
 }
 
-.rounded-md {
+.clp-rounded-md {
   border-radius: 0.375rem;
 }
 
-.border {
-  border-width: 1px;
-}
-
-.bg-blue-50 {
+.clp-bg-blue-50 {
   --tw-bg-opacity: 1;
-  background-color: rgb(239 246 255 / var(--tw-bg-opacity));
+  background-color: rgb(239 246 255 / var(--tw-bg-opacity, 1));
 }
 
-.p-4 {
+.clp-bg-yellow-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 252 232 / var(--tw-bg-opacity, 1));
+}
+
+.clp-p-4 {
   padding: 1rem;
 }
 
-.text-sm {
+.clp-px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.clp-py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.clp-py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.clp-pb-4 {
+  padding-bottom: 1rem;
+}
+
+.clp-pl-4 {
+  padding-left: 1rem;
+}
+
+.clp-text-left {
+  text-align: left;
+}
+
+.clp-text-center {
+  text-align: center;
+}
+
+.clp-text-right {
+  text-align: right;
+}
+
+.clp-align-middle {
+  vertical-align: middle;
+}
+
+.clp-text-sm {
   font-size: 0.875rem;
   line-height: 1.25rem;
 }
 
-.font-extrabold {
+.clp-font-bold {
+  font-weight: 700;
+}
+
+.clp-font-extrabold {
   font-weight: 800;
 }
 
-.font-medium {
+.clp-font-medium {
   font-weight: 500;
 }
 
-.text-blue-400 {
-  --tw-text-opacity: 1;
-  color: rgb(96 165 250 / var(--tw-text-opacity));
+.clp-font-semibold {
+  font-weight: 600;
 }
 
-.text-blue-700 {
+.clp-italic {
+  font-style: italic;
+}
+
+.clp-leading-6 {
+  line-height: 1.5rem;
+}
+
+.clp-text-blue-400 {
   --tw-text-opacity: 1;
-  color: rgb(29 78 216 / var(--tw-text-opacity));
+  color: rgb(96 165 250 / var(--tw-text-opacity, 1));
+}
+
+.clp-text-blue-700 {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity, 1));
+}
+
+.clp-text-red-900 {
+  --tw-text-opacity: 1;
+  color: rgb(127 29 29 / var(--tw-text-opacity, 1));
+}
+
+.clp-text-yellow-400 {
+  --tw-text-opacity: 1;
+  color: rgb(250 204 21 / var(--tw-text-opacity, 1));
+}
+
+.clp-text-yellow-700 {
+  --tw-text-opacity: 1;
+  color: rgb(161 98 7 / var(--tw-text-opacity, 1));
+}
+
+.clp-text-yellow-800 {
+  --tw-text-opacity: 1;
+  color: rgb(133 77 14 / var(--tw-text-opacity, 1));
 }
 
 a {
@@ -99,29 +211,53 @@ div.clp_section_margin {
   margin: 0 0 20px 0 !important;
 }
 
-.internal-embed[alt="clipped"] h1 {
+.internal-embed[alt='clipped'] h1 {
   display: none;
 }
 
-.hover\:text-blue-600:hover {
+.hover\:clp-text-blue-600:hover {
   --tw-text-opacity: 1;
-  color: rgb(37 99 235 / var(--tw-text-opacity));
+  color: rgb(37 99 235 / var(--tw-text-opacity, 1));
+}
+
+@media (min-width: 640px) {
+  .sm\:-clp-mx-6 {
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+  }
+
+  .sm\:clp-px-6 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
 }
 
 @media (min-width: 768px) {
-  .md\:ml-6 {
+  .md\:clp-ml-6 {
     margin-left: 1.5rem;
   }
 
-  .md\:mt-0 {
+  .md\:clp-mt-0 {
     margin-top: 0px;
   }
 
-  .md\:flex {
+  .md\:clp-flex {
     display: flex;
   }
 
-  .md\:justify-between {
+  .md\:clp-justify-between {
     justify-content: space-between;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:-clp-mx-8 {
+    margin-left: -2rem;
+    margin-right: -2rem;
+  }
+
+  .lg\:clp-px-8 {
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 }

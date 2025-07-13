@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let clipperHref: string;
-	export let noteOrVault: string;
+	export let clipperName: string;
 </script>
 
 <div class="clp_section_margin">
@@ -11,7 +11,7 @@
 				bookmarklet will allow you to highlight information on the web and send
 				it to obsidian
 			</div>
-			<a href={clipperHref}>Obsidian Clipper ({noteOrVault})</a>
+			<a href={clipperHref}>{clipperName}</a>
 		</div>
 	</div>
 </div>

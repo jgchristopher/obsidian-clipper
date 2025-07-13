@@ -18,7 +18,7 @@ export class PrependWriter extends FileWriter {
 		targetSection: string[],
 		clippedData: string
 	): string[] {
-		targetSection.splice(1, 0, clippedData);
+		targetSection.splice(0, 0, clippedData);
 		return targetSection;
 	}
 }

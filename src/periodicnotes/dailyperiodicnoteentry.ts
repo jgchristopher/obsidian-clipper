@@ -21,21 +21,24 @@ export class DailyPeriodicNoteEntry extends PeriodicNoteEntry {
 			'To use a daily note with Obsidian Clipper the daily note needs to be enabled from the periodic-notes plugin';
 	}
 
-	protected getPeriodicNote(moment: Moment, allNotes: Record<string, TFile>) {
+	protected getPeriodicNote(
+		moment: Moment,
+		allNotes: Record<string, TFile>
+	): TFile {
 		return getDailyNote(moment, allNotes);
 	}
 
-	protected hasPeriodicNoteEnabled() {
+	protected hasPeriodicNoteEnabled(): boolean {
 		return appHasDailyNotesPluginLoaded();
 	}
 
-	protected async waitForNoteCreation(moment: Moment) {
+	protected async waitForNoteCreation(moment: Moment): Promise<TFile> {
 		const dailyNote = await createDailyNote(moment);
-		await new Promise((r) => setTimeout(r, 50));
+		await new Promise((r) => setTimeout(r, 150));
 		return dailyNote;
 	}
 
-	protected getAllNotes() {
+	protected getAllNotes(): Record<string, TFile> {
 		return getAllDailyNotes();
 	}
 }
