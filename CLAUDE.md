@@ -58,7 +58,7 @@ Consequences:
 
 ## Tests
 
-- `obsidian` ships types only. `vitest.config.ts` aliases it to `test/mocks/obsidian.ts`. Add a mock there when plugin code starts using a new runtime export.
+- `obsidian` ships types only. `vitest.config.mts` aliases it to `test/mocks/obsidian.ts`. Add a mock there when plugin code starts using a new runtime export.
 - `test/fakes/fakeapp.ts` (`FakeApp`) is an in-memory vault, metadata cache, and workspace. Its metadata cache computes headings and the frontmatter section from real file content, so writer tests exercise actual line math. Use `tfile(path)` to pass files into plugin code.
 - Several write paths do not await their promises (`NoteEntry.handleWrite`, `TopicNoteEntry.writeToNote`, `PeriodicNoteEntry.writeToPeriodicNote`). Call `await settle()` before asserting on vault contents.
 - Svelte components cannot compile under vitest without a Svelte plugin. Mock each `.svelte` import with `test/fakes/sveltestub.ts` (see `main.spec.ts`), which records constructions in `mounted`.

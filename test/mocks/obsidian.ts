@@ -1,6 +1,6 @@
 /**
  * Runtime stand-in for the `obsidian` package, which ships type definitions
- * only. Aliased in vitest.config.ts. Implements just enough of the API for
+ * only. Aliased in vitest.config.mts. Implements just enough of the API for
  * the plugin's logic to run against the in-memory vault in test/fakes.
  */
 
