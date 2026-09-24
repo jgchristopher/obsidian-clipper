@@ -29,7 +29,7 @@
 		clipperPlaceholderSettings.type = type;
 		settingsIndex =
 			$pluginSettings.clippers.push(clipperPlaceholderSettings) - 1;
-		$pluginSettings = $pluginSettings; //eslint-disable-line
+		$pluginSettings = $pluginSettings;
 		// Update settingsIndex to find the newly created clipper
 	}
 

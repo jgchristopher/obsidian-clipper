@@ -3,7 +3,6 @@
 
 	export let clipperHref: string;
 	export let clipperName: string;
-	// eslint-disable-next-line
 	let s3LinkContainer: HTMLElement;
 
 	const getExtension = async () => {
@@ -17,7 +16,6 @@
 			}),
 		});
 
-		// eslint-disable-next-line
 		const s3Link = window.document.createElement('a');
 		s3Link.href = response.json.data.link;
 		s3Link.textContent = 'Download Chrome Extension';

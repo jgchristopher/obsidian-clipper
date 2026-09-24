@@ -6,7 +6,7 @@
 	export let initialValue: string;
 	export let onChange: (string: string) => void;
 
-	export let dataProvider: () => any[]; // eslint-disable-line
+	export let dataProvider: () => any[];
 
 	const [popperRef, popperContent] = createPopperActions({
 		placement: 'bottom-start',
@@ -18,7 +18,6 @@
 			{
 				name: 'sameWidth',
 				enabled: true,
-				// eslint-disable-next-line
 				fn: ({ state, instance }: any) => {
 					const targetWidth = `${state.rects.reference.width}px`;
 					if (state.styles.popper.width === targetWidth) {
@@ -45,19 +44,17 @@
 		onChange(templateOption);
 	};
 
-	// eslint-disable-next-line
 	const handleMouseOver = (e: MouseEvent) => {
 		if (e && e.target) {
 			const target = e.target;
-			(target as HTMLElement).addClass('is-selected'); // eslint-disable-line
+			(target as HTMLElement).addClass('is-selected');
 		}
 	};
 
-	// eslint-disable-next-line
 	const handleMouseOut = (e: MouseEvent) => {
 		if (e && e.target) {
 			const target = e.target;
-			(target as HTMLElement).removeClass('is-selected'); // eslint-disable-line
+			(target as HTMLElement).removeClass('is-selected');
 		}
 	};
 

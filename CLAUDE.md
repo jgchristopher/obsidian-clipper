@@ -16,7 +16,7 @@ Use **pnpm** (version pinned by `packageManager` in `package.json`). There is no
 - `pnpm compile`: type-check only (`tsc -noEmit`). Includes spec files.
 - `pnpm dev`: build, then `copy` into a hardcoded local dev-vault plugin folder (`/Users/johnchristopher/gitprojects/obsidian-plugins/dev_plugin_links/obsidian-clipper/`).
 - `pnpm test`: runs vitest once. Single file: `pnpm exec vitest run src/utils/fileutils.spec.ts`. Single test: add `-t "<name>"`. Specs live beside the source as `*.spec.ts`. `main.spec.ts` imports the generated bookmarklet generator, so run `pnpm build` once on a fresh checkout before testing.
-- Lint: `pnpm exec eslint src` (no script defined).
+- `pnpm lint`: ESLint 10 flat config (`eslint.config.mjs`) with `eslint-plugin-obsidianmd`, the same rules Obsidian's plugin review uses. Obsidian rules are off for tests, build scripts, and the bookmarklet (it runs in web pages). Not gated in CI; the remaining findings are a known backlog.
 - `npm version <x>`: the `version` lifecycle script bumps `manifest.json`/`versions.json` via `src/build/version-bump.mjs`. `.npmrc` sets an empty tag prefix, so tags have no `v`.
 
 CI (`.github/workflows/release.yml`) runs on any pushed tag. It does a frozen pnpm install, runs `pnpm build` and `pnpm test`, then publishes a GitHub release with `main.js`, `manifest.json`, `styles.css`, and a zip.

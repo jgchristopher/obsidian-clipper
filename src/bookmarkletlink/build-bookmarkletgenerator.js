@@ -1,5 +1,4 @@
 //@ts-ignore
-/* eslint @typescript-eslint/no-var-requires: "off" */
 const fs = require('fs');
 const bookmarkletFilePath =
 	'./src/build/bookmarkletcode/dist/obsidian-clipper.min.js';

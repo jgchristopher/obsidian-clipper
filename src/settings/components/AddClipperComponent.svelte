@@ -43,7 +43,7 @@
 		clipperPlaceholderSettings.type = addClipperType;
 		clipperPlaceholderSettings.vaultName = vaultName;
 		$pluginSettings.clippers.push(clipperPlaceholderSettings);
-		$pluginSettings = $pluginSettings; //eslint-disable-line
+		$pluginSettings = $pluginSettings;
 		showAddClipperPopup = false;
 		addClipperName = '';
 	};
