@@ -123,3 +123,17 @@ export class Plugin {
 		this.storedData = data;
 	}
 }
+
+export const Platform = {
+	isDesktop: true,
+	isDesktopApp: true,
+	isMobile: false,
+	isMobileApp: false,
+	isIosApp: false,
+	isAndroidApp: false,
+	isMacOS: true,
+};
+
+export async function requestUrl(): Promise<never> {
+	throw new Error('requestUrl is not available in tests');
+}

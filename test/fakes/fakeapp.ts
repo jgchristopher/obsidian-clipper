@@ -96,6 +96,14 @@ export class FakeApp {
 	get app(): App {
 		const vault = {
 			getName: () => this.vaultName,
+			getMarkdownFiles: () =>
+				[...this.files.keys()]
+					.filter((p) => p.endsWith('.md'))
+					.map((p) => new TFile(p)),
+			getAllLoadedFiles: () => [
+				...[...this.folders].map((p) => new TFolder(p)),
+				...[...this.files.keys()].map((p) => new TFile(p)),
+			],
 			getAbstractFileByPath: (path: string) => {
 				if (this.files.has(path)) return new TFile(path);
 				if (this.folders.has(path)) return new TFolder(path);

@@ -6,7 +6,12 @@ import { notices } from './mocks/obsidian';
 // globalThis.moment.
 (globalThis as unknown as { moment: typeof moment }).moment = moment;
 
-// Obsidian's DOM helper global.
+// Obsidian's DOM extensions.
+(Node.prototype as unknown as { empty: () => void }).empty = function (
+	this: Node
+) {
+	while (this.firstChild) this.removeChild(this.firstChild);
+};
 (globalThis as unknown as { createEl: (tag: string) => HTMLElement }).createEl =
 	(tag: string) => document.createElement(tag);
 
