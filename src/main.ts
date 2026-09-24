@@ -8,7 +8,6 @@ import {
 	WorkspaceLeaf,
 } from 'obsidian';
 
-import { randomUUID } from 'crypto';
 import type { SvelteComponent } from 'svelte';
 import { AdvancedNoteEntry } from './advancednotes/advancednoteentry';
 import { BookmarketlGenerator } from './bookmarkletlink/bookmarkletgenerator';
@@ -274,7 +273,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 			const dailyTransfered = structuredClone(
 				DEFAULT_CLIPPER_SETTING
 			) as ObsidianClipperSettings;
-			dailyTransfered.clipperId = randomUUID();
+			dailyTransfered.clipperId = crypto.randomUUID();
 			dailyTransfered.type = 'daily';
 			dailyTransfered.name = settingsData.dailyNoteHeading;
 			dailyTransfered.vaultName = this.app.vault.getName();
@@ -297,7 +296,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 			const weeklyTransfered = structuredClone(
 				DEFAULT_CLIPPER_SETTING
 			) as ObsidianClipperSettings;
-			weeklyTransfered.clipperId = randomUUID();
+			weeklyTransfered.clipperId = crypto.randomUUID();
 			weeklyTransfered.type = 'weekly';
 			weeklyTransfered.name = settingsData.weeklyNoteHeading;
 			weeklyTransfered.vaultName = this.app.vault.getName();

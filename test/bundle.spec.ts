@@ -17,6 +17,8 @@ const BUNDLE = path.resolve('main.js');
 type Loader = { _load: (request: string, ...rest: unknown[]) => unknown };
 const loader = Module as unknown as Loader;
 const originalLoad = loader._load;
+// Every module main.js asks `require` for.
+const bundleRequests = new Set<string>();
 
 type BundledPlugin = obsidian.Plugin & {
 	onload(): Promise<void>;
@@ -39,6 +41,8 @@ beforeAll(() => {
 	}
 	// Obsidian provides `obsidian` at runtime; the bundle keeps it external.
 	loader._load = function (request: string, ...rest: unknown[]) {
+		const parent = rest[0] as { filename?: string } | undefined;
+		if (parent?.filename === BUNDLE) bundleRequests.add(request);
 		if (request === 'obsidian') return obsidian;
 		return originalLoad.call(this, request, ...rest);
 	};
@@ -57,6 +61,13 @@ async function load(fake: FakeApp, stored: unknown) {
 }
 
 describe('built main.js', () => {
+	// Obsidian mobile provides only `obsidian` to require(); Node built-ins
+	// such as crypto would stop the plugin from loading there.
+	it('requires nothing but obsidian at runtime', async () => {
+		await load(new FakeApp(), null);
+		expect([...bundleRequests]).toEqual(['obsidian']);
+	});
+
 	it('registers commands and the protocol handler', async () => {
 		const plugin = await load(new FakeApp(), null);
 		expect(plugin.commands.map((c) => c.id)).toHaveLength(5);

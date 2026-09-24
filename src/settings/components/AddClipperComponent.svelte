@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { createPopperActions } from 'svelte-popperjs';
 	import { ClipperType, DEFAULT_CLIPPER_SETTING } from '../types';
-	import { randomUUID } from 'crypto';
 	import { pluginSettings } from '../settingsstore';
 
 	export let vaultName: string;
@@ -38,7 +37,7 @@
 
 	const addClipper = () => {
 		let clipperPlaceholderSettings = structuredClone(DEFAULT_CLIPPER_SETTING);
-		clipperPlaceholderSettings.clipperId = randomUUID();
+		clipperPlaceholderSettings.clipperId = crypto.randomUUID();
 		clipperPlaceholderSettings.name = addClipperName;
 		clipperPlaceholderSettings.type = addClipperType;
 		clipperPlaceholderSettings.vaultName = vaultName;
