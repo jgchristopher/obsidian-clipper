@@ -6,8 +6,9 @@
 		"module": "ESNext",
 		"target": "es2021",
 		"allowJs": true,
+		// The base config turns on strict; keep the previous level for now.
+		"strict": false,
 		"noImplicitAny": true,
-		"moduleResolution": "node",
 		"importHelpers": true,
 		"isolatedModules": true,
 		"strictNullChecks": true,
