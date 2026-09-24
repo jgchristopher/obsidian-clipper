@@ -8,7 +8,7 @@ import {
 	WorkspaceLeaf,
 } from 'obsidian';
 
-import type { SvelteComponent } from 'svelte';
+import { mount, unmount } from 'svelte';
 import { AdvancedNoteEntry } from './advancednotes/advancednoteentry';
 import { BookmarketlGenerator } from './bookmarkletlink/bookmarkletgenerator';
 import { CanvasEntry } from './canvasentry';
@@ -58,7 +58,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 					if (ctx) {
 						const filePath = ctx.file?.path;
 						Utility.assertNotNull(filePath);
-						new AddNoteCommandComponent({
+						mount(AddNoteCommandComponent, {
 							target: createEl('div'),
 							props: {
 								app: this.app,
@@ -86,7 +86,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 					if (ctx) {
 						const filePath = ctx.file?.path;
 						Utility.assertNotNull(filePath);
-						new AddNoteCommandComponent({
+						mount(AddNoteCommandComponent, {
 							target: createEl('div'),
 							props: {
 								app: this.app,
@@ -393,7 +393,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 class SettingTab extends PluginSettingTab {
 	plugin: ObsidianClipperPlugin;
-	private view: SvelteComponent;
+	private view: ReturnType<typeof mount>;
 
 	constructor(app: App, plugin: ObsidianClipperPlugin) {
 		super(app, plugin);
@@ -406,7 +406,7 @@ class SettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		this.view = new SettingsComponent({
+		this.view = mount(SettingsComponent, {
 			target: containerEl,
 			props: {
 				app: this.app,
@@ -416,6 +416,6 @@ class SettingTab extends PluginSettingTab {
 
 	async hide() {
 		super.hide();
-		this.view.$destroy();
+		unmount(this.view);
 	}
 }

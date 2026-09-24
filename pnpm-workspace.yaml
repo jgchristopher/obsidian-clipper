@@ -3,4 +3,3 @@ onlyBuiltDependencies:
   - esbuild
 ignoredBuiltDependencies:
   - '@parcel/watcher'
-  - svelte-preprocess

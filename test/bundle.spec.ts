@@ -120,6 +120,36 @@ describe('built main.js', () => {
 		expect(tab.containerEl.textContent).toContain('Research clipper');
 		expect(tab.containerEl.textContent).not.toContain('Default Clipper');
 		// Dates render through Obsidian's moment export.
-		expect(tab.containerEl.textContent).toMatch(/Created on [A-Z][a-z]+ \d{2}, \d{4}/);
+		expect(tab.containerEl.textContent).toMatch(
+			/Created on [A-Z][a-z]+ \d{2}, \d{4}/
+		);
+	});
+
+	it('opens the clipper editor with its tabs from the settings tab', async () => {
+		const plugin = await load(new FakeApp(), {
+			version: 2,
+			clippers: [clipper({ name: 'Research clipper' })],
+		});
+		const tab = plugin.settingTabs[0] as obsidian.PluginSettingTab & {
+			display(): void;
+		};
+		tab.display();
+		await settle();
+
+		const gear =
+			tab.containerEl.querySelector<HTMLElement>('td .clickable-icon');
+		gear?.click();
+		await settle();
+
+		expect(obsidian.modals).toHaveLength(1);
+		const [modal] = obsidian.modals;
+		expect(modal.titleEl.textContent).toBe('Edit Clipper Settings');
+		const tabs = Array.from(modal.contentEl.querySelectorAll('li span')).map(
+			(el) => el.textContent
+		);
+		expect(tabs).toEqual(expect.arrayContaining(['Base', 'Browser']));
+		// The active tab's component renders through <svelte:component>.
+		expect(modal.contentEl.querySelector('.obs_clp_box')).not.toBeNull();
+		expect(modal.contentEl.textContent).toContain('Header');
 	});
 });

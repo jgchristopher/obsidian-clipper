@@ -92,7 +92,7 @@
 			</div>
 		</div>
 
-		<div id="arrow" data-popper-arrow />
+		<div id="arrow" data-popper-arrow></div>
 	</div>
 {/if}
 

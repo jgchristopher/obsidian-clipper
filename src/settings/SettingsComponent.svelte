@@ -2,6 +2,7 @@
 	import Notice from './Notice.svelte';
 	import ClipperSettingsComponent from './components/ClipperSettingsComponent.svelte';
 	import { Modal, Platform, moment, type App } from 'obsidian';
+	import { mount } from 'svelte';
 	import { pluginSettings } from './settingsstore';
 	import AddClipperComponent from './components/AddClipperComponent.svelte';
 	import type { ObsidianClipperSettings } from './types';
@@ -35,7 +36,7 @@
 			text: 'Edit Clipper Settings',
 		});
 
-		new ClipperSettingsComponent({
+		mount(ClipperSettingsComponent, {
 			target: settingsScreen.contentEl,
 			props: {
 				app: app,
@@ -95,7 +96,7 @@
 						<th
 							scope="col"
 							class="clp-sticky clp-top-0 clp-z-10 clp-text-center"
-						/>
+						></th>
 					</tr>
 				</thead>
 				<tbody>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { App, Modal } from 'obsidian';
+	import { mount } from 'svelte';
 
 	import { pluginSettings } from '../../settingsstore';
 	import { DEFAULT_CLIPPER_SETTING } from '../../types';
@@ -38,7 +39,7 @@
 		text: 'Edit Clipper Settings',
 	});
 
-	new ClipperSettingsComponent({
+	mount(ClipperSettingsComponent, {
 		target: settingsScreen.contentEl,
 		props: {
 			app,

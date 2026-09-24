@@ -15,6 +15,9 @@ import weeklyData from './utils/weekly-data.json';
 import dailyWeeklyData from './utils/daily-weekly-data.json';
 import dailyCommentsData from './utils/daily-comments.json';
 
+vi.mock('svelte', async () =>
+	(await import('../test/fakes/sveltestub')).svelteMock()
+);
 vi.mock(
 	'./settings/components/addnotecommand/AddNoteCommandComponent.svelte',
 	async () =>

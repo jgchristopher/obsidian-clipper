@@ -54,18 +54,18 @@ Consequences:
 
 **Settings migration:** `loadSettings` treats saved data with no `version` key as the old single-config format (`OldClipperSettings`). `mergeExistingSetting` converts its daily and weekly settings into clipper entries. Bump `version` and extend this path if the settings shape changes incompatibly.
 
-**UI** is Svelte 3 (`src/settings/`, `src/views/`). `settingsstore.ts` wraps plugin settings in a writable store. Its `set` also calls `plugin.saveSettings()`, so components save by calling `pluginSettings.set(...)` or `update(...)`. `update` does not save, so use `set` when the change must be written to disk. The `Open view` command shows `BookmarkletLinksView`, which lists each clipper's bookmarklet and shortcut links.
+**UI** is Svelte 5 in legacy (non-runes) syntax (`src/settings/`, `src/views/`). Components are functions: create them with `mount(Component, { target, props })` and remove them with `unmount()`, never `new Component()`. Svelte compiles `<script lang="ts">` itself, so there is no svelte-preprocess. `settingsstore.ts` wraps plugin settings in a writable store. Its `set` also calls `plugin.saveSettings()`, so components save by calling `pluginSettings.set(...)` or `update(...)`. `update` does not save, so use `set` when the change must be written to disk. The `Open view` command shows `BookmarkletLinksView`, which lists each clipper's bookmarklet and shortcut links.
 
 ## Tests
 
 - `obsidian` ships types only. `vitest.config.mts` aliases it to `test/mocks/obsidian.ts`. Add a mock there when plugin code starts using a new runtime export.
 - `test/fakes/fakeapp.ts` (`FakeApp`) is an in-memory vault, metadata cache, and workspace. Its metadata cache computes headings and the frontmatter section from real file content, so writer tests exercise actual line math. Use `tfile(path)` to pass files into plugin code.
 - Several write paths do not await their promises (`NoteEntry.handleWrite`, `TopicNoteEntry.writeToNote`, `PeriodicNoteEntry.writeToPeriodicNote`). Call `await settle()` before asserting on vault contents.
-- Svelte components cannot compile under vitest without a Svelte plugin. Mock each `.svelte` import with `test/fakes/sveltestub.ts` (see `main.spec.ts`), which records constructions in `mounted`.
+- Unit specs cannot compile `.svelte` files, and vitest resolves `svelte` to its server build, where `mount()` throws. Mock `svelte` with `svelteMock()` and each `.svelte` import with `stub()` from `test/fakes/sveltestub.ts` (see `main.spec.ts`); mounts are recorded in `mounted`. `test/bundle.spec.ts` covers the real Svelte runtime.
 - `obsidian-daily-notes-interface` is mocked per spec with `vi.mock`. `moment` and `createEl` globals are set in `test/setup.ts`.
 - Tests marked `// Current behavior:` or `// BUG` pin existing quirks on purpose. Change them together with the source when fixing the quirk, not to make an upgrade pass.
 - `test/bundle.spec.ts` loads the built `main.js` through Node's `require` (with `obsidian` mapped to the mock) and renders the compiled settings tab. `test/bookmarklet.spec.ts` runs the generated `javascript:` bookmarklet in jsdom against a real selection and captures the `obsidian://` URL. Both test build output, so run `pnpm build` after source changes before `pnpm test`.
-- Not covered: Svelte UI interactions beyond the settings tab's first render.
+- Not covered: Svelte UI interactions beyond rendering the settings tab and opening a clipper's editor.
 
 ## Releases
 

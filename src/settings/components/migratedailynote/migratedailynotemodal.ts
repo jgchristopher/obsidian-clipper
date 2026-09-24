@@ -1,11 +1,12 @@
 import { App, Modal } from 'obsidian';
+import { mount } from 'svelte';
 import MigrateDailyNoteComponent from './MigrateDailyNoteComponent.svelte';
 
 export class MigrateDailyNoteModal extends Modal {
 	constructor(app: App) {
 		super(app);
 
-		new MigrateDailyNoteComponent({
+		mount(MigrateDailyNoteComponent, {
 			target: this.modalEl,
 		});
 	}

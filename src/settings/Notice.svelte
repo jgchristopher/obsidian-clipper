@@ -17,7 +17,7 @@
 		<div class="clp-ml-3 clp-flex-1 md:clp-flex md:clp-justify-between">
 			<p class="clp-text-sm clp-text-blue-700">
 				<slot name="noticeText">
-					<span />
+					<span></span>
 				</slot>
 			</p>
 			<p class="clp-mt-3 clp-text-sm md:clp-mt-0 md:clp-ml-6">

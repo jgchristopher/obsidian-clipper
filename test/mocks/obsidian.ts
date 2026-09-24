@@ -54,12 +54,16 @@ export function base64ToArrayBuffer(base64: string): ArrayBuffer {
 
 export class Component {}
 
+export const modals: Modal[] = [];
+
 export class Modal {
 	app: unknown;
 	modalEl: HTMLElement = document.createElement('div');
+	titleEl: HTMLElement = document.createElement('div');
 	contentEl: HTMLElement = document.createElement('div');
 	constructor(app: unknown) {
 		this.app = app;
+		modals.push(this);
 	}
 	open() {}
 	close() {}

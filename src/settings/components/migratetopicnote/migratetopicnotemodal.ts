@@ -1,4 +1,5 @@
 import { App, Modal } from 'obsidian';
+import { mount } from 'svelte';
 import { ClipperType } from 'src/settings/types';
 import AddNoteCommandComponent from '../addnotecommand/AddNoteCommandComponent.svelte';
 import MigrateTopicNoteComponent from './MigrateTopicNoteComponent.svelte';
@@ -10,7 +11,7 @@ export class MigrateTopicNoteModal extends Modal {
 		super(app);
 		this.notePath = notePath;
 
-		new MigrateTopicNoteComponent({
+		mount(MigrateTopicNoteComponent, {
 			target: this.modalEl,
 			props: {
 				notePath: notePath,
@@ -19,7 +20,7 @@ export class MigrateTopicNoteModal extends Modal {
 	}
 
 	onClose() {
-		new AddNoteCommandComponent({
+		mount(AddNoteCommandComponent, {
 			target: createEl('div'),
 			props: {
 				app: this.app,
