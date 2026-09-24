@@ -10,18 +10,20 @@ User docs live at https://docs.obsidianclipper.com (source in `docs/`).
 
 ## Commands
 
-CI (`.github/workflows/release.yml`) uses `npm install` and `npm run build`, and runs on any pushed tag.
+Use **pnpm** (version pinned by `packageManager` in `package.json`). There is no npm lockfile. pnpm 10 blocks dependency install scripts, and `pnpm-workspace.yaml` lists the allowed and ignored ones. pnpm 10 ignores those keys in `package.json`.
 
-- `npm run build`: full pipeline, see below. This is the only reliable way to produce `main.js`.
-- `npm run compile`: type-check only (`tsc -noEmit`).
-- `npm run dev`: build, then `copy` into a hardcoded local dev-vault plugin folder (`/Users/johnchristopher/gitprojects/obsidian-plugins/dev_plugin_links/obsidian-clipper/`).
-- `npm test`: runs vitest once. Single file: `npx vitest run src/utils/fileutils.spec.ts`. Single test: add `-t "<name>"`. Specs live beside the source as `*.spec.ts`. `main.spec.ts` imports the generated bookmarklet generator, so run `npm run build` once on a fresh checkout before testing.
-- Lint: `npx eslint src` (no script defined).
-- `npm run version`: bumps `manifest.json`/`versions.json` via `src/build/version-bump.mjs`.
+- `pnpm build`: full pipeline, see below. This is the only reliable way to produce `main.js`.
+- `pnpm compile`: type-check only (`tsc -noEmit`). Includes spec files.
+- `pnpm dev`: build, then `copy` into a hardcoded local dev-vault plugin folder (`/Users/johnchristopher/gitprojects/obsidian-plugins/dev_plugin_links/obsidian-clipper/`).
+- `pnpm test`: runs vitest once. Single file: `pnpm exec vitest run src/utils/fileutils.spec.ts`. Single test: add `-t "<name>"`. Specs live beside the source as `*.spec.ts`. `main.spec.ts` imports the generated bookmarklet generator, so run `pnpm build` once on a fresh checkout before testing.
+- Lint: `pnpm exec eslint src` (no script defined).
+- `npm version <x>`: the `version` lifecycle script bumps `manifest.json`/`versions.json` via `src/build/version-bump.mjs`. `.npmrc` sets an empty tag prefix, so tags have no `v`.
+
+CI (`.github/workflows/release.yml`) runs on any pushed tag. It does a frozen pnpm install, runs `pnpm build` and `pnpm test`, then publishes a GitHub release with `main.js`, `manifest.json`, `styles.css`, and a zip.
 
 ## Build pipeline (order matters)
 
-`npm run build` runs these in sequence:
+`pnpm build` runs these in sequence:
 
 1. `build:bookmarklet`: `tsc` compiles `src/build/bookmarkletcode/index.ts` (the code that runs in the browser page), `webpack` bundles it into `src/build/bookmarkletcode/dist/bookmarklet.js`, and the `bookmarklet` CLI minifies it into `obsidian-clipper.min.js`.
 2. `build:bookmarkletgen`: `src/bookmarkletlink/build-bookmarkletgenerator.js` reads the minified bookmarklet, replaces the `~ClipperIdFiller~`, `~VaultNameFiller~`, `~HeaderLevelBase~`, `~H1Setting~`…`~H6Setting~`, and `~CaptureComment~` placeholders with template-literal expressions, and writes `src/bookmarkletlink/bookmarkletgenerator.ts`.
@@ -67,4 +69,3 @@ Consequences:
 ## Releases
 
 - `manifest.json` holds the last stable release. `manifest-beta.json` holds the current beta (BRAT-style, currently `1.0.0-beta.N`). Beta bumps edit `manifest-beta.json` only.
-- Pushing any tag triggers CI to build and attach `main.js`, `manifest.json`, `styles.css`, and a zip to a GitHub release.

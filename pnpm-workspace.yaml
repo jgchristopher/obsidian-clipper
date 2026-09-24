@@ -1,0 +1,6 @@
+# pnpm 10 blocks dependency install scripts unless listed here.
+onlyBuiltDependencies:
+  - esbuild
+ignoredBuiltDependencies:
+  - '@parcel/watcher'
+  - svelte-preprocess
