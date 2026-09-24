@@ -141,7 +141,10 @@ export class CanvasEntry {
 			g.setEdge(edge.toNode, edge.fromNode);
 		});
 
-		dagre.layout(g, { rankdir: 'lr', align: 'dr', ranker: 'tight-tree' });
+		// Layout runs top-to-bottom (dagre's default). rankdir, align, and
+		// ranker only take effect on the graph label (g.setGraph), not as
+		// layout() options, where they were previously passed and ignored.
+		dagre.layout(g);
 		return g;
 	}
 }
