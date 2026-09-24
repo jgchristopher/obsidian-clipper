@@ -1,9 +1,8 @@
 <script lang="ts">
 	import Notice from './Notice.svelte';
 	import ClipperSettingsComponent from './components/ClipperSettingsComponent.svelte';
-	import { Modal, Platform, type App } from 'obsidian';
+	import { Modal, Platform, moment, type App } from 'obsidian';
 	import { pluginSettings } from './settingsstore';
-	import moment from 'moment';
 	import AddClipperComponent from './components/AddClipperComponent.svelte';
 	import type { ObsidianClipperSettings } from './types';
 

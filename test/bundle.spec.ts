@@ -108,5 +108,7 @@ describe('built main.js', () => {
 		await settle();
 		expect(tab.containerEl.textContent).toContain('Research clipper');
 		expect(tab.containerEl.textContent).not.toContain('Default Clipper');
+		// Dates render through Obsidian's moment export.
+		expect(tab.containerEl.textContent).toMatch(/Created on [A-Z][a-z]+ \d{2}, \d{4}/);
 	});
 });

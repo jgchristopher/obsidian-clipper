@@ -137,3 +137,5 @@ export const Platform = {
 export async function requestUrl(): Promise<never> {
 	throw new Error('requestUrl is not available in tests');
 }
+
+export { default as moment } from 'moment';
