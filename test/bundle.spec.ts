@@ -126,7 +126,8 @@ describe('built main.js', () => {
 	});
 
 	it('opens the clipper editor with its tabs from the settings tab', async () => {
-		const plugin = await load(new FakeApp(), {
+		const fake = new FakeApp();
+		const plugin = await load(fake, {
 			version: 2,
 			clippers: [clipper({ name: 'Research clipper' })],
 		});
@@ -143,6 +144,7 @@ describe('built main.js', () => {
 
 		expect(obsidian.modals).toHaveLength(1);
 		const [modal] = obsidian.modals;
+		expect(modal.app).toBe(plugin.app);
 		expect(modal.titleEl.textContent).toBe('Edit Clipper Settings');
 		const tabs = Array.from(modal.contentEl.querySelectorAll('li span')).map(
 			(el) => el.textContent

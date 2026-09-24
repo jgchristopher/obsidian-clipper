@@ -34,7 +34,7 @@
 		// Update settingsIndex to find the newly created clipper
 	}
 
-	const settingsScreen = new Modal(this.app);
+	const settingsScreen = new Modal(app);
 	settingsScreen.titleEl.createEl('h2', {
 		text: 'Edit Clipper Settings',
 	});

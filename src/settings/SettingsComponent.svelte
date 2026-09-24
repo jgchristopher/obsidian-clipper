@@ -31,7 +31,7 @@
 	};
 
 	const editSetting = (settingsIndex: number) => {
-		const settingsScreen = new Modal(this.app);
+		const settingsScreen = new Modal(app);
 		settingsScreen.titleEl.createEl('h2', {
 			text: 'Edit Clipper Settings',
 		});
