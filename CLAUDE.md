@@ -64,7 +64,8 @@ Consequences:
 - Svelte components cannot compile under vitest without a Svelte plugin. Mock each `.svelte` import with `test/fakes/sveltestub.ts` (see `main.spec.ts`), which records constructions in `mounted`.
 - `obsidian-daily-notes-interface` is mocked per spec with `vi.mock`. `moment` and `createEl` globals are set in `test/setup.ts`.
 - Tests marked `// Current behavior:` or `// BUG` pin existing quirks on purpose. Change them together with the source when fixing the quirk, not to make an upgrade pass.
-- Not covered: the bookmarklet's in-browser code (`src/build/bookmarkletcode/`) and Svelte UI components.
+- `test/bundle.spec.ts` loads the built `main.js` through Node's `require` (with `obsidian` mapped to the mock) and renders the compiled settings tab. `test/bookmarklet.spec.ts` runs the generated `javascript:` bookmarklet in jsdom against a real selection and captures the `obsidian://` URL. Both test build output, so run `pnpm build` after source changes before `pnpm test`.
+- Not covered: Svelte UI interactions beyond the settings tab's first render.
 
 ## Releases
 
