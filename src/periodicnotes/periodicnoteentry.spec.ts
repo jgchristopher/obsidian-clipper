@@ -85,6 +85,15 @@ describe.each([
 			);
 		});
 
+		it('shows a notice when the note cannot be created', async () => {
+			get.mockReturnValue(undefined as never);
+			create.mockResolvedValue(undefined);
+			await write(new FakeApp());
+			expect(notices).toEqual([
+				`Obsidian Clipper couldn't create the ${name} note to write to`,
+			]);
+		});
+
 		it(`shows a notice when the ${name} note feature is disabled`, async () => {
 			enabled.mockReturnValue(false);
 			await write(new FakeApp());

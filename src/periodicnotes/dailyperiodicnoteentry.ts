@@ -17,6 +17,7 @@ export class DailyPeriodicNoteEntry extends PeriodicNoteEntry {
 		template: string
 	) {
 		super(app, openFileOnWrite, sectionPosition, template);
+		this.periodName = 'daily';
 		this.notice =
 			'To use a daily note with Obsidian Clipper the daily note needs to be enabled from the periodic-notes plugin';
 	}
@@ -32,7 +33,9 @@ export class DailyPeriodicNoteEntry extends PeriodicNoteEntry {
 		return appHasDailyNotesPluginLoaded();
 	}
 
-	protected async waitForNoteCreation(moment: Moment): Promise<TFile> {
+	protected async waitForNoteCreation(
+		moment: Moment
+	): Promise<TFile | undefined> {
 		const dailyNote = await createDailyNote(moment);
 		await new Promise((r) => setTimeout(r, 150));
 		return dailyNote;

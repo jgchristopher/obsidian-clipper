@@ -6,6 +6,7 @@ import type { SectionPosition } from 'src/settings/types';
 
 export abstract class PeriodicNoteEntry extends NoteEntry {
 	protected notice: string;
+	protected periodName: string;
 
 	protected abstract getPeriodicNote(
 		moment: Moment,
@@ -13,7 +14,11 @@ export abstract class PeriodicNoteEntry extends NoteEntry {
 	): TFile;
 	protected abstract hasPeriodicNoteEnabled(): boolean;
 	protected abstract getAllNotes(): Record<string, TFile>;
-	protected abstract waitForNoteCreation(moment: Moment): Promise<TFile>;
+	// Resolves undefined when obsidian-daily-notes-interface fails to create
+	// the note (it catches the error and shows its own notice).
+	protected abstract waitForNoteCreation(
+		moment: Moment
+	): Promise<TFile | undefined>;
 
 	constructor(
 		app: App,
@@ -36,6 +41,12 @@ export abstract class PeriodicNoteEntry extends NoteEntry {
 		}
 
 		const note = await this.getNote();
+		if (!note) {
+			new Notice(
+				`Obsidian Clipper couldn't create the ${this.periodName} note to write to`
+			);
+			return;
+		}
 
 		this.handleWrite(
 			note.path,

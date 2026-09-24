@@ -17,6 +17,7 @@ export class WeeklyPeriodicNoteEntry extends PeriodicNoteEntry {
 		template: string
 	) {
 		super(app, openFileOnWrite, sectionPosition, template);
+		this.periodName = 'weekly';
 		this.notice =
 			'To use a weekly note with Obsidian Clipper the weekly note needs to be enabled from the periodic-notes plugin';
 	}
