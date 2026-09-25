@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Clipper Sample Page</title>
+		<style>
+			body {
+				font-family: system-ui, sans-serif;
+				max-width: 46rem;
+				margin: 2rem auto;
+				padding: 0 1rem;
+				line-height: 1.5;
+			}
+			section {
+				border: 1px dashed #bbb;
+				border-radius: 8px;
+				padding: 0.5rem 1rem;
+				margin: 1.5rem 0;
+			}
+			section > h2:first-child {
+				font-size: 0.8rem;
+				text-transform: uppercase;
+				color: #777;
+			}
+			table,
+			th,
+			td {
+				border: 1px solid #ccc;
+				border-collapse: collapse;
+				padding: 0.25rem 0.5rem;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Clipper Sample Page</h1>
+		<p>
+			Select a section (or several), then click a clipper bookmarklet. Each
+			section exercises one part of the HTML-to-Markdown conversion.
+		</p>
+
+		<section id="headings">
+			<h2>Headings</h2>
+			<h1>Heading one</h1>
+			<h2>Heading two</h2>
+			<h3>Heading three</h3>
+			<h4>Heading four</h4>
+			<h5>Heading five (renders at h4 depth: known quirk)</h5>
+			<h6>Heading six (renders at h4 depth: known quirk)</h6>
+		</section>
+
+		<section id="inline">
+			<h2>Inline formatting and links</h2>
+			<p>
+				Text with <strong>bold</strong>, <em>italic</em>,
+				<code>inline code</code>, an
+				<a href="https://obsidian.md">absolute link</a>, and a
+				<a href="/relative/path">relative link</a> that should become absolute.
+			</p>
+			<p>
+				Characters that need escaping: 5 * 3, snake_case_name, [brackets], #
+				hash.
+			</p>
+		</section>
+
+		<section id="lists">
+			<h2>Lists</h2>
+			<ul>
+				<li>
+					First bullet
+					<ul>
+						<li>Nested bullet</li>
+					</ul>
+				</li>
+				<li>Second bullet</li>
+			</ul>
+			<ol>
+				<li>First step</li>
+				<li>Second step</li>
+			</ol>
+		</section>
+
+		<section id="blocks">
+			<h2>Code, quotes, rules</h2>
+			<pre><code>fn main() {
+    println!("Hello from a code block");
+}</code></pre>
+			<blockquote>A quoted paragraph.</blockquote>
+			<hr />
+			<p>Text after a horizontal rule.</p>
+		</section>
+
+		<section id="tables">
+			<h2>Tables</h2>
+			<table>
+				<thead>
+					<tr>
+						<th>Language</th>
+						<th align="right">Year</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Rust</td>
+						<td>2015</td>
+					</tr>
+					<tr>
+						<td>Pipe | inside</td>
+						<td>line<br />break</td>
+					</tr>
+				</tbody>
+			</table>
+			<p>
+				Expected: a Markdown table. The Year column should be right-aligned
+				(<code>--:</code>) but shows <code>---</code>: known bug.
+			</p>
+			<table>
+				<tr>
+					<td>No</td>
+					<td>header</td>
+				</tr>
+				<tr>
+					<td>row</td>
+					<td>two</td>
+				</tr>
+			</table>
+			<p>Expected: an empty header row is added.</p>
+		</section>
+
+		<section id="image">
+			<h2>Image</h2>
+			<img
+				src="https://obsidian.md/images/obsidian-logo-gradient.svg"
+				alt="Obsidian logo"
+				width="64"
+			/>
+		</section>
+
+		<section id="long">
+			<h2>Long selection (Chrome on Windows limit)</h2>
+			<p id="long-text"></p>
+			<p>
+				On Chrome for Windows, clipping this section shows an alert (twice:
+				known quirk) instead of opening Obsidian, because the URL passes 2000
+				characters.
+			</p>
+		</section>
+
+		<script>
+			document.getElementById('long-text').textContent =
+				'This sentence repeats to make a long selection. '.repeat(60);
+		</script>
+	</body>
+</html>

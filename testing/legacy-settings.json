@@ -1,0 +1,30 @@
+{
+	"dailyNoteHeading": "Clippings",
+	"weeklyNoteHeading": "Clippings",
+	"tags": "legacy",
+	"timestampFormat": "HH:mm",
+	"dateFormat": "YYYY-MM-DD",
+	"dailyOpenOnWrite": false,
+	"useDailyNote": true,
+	"dailyPosition": "append",
+	"useWeeklyNote": true,
+	"weeklyPosition": "prepend",
+	"weeklyOpenOnWrite": false,
+	"dailyEntryTemplateLocation": "",
+	"weeklyEntryTemplateLocation": "",
+	"topicEntryTemplateLocation": "",
+	"topicPosition": "append",
+	"topicOpenOnWrite": false,
+	"markdownSettings": {
+		"h1": "##",
+		"h2": "##",
+		"h3": "###",
+		"h4": "####",
+		"h5": "#####",
+		"h6": "######"
+	},
+	"advanced": false,
+	"advancedStorageFolder": "Clippings",
+	"captureComments": true,
+	"experimentalCanvas": false
+}

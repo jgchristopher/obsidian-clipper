@@ -67,6 +67,14 @@ Consequences:
 - `test/bundle.spec.ts` loads the built `main.js` through Node's `require` (with `obsidian` mapped to the mock) and renders the compiled settings tab. `test/bookmarklet.spec.ts` runs the generated `javascript:` bookmarklet in jsdom against a real selection and captures the `obsidian://` URL. Both test build output, so run `pnpm build` after source changes before `pnpm test`.
 - Not covered: Svelte UI interactions beyond rendering the settings tab and opening a clipper's editor.
 
+## Manual testing vault
+
+- `pnpm seed-vault [path] [--force] [--legacy] [--offline]` creates a disposable vault (default `~/Obsidian/Clipper Test Vault`, or `$CLIPPER_TEST_VAULT`) from `testing/vault/`. It installs the current build, one clipper per write path (`testing/clipper-settings.json`, with fixed clipper IDs so dragged bookmarklets survive reseeding), Hot Reload, and Periodic Notes 0.0.17 (the settings shape `obsidian-daily-notes-interface` reads for weekly notes). It also generates a `Test Links` note of `obsidian://` links for every clipper. `--legacy` seeds pre-1.0 settings from `testing/legacy-settings.json`.
+- The vault name is the folder name. Bookmarklets and links target it, so the seed script fills `vaultName` in at seed time.
+- `pnpm dev` builds and copies the plugin into that vault. It copies files instead of symlinking them because Hot Reload only notices writes made inside the vault.
+- `--force` only deletes a folder that contains the `.clipper-test-vault` marker.
+- `pnpm sample-page` serves `testing/sample-page.html` on port 8765 for bookmarklet testing.
+
 ## Releases
 
 - `manifest.json` holds the last stable release. `manifest-beta.json` holds the current beta (BRAT-style, currently `1.0.0-beta.N`). Beta bumps edit `manifest-beta.json` only.

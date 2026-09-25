@@ -16,8 +16,10 @@
 		"webpack": "webpack",
 		"build": "pnpm run build:bookmarklet && pnpm run build:bookmarkletgen && pnpm run compile && pnpm run tailwindcss && node esbuild.config.mjs production",
 		"dev": "pnpm run build && pnpm run copy",
-		"copy": "cp main.js styles.css manifest.json /Users/johnchristopher/gitprojects/obsidian-plugins/dev_plugin_links/obsidian-clipper/",
-		"clean": "rimraf ./src/build/bookmarkletcode/index.js && rimraf ./src/build/bookmarkletcode/obsidian-clipper.min.js && rimraf ./src/build/bookmarkletcode/dist/*"
+		"copy": "node testing/copy-to-vault.mjs",
+		"clean": "rimraf ./src/build/bookmarkletcode/index.js && rimraf ./src/build/bookmarkletcode/obsidian-clipper.min.js && rimraf ./src/build/bookmarkletcode/dist/*",
+		"seed-vault": "node testing/seed-vault.mjs",
+		"sample-page": "python3 -m http.server 8765 --directory testing"
 	},
 	"keywords": [],
 	"author": "jgchristopher",

@@ -79,7 +79,14 @@ export default defineConfig([
 
 	// Node build scripts.
 	{
-		files: ['*.js', '*.mjs', '*.mts', 'src/**/*.js', 'src/**/*.mjs'],
+		files: [
+			'*.js',
+			'*.mjs',
+			'*.mts',
+			'src/**/*.js',
+			'src/**/*.mjs',
+			'testing/**/*.mjs',
+		],
 		languageOptions: {
 			globals: { ...globals.node },
 			...disableTypeChecked.languageOptions,
@@ -88,6 +95,8 @@ export default defineConfig([
 			...disableTypeChecked.rules,
 			...obsidianRulesOff,
 			'@typescript-eslint/no-require-imports': 'off',
+			// Node scripts use fetch; requestUrl only exists inside Obsidian.
+			'no-restricted-globals': 'off',
 		},
 	},
 

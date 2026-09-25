@@ -1,0 +1,10 @@
+{
+  "file-explorer": true,
+  "global-search": true,
+  "switcher": true,
+  "command-palette": true,
+  "daily-notes": true,
+  "templates": true,
+  "canvas": true,
+  "outline": true
+}
