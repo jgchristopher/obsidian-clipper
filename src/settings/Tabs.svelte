@@ -7,8 +7,8 @@
 	const handleClick = (tabValue: number) => (activeTabValue = tabValue);
 </script>
 
-<div>
-	<div>
+<div class="clp-tabs">
+	<div class="clp-tab-bar">
 		<ul>
 			{#each tabs as tab}
 				<li class={activeTabValue === tab.value ? 'active' : ''}>
@@ -30,7 +30,21 @@
 </div>
 
 <style>
+	/* Fill the space the modal gives us: the tab bar stays fixed and only the
+	   active tab's content scrolls. */
+	.clp-tabs {
+		display: flex;
+		flex-direction: column;
+		flex: 1 1 auto;
+		min-height: 0;
+	}
+	.clp-tab-bar {
+		flex-shrink: 0;
+	}
 	.obs_clp_box {
+		flex: 1 1 auto;
+		min-height: 0;
+		overflow-y: auto;
 		margin-bottom: 10px;
 		padding: 40px;
 		border: 1px solid var(--tab-divider-color);

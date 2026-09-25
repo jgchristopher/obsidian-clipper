@@ -145,6 +145,10 @@ describe('built main.js', () => {
 		expect(obsidian.modals).toHaveLength(1);
 		const [modal] = obsidian.modals;
 		expect(modal.app).toBe(plugin.app);
+		// Fixed size (input.css), so switching tabs does not resize it.
+		expect(modal.modalEl.classList.contains('clipper-settings-modal')).toBe(
+			true
+		);
 		expect(modal.titleEl.textContent).toBe('Edit Clipper Settings');
 		const tabs = Array.from(modal.contentEl.querySelectorAll('li span')).map(
 			(el) => el.textContent

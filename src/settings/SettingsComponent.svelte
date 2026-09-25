@@ -1,8 +1,7 @@
 <script lang="ts">
 	import Notice from './Notice.svelte';
-	import ClipperSettingsComponent from './components/ClipperSettingsComponent.svelte';
-	import { Modal, Platform, moment, type App } from 'obsidian';
-	import { mount } from 'svelte';
+	import { Platform, moment, type App } from 'obsidian';
+	import { openClipperSettingsModal } from './components/clippersettingsmodal';
 	import { pluginSettings } from './settingsstore';
 	import AddClipperComponent from './components/AddClipperComponent.svelte';
 	import type { ObsidianClipperSettings } from './types';
@@ -31,20 +30,7 @@
 	};
 
 	const editSetting = (settingsIndex: number) => {
-		const settingsScreen = new Modal(app);
-		settingsScreen.titleEl.createEl('h2', {
-			text: 'Edit Clipper Settings',
-		});
-
-		mount(ClipperSettingsComponent, {
-			target: settingsScreen.contentEl,
-			props: {
-				app: app,
-				settingsIndex,
-			},
-		});
-
-		settingsScreen.open();
+		openClipperSettingsModal(app, settingsIndex);
 	};
 </script>
 

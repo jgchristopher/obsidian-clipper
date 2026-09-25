@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { App, Modal } from 'obsidian';
-	import { mount } from 'svelte';
+	import type { App } from 'obsidian';
 
 	import { pluginSettings } from '../../settingsstore';
 	import { DEFAULT_CLIPPER_SETTING } from '../../types';
-	import ClipperSettingsComponent from '../ClipperSettingsComponent.svelte';
+	import { openClipperSettingsModal } from '../clippersettingsmodal';
 	import { getFileName } from 'src/utils/fileutils';
 
 	export let app: App;
@@ -34,19 +33,6 @@
 		// Update settingsIndex to find the newly created clipper
 	}
 
-	const settingsScreen = new Modal(app);
-	settingsScreen.titleEl.createEl('h2', {
-		text: 'Edit Clipper Settings',
-	});
-
-	mount(ClipperSettingsComponent, {
-		target: settingsScreen.contentEl,
-		props: {
-			app,
-			settingsIndex,
-			activeTabNumber: 2,
-		},
-	});
-
-	settingsScreen.open();
+	// Open on the Browser tab so the new bookmarklet is right there.
+	openClipperSettingsModal(app, settingsIndex, 2);
 </script>

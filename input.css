@@ -12,3 +12,24 @@ div.clp_section_margin {
 .internal-embed[alt='clipped'] h1 {
 	display: none;
 }
+
+/* Edit Clipper Settings modal: a fixed size, so switching tabs does not
+   resize or re-center it. The clipper name and tab bar stay put and the tab
+   content scrolls (see Tabs.svelte). Phones already show modals full screen. */
+.modal.clipper-settings-modal {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+body:not(.is-phone) .modal.clipper-settings-modal {
+	width: min(720px, 90vw);
+	height: min(760px, 85vh);
+}
+
+.clipper-settings-modal .modal-content {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+	min-height: 0;
+}
