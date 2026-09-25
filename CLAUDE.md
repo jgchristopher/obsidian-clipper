@@ -50,7 +50,7 @@ Consequences:
 
 - `NoteEntry` (`src/abstracts/`) is the base class. `TopicNoteEntry` and `PeriodicNoteEntry` (daily/weekly, which resolve the note through `obsidian-daily-notes-interface`) extend it.
 - `NoteEntry.handleWrite` picks `PrependWriter` or `AppendWriter`. Both extend `FileWriter` (`src/periodicnotes/filewriter.ts`), which does the heading-aware insertion. Heading lookup and creation have open TODOs there.
-- `CanvasEntry` is separate. It adds a text node to a `.canvas` file, using dagre for layout.
+- `CanvasEntry` is separate. It adds a clip as a text node linked to a node for its site (domain). It only positions the new nodes (below the site node or its lowest linked clip, moving down past anything in the way; a new site goes right of all content) and writes every existing node back untouched.
 
 **Settings migration:** `loadSettings` treats saved data with no `version` key as the old single-config format (`OldClipperSettings`). `mergeExistingSetting` converts its daily and weekly settings into clipper entries. Bump `version` and extend this path if the settings shape changes incompatibly.
 

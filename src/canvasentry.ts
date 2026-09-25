@@ -1,4 +1,3 @@
-import dagre from '@dagrejs/dagre';
 import type { App, TFile } from 'obsidian';
 import type {
 	AllCanvasNodeData,
@@ -10,141 +9,147 @@ import type {
 import type { ClippedData } from './clippeddata';
 import { Utility } from './utils/utility';
 
+export const CANVAS_GAP = 40;
+export const DOMAIN_SIZE = { width: 240, height: 50 };
+export const CLIP_SIZE = { width: 600, height: 400 };
+
+type Rect = Pick<CanvasNodeData, 'x' | 'y' | 'width' | 'height'>;
+
+const bottom = (r: Rect) => r.y + r.height;
+const right = (r: Rect) => r.x + r.width;
+
+/**
+ * Adds a clip to a canvas as a text node linked to a node for its site
+ * (domain). Only the new nodes are positioned; existing nodes are written
+ * back exactly as read, since there is no way to tell which positions the
+ * user chose.
+ */
 export class CanvasEntry {
 	private app: App;
 
 	constructor(app: App) {
 		this.app = app;
 	}
+
 	public async writeToCanvas(file: TFile, noteEntry: ClippedData) {
 		const content = noteEntry.getEntryContent();
 		Utility.assertNotNull(content);
 		const fileData = await this.app.vault.read(file);
 		const canvasData: CanvasData =
-			fileData === '' ? JSON.parse('{}') : JSON.parse(fileData);
+			fileData === ''
+				? { nodes: [], edges: [] }
+				: (JSON.parse(fileData) as CanvasData);
+		canvasData.nodes ??= [];
+		canvasData.edges ??= [];
 
-		const newNode = this.createTextNode(
-			canvasData.nodes,
+		const domain = Utility.parseDomainFromUrl(noteEntry.getUrl());
+		const domainNode =
+			this.findDomainNode(canvasData, domain) ??
+			this.addDomainNode(canvasData, domain);
+
+		const clipNode = this.textNode(
 			`${content}\n[^1]\n\n[^1](${noteEntry.getUrl()})`,
-			{
-				width: 600,
-				height: 400,
-			}
+			this.clipPosition(canvasData, domainNode),
+			CLIP_SIZE
 		);
-		const domainNode = this.findDomainNodeOrCreate(
-			canvasData,
-			Utility.parseDomainFromUrl(noteEntry.getUrl())
-		);
-
-		canvasData.nodes.push(newNode);
-		this.linkNewNodeToDomainNode(canvasData, domainNode, newNode);
-
-		const layout = this.processWithDagre(canvasData);
-		const nodesWithLayout: CanvasTextData[] = [];
-		layout.nodes().forEach((element) => {
-			const nodeData = layout.node(element);
-			console.log(nodeData);
-			const label = nodeData.label;
-			Utility.assertNotNull(label);
-			nodesWithLayout.push({
-				id: element,
-				type: 'text',
-				text: label,
-				width: nodeData.width,
-				height: nodeData.height,
-				x: nodeData.x,
-				y: nodeData.y,
-			});
-		});
-
-		canvasData.nodes = nodesWithLayout;
+		canvasData.nodes.push(clipNode);
+		canvasData.edges.push(this.edge(clipNode, domainNode));
 
 		await this.app.vault.modify(file, JSON.stringify(canvasData));
-		await new Promise((r) => setTimeout(r, 50));
+		await new Promise((r) => window.setTimeout(r, 50));
 	}
 
-	private findDomainNodeOrCreate(canvasData: CanvasData, domain: string) {
-		if (!canvasData.nodes) {
-			canvasData.nodes = [];
-		}
-
-		let domainNode = canvasData.nodes.find((node) => node.text === domain);
-		if (!domainNode) {
-			domainNode = this.createTextNode(canvasData.nodes, domain);
-			canvasData.nodes.push(domainNode);
-		}
-		return domainNode;
+	private findDomainNode(
+		canvasData: CanvasData,
+		domain: string
+	): CanvasTextData | undefined {
+		return canvasData.nodes.find(
+			(node): node is CanvasTextData =>
+				node.type === 'text' && node.text === domain
+		);
 	}
 
-	private createTextNode(
-		nodes: AllCanvasNodeData[],
-		content: string,
-		options = { width: 240, height: 50 }
+	/** A new site goes right of all content, level with the topmost node. */
+	private addDomainNode(canvasData: CanvasData, domain: string) {
+		const { nodes } = canvasData;
+		const position = nodes.length
+			? {
+					x: Math.max(...nodes.map(right)) + CANVAS_GAP,
+					y: Math.min(...nodes.map((n) => n.y)),
+			  }
+			: { x: 0, y: 0 };
+		const node = this.textNode(domain, position, DOMAIN_SIZE);
+		nodes.push(node);
+		return node;
+	}
+
+	/**
+	 * Below the domain node or its lowest linked clip, whichever is lower, in
+	 * the domain node's column. Moves further down past anything in the way.
+	 */
+	private clipPosition(canvasData: CanvasData, domainNode: CanvasTextData) {
+		const linkedIds = new Set(
+			canvasData.edges
+				.filter((edge) => edge.toNode === domainNode.id)
+				.map((edge) => edge.fromNode)
+		);
+		const column = [
+			domainNode,
+			...canvasData.nodes.filter((node) => linkedIds.has(node.id)),
+		];
+		const rect: Rect = {
+			x: domainNode.x,
+			y: Math.max(...column.map(bottom)) + CANVAS_GAP,
+			...CLIP_SIZE,
+		};
+
+		// A group the domain node sits in is its background, not an obstacle.
+		const obstacles = canvasData.nodes.filter(
+			(node) => !(node.type === 'group' && contains(node, domainNode))
+		);
+		let blocker = obstacles.find((node) => overlaps(rect, node));
+		while (blocker) {
+			rect.y = bottom(blocker) + CANVAS_GAP;
+			blocker = obstacles.find((node) => overlaps(rect, node));
+		}
+		return { x: rect.x, y: rect.y };
+	}
+
+	private textNode(
+		text: string,
+		position: { x: number; y: number },
+		size: { width: number; height: number }
 	): CanvasTextData {
-		const { x, y } = this.getPositionCoordinatesForNewNode(nodes);
-
 		return {
 			id: crypto.randomUUID(),
 			type: 'text',
-			text: content,
-			x,
-			y,
-			width: options.width,
-			height: options.height,
+			text,
+			...position,
+			...size,
 			createdBy: 'obsidian-clipper',
 		};
 	}
 
-	private getPositionCoordinatesForNewNode(_nodes: AllCanvasNodeData[]) {
-		// TODO: Need to figure out a viable creation position algorithm?
-		return { x: -1300, y: -800 };
-	}
-
-	private linkNewNodeToDomainNode(
-		canvasData: CanvasData,
-		domainNode: CanvasNodeData,
-		newNode: CanvasNodeData
-	) {
-		const edge: CanvasEdgeData = {
-			id: self.crypto.randomUUID(),
-			fromNode: newNode.id,
+	private edge(from: CanvasNodeData, to: CanvasNodeData): CanvasEdgeData {
+		return {
+			id: crypto.randomUUID(),
+			fromNode: from.id,
 			fromSide: 'top',
-			toNode: domainNode.id,
+			toNode: to.id,
 			toSide: 'bottom',
 		};
-		if (!canvasData.edges) {
-			canvasData.edges = [];
-		}
-		canvasData.edges.push(edge);
 	}
+}
 
-	private processWithDagre(canvasData: CanvasData) {
-		const g = new dagre.graphlib.Graph({ directed: true, multigraph: true });
-		g.setGraph({});
-		g.setDefaultEdgeLabel(function () {
-			return {};
-		});
+function overlaps(a: Rect, b: AllCanvasNodeData) {
+	return a.x < right(b) && b.x < right(a) && a.y < bottom(b) && b.y < bottom(a);
+}
 
-		canvasData.nodes.forEach((node) => {
-			g.setNode(node.id, {
-				label: node.text,
-				width: node.width,
-				height: node.height,
-				createdBy: node.createdBy,
-				type: node.type,
-				x: node.x,
-				y: node.y,
-			});
-		});
-
-		canvasData.edges.forEach((edge) => {
-			g.setEdge(edge.toNode, edge.fromNode);
-		});
-
-		// Layout runs top-to-bottom (dagre's default). rankdir, align, and
-		// ranker only take effect on the graph label (g.setGraph), not as
-		// layout() options, where they were previously passed and ignored.
-		dagre.layout(g);
-		return g;
-	}
+function contains(outer: Rect, inner: Rect) {
+	return (
+		inner.x >= outer.x &&
+		inner.y >= outer.y &&
+		right(inner) <= right(outer) &&
+		bottom(inner) <= bottom(outer)
+	);
 }

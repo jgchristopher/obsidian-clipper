@@ -15,8 +15,8 @@ Keep the developer console open (Cmd+Opt+I). Svelte errors show up there even wh
 | No Heading Yet | [[No Heading Yet]] | Creates the missing **Clips** heading at the end of the note |
 | Research | [[Research]] | Advanced storage: highlight goes to `Clippings/<domain>.md`, embed goes here |
 | Templated | [[Templated]] | Renders through `Templates/Clip Entry.md` |
-| Research Board | `Boards/Research Board.canvas` | Adds a domain node and a clip node, linked, laid out top to bottom |
-| Board With File Node | `Boards/Board With File Node.canvas` | Known bug: a canvas with a file node fails to take clips |
+| Research Board | `Boards/Research Board.canvas` | Adds a site node and a clip below it; a second clip from the same site goes below the first; a new site goes to the right |
+| Board With File Node | `Boards/Board With File Node.canvas` | Takes clips without moving or changing the existing file node |
 
 ## 1. Settings UI
 
