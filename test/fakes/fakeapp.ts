@@ -100,6 +100,7 @@ export class FakeApp {
 				[...this.files.keys()]
 					.filter((p) => p.endsWith('.md'))
 					.map((p) => new TFile(p)),
+			getFiles: () => [...this.files.keys()].map((p) => new TFile(p)),
 			getAllLoadedFiles: () => [
 				...[...this.folders].map((p) => new TFolder(p)),
 				...[...this.files.keys()].map((p) => new TFile(p)),

@@ -17,6 +17,7 @@ Keep the developer console open (Cmd+Opt+I). Svelte errors show up there even wh
 | Templated | [[Templated]] | Renders through `Templates/Clip Entry.md` |
 | Research Board | `Boards/Research Board.canvas` | Adds a site node and a clip below it; a second clip from the same site goes below the first; a new site goes to the right |
 | Board With File Node | `Boards/Board With File Node.canvas` | Takes clips without moving or changing the existing file node |
+| Research Board (saved by file name) | `Boards/Research Board.canvas` | Saved the way the old Canvas Bookmarklet command did (file name only). The first clip finds the board and saves its full path on the clipper |
 
 ## 1. Settings UI
 

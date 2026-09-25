@@ -38,6 +38,12 @@ import { MigrateDailyNoteModal } from './settings/components/migratedailynote/mi
 export const UNKNOWN_CLIPPER_NOTICE =
 	"Obsidian Clipper: this bookmarklet's clipper no longer exists. Copy a new bookmarklet from Clipper settings.";
 
+export const missingCanvasNotice = (path: string) =>
+	`Obsidian Clipper couldn't find the canvas "${path}". Choose it again in the clipper's settings.`;
+
+export const ambiguousCanvasNotice = (name: string) =>
+	`Obsidian Clipper found several canvases named "${name}". Choose the right one in the clipper's settings.`;
+
 export default class ObsidianClipperPlugin extends Plugin {
 	settings: ObsidianClipperPluginSettings;
 
@@ -345,6 +351,35 @@ export default class ObsidianClipperPlugin extends Plugin {
 		);
 	}
 
+	/**
+	 * Finds a canvas clipper's canvas, or shows a notice and returns null.
+	 * The old Canvas Bookmarklet command saved only the file name, so a bare
+	 * name that is not at the vault root is looked up by name; a unique match
+	 * is used and its full path saved on the clipper.
+	 */
+	resolveCanvas(clipperSettings: ObsidianClipperSettings): TFile | null {
+		const { notePath } = clipperSettings;
+		const file = this.app.vault.getAbstractFileByPath(notePath);
+		if (file instanceof TFile) return file;
+
+		if (!notePath.includes('/')) {
+			const matches = this.app.vault
+				.getFiles()
+				.filter((f) => f.extension === 'canvas' && f.name === notePath);
+			if (matches.length === 1) {
+				clipperSettings.notePath = matches[0].path;
+				void this.saveSettings();
+				return matches[0];
+			}
+			if (matches.length > 1) {
+				new Notice(ambiguousCanvasNotice(notePath));
+				return null;
+			}
+		}
+		new Notice(missingCanvasNotice(notePath));
+		return null;
+	}
+
 	writeNoteEntry(
 		clipperSettings: ObsidianClipperSettings,
 		noteEntry: ClippedData
@@ -355,7 +390,10 @@ export default class ObsidianClipperPlugin extends Plugin {
 				clipperSettings.notePath
 			);
 			if (type === ClipperType.CANVAS) {
-				new CanvasEntry(this.app).writeToCanvas(file as TFile, noteEntry);
+				const canvas = this.resolveCanvas(clipperSettings);
+				if (canvas) {
+					void new CanvasEntry(this.app).writeToCanvas(canvas, noteEntry);
+				}
 			} else {
 				new TopicNoteEntry(
 					this.app,

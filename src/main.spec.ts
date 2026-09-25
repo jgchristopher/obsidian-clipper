@@ -4,7 +4,11 @@ import { Modal, type Plugin as MockPlugin } from '../test/mocks/obsidian';
 import { FakeApp, notices, settle, tfile } from '../test/fakes/fakeapp';
 import { clipper } from '../test/fakes/clippers';
 import { mounted } from '../test/fakes/sveltestub';
-import ObsidianClipperPlugin, { UNKNOWN_CLIPPER_NOTICE } from './main';
+import ObsidianClipperPlugin, {
+	UNKNOWN_CLIPPER_NOTICE,
+	ambiguousCanvasNotice,
+	missingCanvasNotice,
+} from './main';
 import {
 	ClipperType,
 	type ObsidianClipperPluginSettings,
@@ -322,6 +326,55 @@ describe('obsidian://obsidian-clipper handler', () => {
 		const canvas = JSON.parse(fake.read('b.canvas') ?? '');
 		expect(canvas.nodes).toHaveLength(2);
 		expect(canvas.edges).toHaveLength(1);
+	});
+
+	it('shows a notice when the canvas no longer exists', async () => {
+		const plugin = await loadPlugin(
+			new FakeApp(),
+			settingsWith(
+				clipper({ type: ClipperType.CANVAS, notePath: 'Boards/gone.canvas' })
+			)
+		);
+		await clip(plugin, { clipperId: 'clipper-1', highlightdata: 'x' });
+		expect(notices).toEqual([missingCanvasNotice('Boards/gone.canvas')]);
+	});
+
+	// Clippers made by the old Canvas Bookmarklet command stored only the
+	// canvas file name.
+	it('finds a canvas saved by file name only and stores its full path', async () => {
+		const fake = new FakeApp({ 'Boards/research.canvas': '' });
+		const plugin = await loadPlugin(
+			fake,
+			settingsWith(
+				clipper({ type: ClipperType.CANVAS, notePath: 'research.canvas' })
+			)
+		);
+		await clip(plugin, { clipperId: 'clipper-1', highlightdata: 'x' });
+		const canvas = JSON.parse(fake.read('Boards/research.canvas') ?? '');
+		expect(canvas.nodes).toHaveLength(2);
+		expect(plugin.settings.clippers[0].notePath).toBe('Boards/research.canvas');
+		expect(
+			(plugin.storedData as typeof plugin.settings).clippers[0].notePath
+		).toBe('Boards/research.canvas');
+		expect(notices).toEqual([]);
+	});
+
+	it('asks the user to choose when several canvases share the saved file name', async () => {
+		const fake = new FakeApp({
+			'A/research.canvas': '',
+			'B/research.canvas': '',
+		});
+		const plugin = await loadPlugin(
+			fake,
+			settingsWith(
+				clipper({ type: ClipperType.CANVAS, notePath: 'research.canvas' })
+			)
+		);
+		await clip(plugin, { clipperId: 'clipper-1', highlightdata: 'x' });
+		expect(fake.read('A/research.canvas')).toBe('');
+		expect(fake.read('B/research.canvas')).toBe('');
+		expect(plugin.settings.clippers[0].notePath).toBe('research.canvas');
+		expect(notices).toEqual([ambiguousCanvasNotice('research.canvas')]);
 	});
 
 	it('shows a notice and writes nothing for an unknown clipperId', async () => {

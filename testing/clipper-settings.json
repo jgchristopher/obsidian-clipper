@@ -243,6 +243,33 @@
 			"advancedStorage": false,
 			"advancedStorageFolder": "Clippings",
 			"captureComments": false
+		},
+		{
+			"type": "canvas",
+			"name": "Research Board (saved by file name)",
+			"clipperId": "00000000-0000-4000-8000-000000000010",
+			"createdAt": "2026-09-25T00:00:00.000Z",
+			"vaultName": "__VAULT_NAME__",
+			"notePath": "Research Board.canvas",
+			"heading": "",
+			"headingLevel": 2,
+			"tags": "",
+			"timestampFormat": "HH:mm",
+			"dateFormat": "YYYY-MM-DD",
+			"openOnWrite": false,
+			"position": "append",
+			"entryTemplateLocation": "",
+			"markdownSettings": {
+				"h1": "##",
+				"h2": "##",
+				"h3": "###",
+				"h4": "####",
+				"h5": "#####",
+				"h6": "######"
+			},
+			"advancedStorage": false,
+			"advancedStorageFolder": "Clippings",
+			"captureComments": false
 		}
 	]
 }
