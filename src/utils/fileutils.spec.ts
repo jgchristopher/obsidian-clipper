@@ -50,9 +50,9 @@ describe('findStartAndAppendFromHeadingInCache', () => {
 		).toEqual({ firstLine: 7, lastLine: -1 });
 	});
 
-	// Current behavior: only a heading of the *same* level ends the section.
-	// A shallower heading (# after ##) does not.
-	it('does not end the section at a shallower heading', () => {
+	// A section runs until the next heading of the same or higher level,
+	// matching Obsidian's outline and heading folding.
+	it('ends the section at a shallower heading', () => {
 		const shallower = ['## Clippings', '- one', '# Top', 'text'].join('\n');
 		expect(
 			findStartAndAppendFromHeadingInCache(
@@ -60,7 +60,7 @@ describe('findStartAndAppendFromHeadingInCache', () => {
 				2,
 				headingsOf(shallower)
 			)
-		).toEqual({ firstLine: 1, lastLine: -1 });
+		).toEqual({ firstLine: 1, lastLine: 2 });
 	});
 
 	it('requires the heading level to match', () => {

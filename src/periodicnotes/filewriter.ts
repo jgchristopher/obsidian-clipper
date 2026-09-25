@@ -64,7 +64,9 @@ export abstract class FileWriter {
 			} catch (e) {
 				//TODO: Create the header, append the clipping and append everything to the end of the file
 				//
-				clippedData = `${'#'.repeat(headingLevel)} ${heading} \n\n ${clippedData}`;
+				clippedData = `${'#'.repeat(
+					headingLevel
+				)} ${heading} \n\n ${clippedData}`;
 				const startLine = this.getEndOfFrontmatter(file);
 
 				return this.writeAndOpenFile(
@@ -87,11 +89,6 @@ export abstract class FileWriter {
 					insertSection.lastLine
 				);
 			}
-
-			// Going to remove blank lines TODO: This may not be a great idea
-			targetSection = targetSection.filter((line) => {
-				return line !== '';
-			});
 
 			targetSection = this.positionDataWithHeader(targetSection, clippedData);
 			let lines: string[] = [];

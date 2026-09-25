@@ -71,11 +71,31 @@ describe('AppendWriter under a heading', () => {
 		);
 	});
 
-	// Current behavior: blank lines inside the target section are removed.
-	it('removes blank lines from the target section', async () => {
+	it('keeps blank lines and appends after the last non-blank line', async () => {
 		const doc = lines('# Clips', '', '- c1', '', '# B', 'b');
 		expect(await write(AppendWriter, doc, 'CLIP', 'Clips', 1)).toBe(
-			lines('# Clips', '- c1', 'CLIP', '# B', 'b')
+			lines('# Clips', '', '- c1', 'CLIP', '', '# B', 'b')
+		);
+	});
+
+	it('keeps the trailing newline when the section is last', async () => {
+		const doc = lines('# Clips', '- c1', '');
+		expect(await write(AppendWriter, doc, 'CLIP', 'Clips', 1)).toBe(
+			lines('# Clips', '- c1', 'CLIP', '')
+		);
+	});
+
+	it('appends directly under the heading when the section is empty', async () => {
+		const doc = lines('# Clips', '', '# B');
+		expect(await write(AppendWriter, doc, 'CLIP', 'Clips', 1)).toBe(
+			lines('# Clips', 'CLIP', '', '# B')
+		);
+	});
+
+	it('ends the section at a shallower heading', async () => {
+		const doc = lines('## Clips', '- c1', '# Other', 'o');
+		expect(await write(AppendWriter, doc, 'CLIP', 'Clips', 2)).toBe(
+			lines('## Clips', '- c1', 'CLIP', '# Other', 'o')
 		);
 	});
 
@@ -103,6 +123,20 @@ describe('AppendWriter under a heading', () => {
 });
 
 describe('PrependWriter under a heading', () => {
+	it('keeps blank lines in the section', async () => {
+		const doc = lines('# Clips', '', '- c1', '', '# B');
+		expect(await write(PrependWriter, doc, 'CLIP', 'Clips', 1)).toBe(
+			lines('# Clips', 'CLIP', '', '- c1', '', '# B')
+		);
+	});
+
+	it('ends the section at a shallower heading', async () => {
+		const doc = lines('## Clips', '- c1', '# Other', 'o');
+		expect(await write(PrependWriter, doc, 'CLIP', 'Clips', 2)).toBe(
+			lines('## Clips', 'CLIP', '- c1', '# Other', 'o')
+		);
+	});
+
 	it('inserts directly after the heading line', async () => {
 		const doc = lines('# A', '# Clips', '- c1', '# B');
 		expect(await write(PrependWriter, doc, 'CLIP', 'Clips', 1)).toBe(

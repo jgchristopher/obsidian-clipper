@@ -27,10 +27,11 @@ export function findStartAndAppendFromHeadingInCache(
 	if (foundHeadingIndex !== -1) {
 		const foundHeading = cachedHeadings[foundHeadingIndex];
 		let nextHeading: HeadingCache | null = null;
-		// Need to find the next level 1 heading, if any
+		// The section ends at the next heading of the same or higher level
+		// (fewer #s), like Obsidian's outline. Deeper headings stay inside.
 		for (let i = foundHeadingIndex + 1; i < cachedHeadings?.length; i++) {
 			const cachedHeading = cachedHeadings[i];
-			if (cachedHeading.level === foundHeading.level) {
+			if (cachedHeading.level <= foundHeading.level) {
 				nextHeading = cachedHeading;
 				break;
 			}

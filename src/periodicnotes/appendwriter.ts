@@ -12,7 +12,13 @@ export class AppendWriter extends FileWriter {
 		targetSection: string[],
 		clippedData: string
 	): string[] {
-		targetSection.push(clippedData);
+		// Insert after the section's last non-blank line, so blank lines that
+		// separate it from the next heading stay where they are.
+		let insertAt = targetSection.length;
+		while (insertAt > 0 && targetSection[insertAt - 1].trim() === '') {
+			insertAt--;
+		}
+		targetSection.splice(insertAt, 0, clippedData);
 		return targetSection;
 	}
 }
