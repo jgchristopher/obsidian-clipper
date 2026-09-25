@@ -4,7 +4,7 @@ import { Modal, type Plugin as MockPlugin } from '../test/mocks/obsidian';
 import { FakeApp, notices, settle, tfile } from '../test/fakes/fakeapp';
 import { clipper } from '../test/fakes/clippers';
 import { mounted } from '../test/fakes/sveltestub';
-import ObsidianClipperPlugin from './main';
+import ObsidianClipperPlugin, { UNKNOWN_CLIPPER_NOTICE } from './main';
 import {
 	ClipperType,
 	type ObsidianClipperPluginSettings,
@@ -197,14 +197,30 @@ describe('loadSettings', () => {
 		expect(daily.clipperId).not.toBe(weekly.clipperId);
 	});
 
-	// BUG (current behavior): captureComments is not carried over, so users
-	// who had comment capture enabled lose it on upgrade.
-	it('does not migrate captureComments', async () => {
+	it('migrates captureComments', async () => {
 		expect(dailyCommentsData.captureComments).toBe(true);
 		const plugin = await loadPlugin(
 			new FakeApp(),
 			structuredClone(dailyCommentsData)
 		);
+		expect(plugin.settings.clippers[0].captureComments).toBe(true);
+	});
+
+	it('migrates captureComments to both daily and weekly clippers', async () => {
+		const plugin = await loadPlugin(new FakeApp(), {
+			...structuredClone(dailyWeeklyData),
+			captureComments: true,
+		});
+		expect(plugin.settings.clippers.map((c) => c.captureComments)).toEqual([
+			true,
+			true,
+		]);
+	});
+
+	it('leaves captureComments off when old settings lack it', async () => {
+		const old: Record<string, unknown> = structuredClone(dailyData);
+		delete old.captureComments;
+		const plugin = await loadPlugin(new FakeApp(), old);
 		expect(plugin.settings.clippers[0].captureComments).toBe(false);
 	});
 });
@@ -308,15 +324,15 @@ describe('obsidian://obsidian-clipper handler', () => {
 		expect(canvas.edges).toHaveLength(1);
 	});
 
-	it('throws for an unknown clipperId', async () => {
-		const plugin = await loadPlugin(new FakeApp(), settingsWith(clipper()));
-		await expect(
-			plugin.protocolHandlers['obsidian-clipper']({
-				clipperId: 'nope',
-				url: 'u',
-				title: 't',
-			})
-		).rejects.toThrow('Value is null');
+	it('shows a notice and writes nothing for an unknown clipperId', async () => {
+		const fake = new FakeApp({ 'n.md': 'N' });
+		const plugin = await loadPlugin(
+			fake,
+			settingsWith(clipper({ type: ClipperType.TOPIC, notePath: 'n.md' }))
+		);
+		await clip(plugin, { clipperId: 'deleted-clipper', highlightdata: 'x' });
+		expect(fake.read('n.md')).toBe('N');
+		expect(notices).toEqual([UNKNOWN_CLIPPER_NOTICE]);
 	});
 
 	it('opens the topic migration modal for an old bookmarklet with a notePath', async () => {
@@ -381,8 +397,7 @@ describe('commands', () => {
 		});
 	});
 
-	// Current behavior: the canvas command passes only the file name, not the path.
-	it('passes only the canvas file name to the add-clipper dialog', async () => {
+	it('passes the full canvas path to the add-clipper dialog', async () => {
 		const fake = new FakeApp();
 		const plugin = await loadPlugin(fake);
 		fake.activeFile = 'boards/research.canvas';
@@ -390,7 +405,7 @@ describe('commands', () => {
 		expect(mounted).toContainEqual({
 			name: 'AddNoteCommandComponent',
 			props: expect.objectContaining({
-				filePath: 'research.canvas',
+				filePath: 'boards/research.canvas',
 				type: 'canvas',
 			}),
 		});

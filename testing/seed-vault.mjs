@@ -180,7 +180,7 @@ function writeTestLinks() {
 		lines.push(
 			'This vault was seeded with **pre-1.0 settings**. Open Settings → Clipper first: the old daily/weekly settings should appear as two clippers (daily and weekly).',
 			'',
-			'Known bug: "capture comments" was on in the old settings but is not carried over.',
+			'"Capture comments" was on in the old settings, so both converted clippers should have it on.',
 			''
 		);
 	} else {
@@ -221,7 +221,7 @@ function writeTestLinks() {
 				url: url('unknown'),
 				title: 'Unknown',
 				highlightdata: sample,
-			})}): nothing is written; the console shows "Value is null"`,
+			})}): nothing is written; a notice says the clipper no longer exists`,
 			''
 		);
 	}

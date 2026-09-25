@@ -50,7 +50,7 @@ Clipper IDs are fixed in `testing/clipper-settings.json`, so bookmarks keep work
 ## 4. Upgrading from pre-1.0
 
 - [ ] `pnpm seed-vault --force --legacy`, open the vault: Settings → Clipper shows a daily and a weekly clipper converted from the old settings
-- [ ] Known bug: "capture comments" was on in the old settings and is off after conversion
+- [ ] "Capture comments" was on in the old settings and is still on for both converted clippers
 
 ## 5. Mobile
 

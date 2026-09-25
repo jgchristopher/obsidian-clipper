@@ -29,12 +29,14 @@ import {
 } from './settings/types';
 import { TopicNoteEntry } from './topicnoteentry';
 import type { Parameters } from './types';
-import { getFileName } from './utils/fileutils';
 import { ShortcutLinkGenerator } from './shortcutslink/ShortcutLinkGenerator';
 import { Utility } from './utils/utility';
 import { BookmarkletLinksView, VIEW_TYPE } from './views/BookmarkletLinksView';
 import { MigrateTopicNoteModal } from './settings/components/migratetopicnote/migratetopicnotemodal';
 import { MigrateDailyNoteModal } from './settings/components/migratedailynote/migratedailynotemodal';
+
+export const UNKNOWN_CLIPPER_NOTICE =
+	"Obsidian Clipper: this bookmarklet's clipper no longer exists. Copy a new bookmarklet from Clipper settings.";
 
 export default class ObsidianClipperPlugin extends Plugin {
 	settings: ObsidianClipperPluginSettings;
@@ -90,7 +92,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 							target: createEl('div'),
 							props: {
 								app: this.app,
-								filePath: getFileName(filePath),
+								filePath: filePath,
 								type: ClipperType.CANVAS,
 							},
 						});
@@ -189,7 +191,11 @@ export default class ObsidianClipperPlugin extends Plugin {
 				const clipperSettings = this.settings.clippers.find(
 					(c) => c.clipperId === clipperId
 				);
-				Utility.assertNotNull(clipperSettings);
+				// A bookmarklet can outlive its clipper (deleted in settings).
+				if (!clipperSettings) {
+					new Notice(UNKNOWN_CLIPPER_NOTICE);
+					return;
+				}
 
 				let entryReference = highlightData;
 
@@ -286,6 +292,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 			dailyTransfered.entryTemplateLocation =
 				settingsData.dailyEntryTemplateLocation;
 			dailyTransfered.markdownSettings = settingsData.markdownSettings;
+			dailyTransfered.captureComments = settingsData.captureComments === true;
 			dailyTransfered.advancedStorage = settingsData.advanced;
 			dailyTransfered.advancedStorageFolder =
 				settingsData.advancedStorageFolder;
@@ -309,6 +316,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 			weeklyTransfered.entryTemplateLocation =
 				settingsData.weeklyEntryTemplateLocation;
 			weeklyTransfered.markdownSettings = settingsData.markdownSettings;
+			weeklyTransfered.captureComments = settingsData.captureComments === true;
 			weeklyTransfered.advancedStorage = settingsData.advanced;
 			weeklyTransfered.advancedStorageFolder =
 				settingsData.advancedStorageFolder;
