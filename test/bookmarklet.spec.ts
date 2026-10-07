@@ -368,8 +368,8 @@ describe('Chrome on Windows URL limit', () => {
 			userAgent: chromeWindows,
 		});
 		expect(navigatedTo).toBeUndefined();
-		// Current behavior: the length check runs twice, so two alerts appear.
-		expect(alert).toHaveBeenCalledTimes(2);
+		expect(alert).toHaveBeenCalledTimes(1);
+		expect(alert.mock.calls[0][0]).toMatch(/must be less than 2000/);
 	});
 
 	it('navigates normally for short selections', () => {

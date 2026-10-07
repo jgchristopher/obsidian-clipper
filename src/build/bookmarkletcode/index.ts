@@ -136,16 +136,6 @@ import { MarkdownTables } from './markdown/tables';
 		)}&comments=${encodeURIComponent(comment)}`;
 
 		// Chrome on Windows limits character length of URLs
-		if (
-			navigator.userAgent.indexOf('Chrome') !== -1 &&
-			navigator.userAgent.indexOf('Windows') !== -1
-		) {
-			if (obsidianUrl.length >= 2000) {
-				alert(
-					`Chrome on Windows doesn't allow a highlight this large. ${obsidianUrl.length} characters have been selected and it must be less than 2000`
-				);
-			}
-		}
 		if (!showContentLengthWarning(obsidianUrl)) {
 			document.location.href = obsidianUrl;
 		}
