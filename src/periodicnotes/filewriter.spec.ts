@@ -30,6 +30,13 @@ describe('AppendWriter without a heading', () => {
 			lines('a', 'b', 'CLIP')
 		);
 	});
+
+	it('appends at the end of a note with frontmatter', async () => {
+		const doc = lines('---', 'tags: x', '---', 'body');
+		expect(await write(AppendWriter, doc, 'CLIP')).toBe(
+			lines('---', 'tags: x', '---', 'body', 'CLIP')
+		);
+	});
 });
 
 describe('PrependWriter without a heading', () => {
@@ -40,11 +47,16 @@ describe('PrependWriter without a heading', () => {
 		);
 	});
 
-	// Current behavior: with no frontmatter the insert point is line 1, so the
-	// first line of the note stays above the clipping.
-	it('inserts after the first line when there is no frontmatter', async () => {
+	it('inserts at the top when there is no frontmatter', async () => {
 		expect(await write(PrependWriter, lines('first', 'second'), 'CLIP')).toBe(
-			lines('first', 'CLIP', 'second')
+			lines('CLIP', 'first', 'second')
+		);
+	});
+
+	it('inserts after frontmatter that is the whole note', async () => {
+		const doc = lines('---', 'tags: x', '---');
+		expect(await write(PrependWriter, doc, 'CLIP')).toBe(
+			lines('---', 'tags: x', '---', 'CLIP')
 		);
 	});
 });
@@ -106,6 +118,13 @@ describe('AppendWriter under a heading', () => {
 		);
 	});
 
+	it('creates a missing heading at the end of a note with frontmatter', async () => {
+		const doc = lines('---', 'a: 1', '---', 'body');
+		expect(await write(AppendWriter, doc, 'CLIP', 'Clips', 1)).toBe(
+			lines('---', 'a: 1', '---', 'body', '# Clips ', '', ' CLIP')
+		);
+	});
+
 	it('creates the heading at the end of the file when it is missing', async () => {
 		expect(
 			await write(AppendWriter, lines('# Other', 'x'), 'CLIP', 'Clips', 2)
@@ -141,6 +160,13 @@ describe('PrependWriter under a heading', () => {
 		const doc = lines('# A', '# Clips', '- c1', '# B');
 		expect(await write(PrependWriter, doc, 'CLIP', 'Clips', 1)).toBe(
 			lines('# A', '# Clips', 'CLIP', '- c1', '# B')
+		);
+	});
+
+	it('creates a missing heading at the top when there is no frontmatter', async () => {
+		const doc = lines('first', 'second');
+		expect(await write(PrependWriter, doc, 'CLIP', 'Clips', 1)).toBe(
+			lines('# Clips ', '', ' CLIP', 'first', 'second')
 		);
 	});
 

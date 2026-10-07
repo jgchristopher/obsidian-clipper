@@ -174,20 +174,13 @@ export abstract class FileWriter {
 		}
 	}
 
+	// The first line after the frontmatter's closing ---, or 0 when the note
+	// has no frontmatter.
 	private getEndOfFrontmatter(file: TFile) {
-		let endLine = 0;
-		if (file) {
-			const cache = this.app.metadataCache;
-			if (cache) {
-				const sections = cache.getFileCache(file)?.sections;
-				const frontmatter = sections?.find((item: SectionCache) => {
-					return item.type === 'yaml';
-				});
-				if (frontmatter) {
-					endLine = frontmatter.position.end.line;
-				}
-			}
-		}
-		return endLine + 1;
+		const sections = this.app.metadataCache.getFileCache(file)?.sections;
+		const frontmatter = sections?.find((item: SectionCache) => {
+			return item.type === 'yaml';
+		});
+		return frontmatter ? frontmatter.position.end.line + 1 : 0;
 	}
 }
