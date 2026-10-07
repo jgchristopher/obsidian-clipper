@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { FakeApp } from '../test/fakes/fakeapp';
+import { FakeApp, notices } from '../test/fakes/fakeapp';
 import { clipper } from '../test/fakes/clippers';
 import { ClippedData } from './clippeddata';
+import { missingTemplateNotice } from './utils/templateutils';
 
 describe('ClippedData.formattedEntry', () => {
 	beforeEach(() => {
@@ -87,6 +88,21 @@ describe('ClippedData.formattedEntry', () => {
 		expect(await data.formattedEntry('')).toBe(
 			'- [ ] [Page](https://ex.com) \n\n---'
 		);
+	});
+
+	it('falls back to the default format when the template is missing', async () => {
+		const data = new ClippedData(
+			'Page',
+			'https://ex.com',
+			clipper(),
+			app,
+			'body',
+			'note'
+		);
+		expect(await data.formattedEntry('templates/gone.md')).toBe(
+			'- [ ] [Page](https://ex.com) \nbody\n >note \n\n---'
+		);
+		expect(notices).toEqual([missingTemplateNotice('templates/gone.md')]);
 	});
 
 	it('exposes the url and raw content', () => {

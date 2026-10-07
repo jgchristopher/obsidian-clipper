@@ -1,25 +1,30 @@
 import { App, Notice, normalizePath } from 'obsidian';
 
+export const missingTemplateNotice = (templatePath: string) =>
+	`Obsidian Clipper couldn't find the entry template "${templatePath}". Using the default entry format.`;
+
+// Resolves null when no file matches the template path, after showing a
+// notice, so the caller can fall back to the default entry format.
 export async function getTemplateContents(
 	app: App,
 	templatePath: string | undefined
-): Promise<string> {
+): Promise<string | null> {
 	const { metadataCache, vault } = app;
 	const normalizedTemplatePath = normalizePath(templatePath ?? '');
 	if (templatePath === '/') {
 		return Promise.resolve('');
 	}
 
-	let templateContents = '';
 	try {
 		const templateFile = metadataCache.getFirstLinkpathDest(
 			normalizedTemplatePath,
 			''
 		);
-		if (templateFile) {
-			templateContents = await vault.cachedRead(templateFile);
+		if (!templateFile) {
+			new Notice(missingTemplateNotice(normalizedTemplatePath));
+			return null;
 		}
-		return `${templateContents}`;
+		return await vault.cachedRead(templateFile);
 	} catch (err) {
 		console.error(
 			`Failed to read the clipper entry template '${normalizedTemplatePath}'`,

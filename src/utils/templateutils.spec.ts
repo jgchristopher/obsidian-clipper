@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { FakeApp } from '../../test/fakes/fakeapp';
+import { FakeApp, notices } from '../../test/fakes/fakeapp';
 import {
 	applyTemplateTransformations,
 	getTemplateContents,
+	missingTemplateNotice,
 } from './templateutils';
 
 describe('applyTemplateTransformations', () => {
@@ -75,8 +76,9 @@ describe('getTemplateContents', () => {
 		expect(await getTemplateContents(new FakeApp().app, '/')).toBe('');
 	});
 
-	// Current behavior: a missing template silently yields an empty entry.
-	it('returns an empty string when the template does not exist', async () => {
-		expect(await getTemplateContents(new FakeApp().app, 'nope.md')).toBe('');
+	it('returns null and names the path in a notice when the template does not exist', async () => {
+		expect(await getTemplateContents(new FakeApp().app, 'nope.md')).toBeNull();
+		expect(notices).toEqual([missingTemplateNotice('nope.md')]);
+		expect(notices[0]).toContain('nope.md');
 	});
 });

@@ -45,34 +45,32 @@ export class ClippedData {
 	}
 
 	public async formattedEntry(template?: string): Promise<string> {
-		let formattedData = '';
-
 		if (template && template != '') {
 			const rawTemplateContents = await getTemplateContents(this.app, template);
-			formattedData = applyTemplateTransformations(
-				this.title,
-				this.url,
-				this.tags,
-				this.timeStamp,
-				this.date,
-				this.data,
-				this.comment,
-				rawTemplateContents
-			);
-		} else {
-			if (!this.data) {
-				formattedData = `- [ ] [${this.title}](${this.url}) ${this.tags}\n\n---`;
-			} else {
-				if (this.settings.advancedStorage) {
-					// The Advanced format has the url as a footnote of the clipped data
-					formattedData = `- [ ] ${this.title} ${this.tags}\n${this.data}\n >${this.comment} \n\n---`;
-				} else {
-					// Else make the title a link
-					formattedData = `- [ ] [${this.title}](${this.url}) ${this.tags}\n${this.data}\n >${this.comment} \n\n---`;
-				}
+			// A missing template falls back to the default format below.
+			if (rawTemplateContents !== null) {
+				return applyTemplateTransformations(
+					this.title,
+					this.url,
+					this.tags,
+					this.timeStamp,
+					this.date,
+					this.data,
+					this.comment,
+					rawTemplateContents
+				);
 			}
 		}
-		return formattedData;
+
+		if (!this.data) {
+			return `- [ ] [${this.title}](${this.url}) ${this.tags}\n\n---`;
+		}
+		if (this.settings.advancedStorage) {
+			// The Advanced format has the url as a footnote of the clipped data
+			return `- [ ] ${this.title} ${this.tags}\n${this.data}\n >${this.comment} \n\n---`;
+		}
+		// Else make the title a link
+		return `- [ ] [${this.title}](${this.url}) ${this.tags}\n${this.data}\n >${this.comment} \n\n---`;
 	}
 
 	public getUrl() {
