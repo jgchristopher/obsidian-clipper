@@ -54,7 +54,11 @@
 {#if showAddClipperPopup}
 	<div class="addPopOver" use:popperContent={extraOpts}>
 		<div class="clp_section_margin">
-			<h1>Add New Clipper</h1>
+			<div class="setting-item setting-item-heading">
+				<div class="setting-item-info">
+					<div class="setting-item-name">Add New Clipper</div>
+				</div>
+			</div>
 			<div class="setting-item">
 				<div class="setting-item-info">
 					<div class="setting-item-name">Clipper Name</div>

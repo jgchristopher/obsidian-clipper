@@ -158,4 +158,51 @@ describe('built main.js', () => {
 		expect(modal.contentEl.querySelector('.obs_clp_box')).not.toBeNull();
 		expect(modal.contentEl.textContent).toContain('Header');
 	});
+
+	// Obsidian 1.12+ ships `.vertical-tab-content h1 { display: none; }`, so an
+	// <h1> anywhere in a settings tab renders blank (issue #88). Headings use
+	// Obsidian's setting-item-heading markup instead, in the tab and the modal.
+	it('renders headings without <h1>, which Obsidian hides in settings', async () => {
+		const plugin = await load(new FakeApp(), {
+			version: 2,
+			clippers: [clipper({ name: 'Research clipper' })],
+		});
+		const tab = plugin.settingTabs[0] as obsidian.PluginSettingTab & {
+			display(): void;
+		};
+		tab.display();
+		await settle();
+		const headings = (root: HTMLElement) =>
+			Array.from(
+				root.querySelectorAll('.setting-item-heading .setting-item-name')
+			).map((el) => el.textContent?.trim());
+
+		const plus = Array.from(
+			tab.containerEl.querySelectorAll<HTMLElement>('button')
+		).find((b) => b.textContent === '+');
+		plus?.click();
+		await settle();
+		expect(tab.containerEl.querySelector('h1')).toBeNull();
+		expect(headings(tab.containerEl)).toContain('Add New Clipper');
+
+		tab.containerEl.querySelector<HTMLElement>('td .clickable-icon')?.click();
+		await settle();
+		const [modal] = obsidian.modals.slice(-1);
+		const seen: (string | undefined)[] = [];
+		for (const label of ['Base', 'Browser', 'Advanced']) {
+			Array.from(modal.contentEl.querySelectorAll<HTMLElement>('li span'))
+				.find((el) => el.textContent === label)
+				?.click();
+			await settle();
+			expect(modal.contentEl.querySelector('h1')).toBeNull();
+			seen.push(...headings(modal.contentEl));
+		}
+		expect(seen).toEqual(
+			expect.arrayContaining([
+				'Daily Note Entry',
+				'Bookmarklet Settings',
+				'Advanced Settings',
+			])
+		);
+	});
 });

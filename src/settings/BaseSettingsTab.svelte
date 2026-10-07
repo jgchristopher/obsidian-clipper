@@ -8,40 +8,24 @@
 	export let app: App;
 	export let settings: Writable<ObsidianClipperSettings>;
 
+	const headings: Record<ClipperType, string> = {
+		[ClipperType.DAILY]: 'Daily Note Entry',
+		[ClipperType.WEEKLY]: 'Weekly Note Entry',
+		[ClipperType.TOPIC]: 'Topic Note Entry',
+		[ClipperType.CANVAS]: 'Canvas Entry',
+	};
+
 	const onChange = (entry: string) => {
 		$settings.entryTemplateLocation = entry;
 	};
 </script>
 
 <div class="clp_section_margin">
-	{#if $settings.type === ClipperType.DAILY}
-		<div class="setting-item mod-toggle">
-			<div class="setting-item-info">
-				<h1 class="setting-item-name">Daily Note Entry</h1>
-			</div>
+	<div class="setting-item setting-item-heading">
+		<div class="setting-item-info">
+			<div class="setting-item-name">{headings[$settings.type]}</div>
 		</div>
-	{/if}
-	{#if $settings.type === ClipperType.WEEKLY}
-		<div class="setting-item mod-toggle">
-			<div class="setting-item-info">
-				<h1 class="setting-item-name">Weekly Note Entry</h1>
-			</div>
-		</div>
-	{/if}
-	{#if $settings.type === ClipperType.TOPIC}
-		<div class="setting-item mod-toggle">
-			<div class="setting-item-info">
-				<h1 class="setting-item-name">Topic Note Entry</h1>
-			</div>
-		</div>
-	{/if}
-	{#if $settings.type === ClipperType.CANVAS}
-		<div class="setting-item mod-toggle">
-			<div class="setting-item-info">
-				<h1 class="setting-item-name">Canvas Entry</h1>
-			</div>
-		</div>
-	{/if}
+	</div>
 	<div class="clp_section_margin">
 		{#if $settings.type !== ClipperType.CANVAS}
 			<SettingItem>

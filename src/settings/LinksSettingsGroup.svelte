@@ -33,7 +33,11 @@
 </div>
 
 <div class="clp_section_margin">
-	<h1>Bookmarklet Settings</h1>
+	<div class="setting-item setting-item-heading">
+		<div class="setting-item-info">
+			<div class="setting-item-name">Bookmarklet Settings</div>
+		</div>
+	</div>
 	<div class="setting-item">
 		<div class="setting-item-info">
 			<div class="setting-item-name">Capture Comment in Browser</div>

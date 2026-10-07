@@ -22,7 +22,11 @@
 </script>
 
 <div class="clp_section_margin">
-	<h1>Advanced Settings</h1>
+	<div class="setting-item setting-item-heading">
+		<div class="setting-item-info">
+			<div class="setting-item-name">Advanced Settings</div>
+		</div>
+	</div>
 	<div class="setting-item mod-toggle">
 		<div class="setting-item-info">
 			<div class="setting-item-name">Store Clippings Per Domain</div>
