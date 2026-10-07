@@ -26,7 +26,7 @@ CI (`.github/workflows/release.yml`) runs on any pushed tag. It does a frozen pn
 `pnpm build` runs these in sequence:
 
 1. `build:bookmarklet`: `tsc` compiles `src/build/bookmarkletcode/index.ts` (the code that runs in the browser page), `webpack` bundles it into `src/build/bookmarkletcode/dist/bookmarklet.js`, and the `bookmarklet` CLI minifies it into `obsidian-clipper.min.js`.
-2. `build:bookmarkletgen`: `src/bookmarkletlink/build-bookmarkletgenerator.js` reads the minified bookmarklet, replaces the `~ClipperIdFiller~`, `~VaultNameFiller~`, `~HeaderLevelBase~`, `~H1Setting~`…`~H6Setting~`, and `~CaptureComment~` placeholders with template-literal expressions, and writes `src/bookmarkletlink/bookmarkletgenerator.ts`.
+2. `build:bookmarkletgen`: `src/bookmarkletlink/build-bookmarkletgenerator.js` reads the minified bookmarklet, replaces each quoted `~ClipperIdFiller~`, `~VaultNameFiller~`, `~HeaderLevelBase~`, and `~CaptureComment~` string literal with a template-literal expression that JSON-stringifies and percent-encodes the value (the build fails if one is missing), and writes `src/bookmarkletlink/bookmarkletgenerator.ts`.
 3. `compile`: type-check.
 4. `tailwindcss`: `input.css` into `styles.css`.
 5. `esbuild.config.mjs production`: bundles `src/main.ts` (with Svelte) into `main.js`.
@@ -34,7 +34,7 @@ CI (`.github/workflows/release.yml`) runs on any pushed tag. It does a frozen pn
 Consequences:
 
 - `src/bookmarkletlink/bookmarkletgenerator.ts` is **generated and gitignored**. Never edit it. Change the bookmarklet in `src/build/bookmarkletcode/` and rebuild. A fresh checkout will not type-check until step 2 has run.
-- Any new per-clipper value the bookmarklet needs requires three changes: a new `~Placeholder~` in the bookmarklet source, a replacement in the generator script, and a constructor field in the generator template.
+- Any new per-clipper value the bookmarklet needs requires three changes: a new `~Placeholder~` string literal in the bookmarklet source, an entry in the generator script's `placeholders` map, and a constructor field in the generator template.
 - `webpack.config.js` exists only for the bookmarklet. `esbuild` builds the plugin.
 
 ## Architecture
@@ -60,7 +60,7 @@ Consequences:
 
 - `obsidian` ships types only. `vitest.config.mts` aliases it to `test/mocks/obsidian.ts`. Add a mock there when plugin code starts using a new runtime export.
 - `test/fakes/fakeapp.ts` (`FakeApp`) is an in-memory vault, metadata cache, and workspace. Its metadata cache computes headings and the frontmatter section from real file content, so writer tests exercise actual line math. Use `tfile(path)` to pass files into plugin code.
-- Several write paths do not await their promises (`NoteEntry.handleWrite`, `TopicNoteEntry.writeToNote`, `PeriodicNoteEntry.writeToPeriodicNote`). Call `await settle()` before asserting on vault contents.
+- Clip writes are awaited end to end from the protocol handler, and a failed write shows a notice. `await settle()` is only needed for timers, such as the canvas write's delay.
 - Unit specs cannot compile `.svelte` files, and vitest resolves `svelte` to its server build, where `mount()` throws. Mock `svelte` with `svelteMock()` and each `.svelte` import with `stub()` from `test/fakes/sveltestub.ts` (see `main.spec.ts`); mounts are recorded in `mounted`. `test/bundle.spec.ts` covers the real Svelte runtime.
 - `obsidian-daily-notes-interface` is mocked per spec with `vi.mock`. `moment` and `createEl` globals are set in `test/setup.ts`.
 - Tests marked `// Current behavior:` or `// BUG` pin existing quirks on purpose. Change them together with the source when fixing the quirk, not to make an upgrade pass.
