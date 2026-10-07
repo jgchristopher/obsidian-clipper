@@ -168,8 +168,8 @@ export class FakeApp {
 }
 
 /**
- * Several write paths are fire-and-forget (un-awaited promises). Yield to the
- * event loop until they settle.
+ * Yields to the event loop a few times. Write paths are awaited end to end
+ * now, so this only matters for timers such as the canvas write's delay.
  */
 export async function settle(ms = 0) {
 	for (let i = 0; i < 10; i++) {

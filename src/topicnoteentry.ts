@@ -11,7 +11,7 @@ export class TopicNoteEntry extends NoteEntry {
 		headingLevel?: number
 	): Promise<void> {
 		Utility.assertNotNull(file);
-		this.handleWrite(
+		await this.handleWrite(
 			file.path,
 			await noteEntry.formattedEntry(this.template),
 			heading,

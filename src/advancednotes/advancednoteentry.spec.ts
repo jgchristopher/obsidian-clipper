@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { FakeApp, settle } from '../../test/fakes/fakeapp';
+import { FakeApp } from '../../test/fakes/fakeapp';
 import { AdvancedNoteEntry } from './advancednoteentry';
 
 describe('AdvancedNoteEntry.writeToAdvancedNoteStorage', () => {
@@ -45,10 +45,36 @@ describe('AdvancedNoteEntry.writeToAdvancedNoteStorage', () => {
 			fake.app,
 			'clippings'
 		).writeToAdvancedNoteStorage('ex.com', 'new text', 'https://ex.com/b');
-		await settle();
 		expect(fake.read('clippings/ex.com.md')).toBe(
 			`# earlier \n old\n\n# ${SECTION} \n new text\n[^1] \n\n [^1]: https://ex.com/b  \n`
 		);
+	});
+
+	it('rejects when appending to the domain note fails', async () => {
+		const fake = new FakeApp({ 'clippings/ex.com.md': 'old' });
+		const app = fake.app;
+		app.vault.modify = () => Promise.reject(new Error('disk full'));
+		await expect(
+			new AdvancedNoteEntry(app, 'clippings').writeToAdvancedNoteStorage(
+				'ex.com',
+				'x',
+				'https://ex.com'
+			)
+		).rejects.toThrow('disk full');
+	});
+
+	it('rejects when the storage folder cannot be created', async () => {
+		const fake = new FakeApp();
+		const app = fake.app;
+		app.vault.createFolder = () => Promise.reject(new Error('read-only'));
+		await expect(
+			new AdvancedNoteEntry(app, 'clips').writeToAdvancedNoteStorage(
+				'ex.com',
+				'x',
+				'https://ex.com'
+			)
+		).rejects.toThrow('read-only');
+		expect(fake.read('clips/ex.com.md')).toBeUndefined();
 	});
 
 	it('omits the source footnote for Apple Shortcut clips', async () => {

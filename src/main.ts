@@ -44,6 +44,11 @@ export const missingCanvasNotice = (path: string) =>
 export const ambiguousCanvasNotice = (name: string) =>
 	`Obsidian Clipper found several canvases named "${name}". Choose the right one in the clipper's settings.`;
 
+export const writeFailedNotice = (clipperName: string, error: unknown) =>
+	`Obsidian Clipper couldn't save the clip for "${clipperName}": ${
+		error instanceof Error ? error.message : String(error)
+	}`;
+
 export default class ObsidianClipperPlugin extends Plugin {
 	settings: ObsidianClipperPluginSettings;
 
@@ -203,26 +208,31 @@ export default class ObsidianClipperPlugin extends Plugin {
 					return;
 				}
 
-				let entryReference = highlightData;
+				try {
+					let entryReference = highlightData;
 
-				if (clipperSettings.advancedStorage && highlightData) {
-					const domain = Utility.parseDomainFromUrl(url);
-					entryReference = await new AdvancedNoteEntry(
+					if (clipperSettings.advancedStorage && highlightData) {
+						const domain = Utility.parseDomainFromUrl(url);
+						entryReference = await new AdvancedNoteEntry(
+							this.app,
+							clipperSettings.advancedStorageFolder
+						).writeToAdvancedNoteStorage(domain, highlightData, url);
+					}
+
+					const noteEntry = new ClippedData(
+						title,
+						url,
+						clipperSettings,
 						this.app,
-						clipperSettings.advancedStorageFolder
-					).writeToAdvancedNoteStorage(domain, highlightData, url);
+						entryReference,
+						comments
+					);
+
+					await this.writeNoteEntry(clipperSettings, noteEntry);
+				} catch (error) {
+					console.error('Obsidian Clipper failed to save a clip', error);
+					new Notice(writeFailedNotice(clipperSettings.name, error));
 				}
-
-				const noteEntry = new ClippedData(
-					title,
-					url,
-					clipperSettings,
-					this.app,
-					entryReference,
-					comments
-				);
-
-				this.writeNoteEntry(clipperSettings, noteEntry);
 			}
 		});
 
@@ -380,10 +390,10 @@ export default class ObsidianClipperPlugin extends Plugin {
 		return null;
 	}
 
-	writeNoteEntry(
+	async writeNoteEntry(
 		clipperSettings: ObsidianClipperSettings,
 		noteEntry: ClippedData
-	) {
+	): Promise<void> {
 		const type = clipperSettings.type;
 		if (type === ClipperType.TOPIC || type === ClipperType.CANVAS) {
 			const file = this.app.vault.getAbstractFileByPath(
@@ -392,10 +402,10 @@ export default class ObsidianClipperPlugin extends Plugin {
 			if (type === ClipperType.CANVAS) {
 				const canvas = this.resolveCanvas(clipperSettings);
 				if (canvas) {
-					void new CanvasEntry(this.app).writeToCanvas(canvas, noteEntry);
+					await new CanvasEntry(this.app).writeToCanvas(canvas, noteEntry);
 				}
 			} else {
-				new TopicNoteEntry(
+				await new TopicNoteEntry(
 					this.app,
 					clipperSettings.openOnWrite,
 					clipperSettings.position,
@@ -409,7 +419,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 			}
 		} else {
 			if (type === ClipperType.DAILY) {
-				new DailyPeriodicNoteEntry(
+				await new DailyPeriodicNoteEntry(
 					this.app,
 					clipperSettings.openOnWrite,
 					clipperSettings.position,
@@ -422,7 +432,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 			}
 
 			if (type === ClipperType.WEEKLY) {
-				new WeeklyPeriodicNoteEntry(
+				await new WeeklyPeriodicNoteEntry(
 					this.app,
 					clipperSettings.openOnWrite,
 					clipperSettings.position,

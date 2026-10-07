@@ -8,6 +8,7 @@ import ObsidianClipperPlugin, {
 	UNKNOWN_CLIPPER_NOTICE,
 	ambiguousCanvasNotice,
 	missingCanvasNotice,
+	writeFailedNotice,
 } from './main';
 import {
 	ClipperType,
@@ -375,6 +376,51 @@ describe('obsidian://obsidian-clipper handler', () => {
 		expect(fake.read('B/research.canvas')).toBe('');
 		expect(plugin.settings.clippers[0].notePath).toBe('research.canvas');
 		expect(notices).toEqual([ambiguousCanvasNotice('research.canvas')]);
+	});
+
+	it('shows a notice and logs the error when the note write fails', async () => {
+		const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+		const fake = new FakeApp({ 'n.md': 'N' });
+		const plugin = await loadPlugin(
+			fake,
+			settingsWith(
+				clipper({ name: 'Rust', type: ClipperType.TOPIC, notePath: 'n.md' })
+			)
+		);
+		const failure = new Error('disk full');
+		vi.spyOn(plugin.app.vault, 'modify').mockRejectedValue(failure);
+		await plugin.protocolHandlers['obsidian-clipper']({
+			action: 'obsidian-clipper',
+			clipperId: 'clipper-1',
+			url: 'https://ex.com/page',
+			title: 'Page',
+			highlightdata: 'x',
+		});
+		expect(notices).toEqual([writeFailedNotice('Rust', failure)]);
+		expect(notices[0]).toContain('disk full');
+		expect(error).toHaveBeenCalledWith(expect.any(String), failure);
+	});
+
+	it('shows a notice and skips the note when advanced storage fails', async () => {
+		vi.spyOn(console, 'error').mockImplementation(() => undefined);
+		const fake = new FakeApp({ 'n.md': 'N' });
+		const plugin = await loadPlugin(
+			fake,
+			settingsWith(
+				clipper({
+					name: 'Rust',
+					type: ClipperType.TOPIC,
+					notePath: 'n.md',
+					advancedStorage: true,
+					advancedStorageFolder: 'clippings',
+				})
+			)
+		);
+		const failure = new Error('read-only');
+		vi.spyOn(plugin.app.vault, 'createFolder').mockRejectedValue(failure);
+		await clip(plugin, { clipperId: 'clipper-1', highlightdata: 'the text' });
+		expect(notices).toEqual([writeFailedNotice('Rust', failure)]);
+		expect(fake.read('n.md')).toBe('N');
 	});
 
 	it('shows a notice and writes nothing for an unknown clipperId', async () => {

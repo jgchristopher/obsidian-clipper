@@ -63,6 +63,18 @@ describe('TopicNoteEntry', () => {
 		);
 	});
 
+	it('rejects when the vault write fails', async () => {
+		const fake = new FakeApp({ 'n.md': 'old' });
+		const app = fake.app;
+		app.vault.modify = () => Promise.reject(new Error('disk full'));
+		await expect(
+			new TopicNoteEntry(app, false, SectionPosition.APPEND, '').writeToNote(
+				tfile('n.md'),
+				entry(fake)
+			)
+		).rejects.toThrow('disk full');
+	});
+
 	it('throws when given no file', async () => {
 		const fake = new FakeApp();
 		await expect(

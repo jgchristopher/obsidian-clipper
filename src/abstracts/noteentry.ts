@@ -26,18 +26,18 @@ export abstract class NoteEntry {
 		data: string,
 		heading?: string,
 		headingLevel?: number
-	) {
+	): Promise<void> {
 		const file = this.app.vault.getAbstractFileByPath(noteFilePath);
 		if (file instanceof TFile) {
 			if (this.sectionPosition === SectionPosition.PREPEND) {
-				new PrependWriter(this.app, this.openFileOnWrite).write(
+				await new PrependWriter(this.app, this.openFileOnWrite).write(
 					file,
 					data,
 					heading,
 					headingLevel
 				);
 			} else {
-				new AppendWriter(this.app, this.openFileOnWrite).write(
+				await new AppendWriter(this.app, this.openFileOnWrite).write(
 					file,
 					data,
 					heading,

@@ -34,7 +34,7 @@ export abstract class PeriodicNoteEntry extends NoteEntry {
 		noteEntry: ClippedData,
 		heading: string,
 		headingLevel: number
-	) {
+	): Promise<void> {
 		if (!this.hasPeriodicNoteEnabled()) {
 			new Notice(this.notice);
 			return;
@@ -48,7 +48,7 @@ export abstract class PeriodicNoteEntry extends NoteEntry {
 			return;
 		}
 
-		this.handleWrite(
+		await this.handleWrite(
 			note.path,
 			await noteEntry.formattedEntry(this.template),
 			heading,

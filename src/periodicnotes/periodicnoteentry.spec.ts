@@ -85,6 +85,20 @@ describe.each([
 			);
 		});
 
+		it('rejects when the vault write fails', async () => {
+			const fake = new FakeApp({ [path]: '## Clips' });
+			get.mockReturnValue(tfile(path));
+			const app = fake.app;
+			app.vault.modify = () => Promise.reject(new Error('disk full'));
+			await expect(
+				new Entry(app, false, SectionPosition.APPEND, '').writeToPeriodicNote(
+					new ClippedData('Page', 'https://ex.com', clipper(), app),
+					'Clips',
+					2
+				)
+			).rejects.toThrow('disk full');
+		});
+
 		it('shows a notice when the note cannot be created', async () => {
 			get.mockReturnValue(undefined as never);
 			create.mockResolvedValue(undefined);
