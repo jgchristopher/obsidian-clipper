@@ -214,9 +214,6 @@ describe('markdown conversion', () => {
 		).toBe('[rel](https://example.com/other) [abs](https://x.org/p)');
 	});
 
-	// BUG (current behavior): tables.ts picks the header cell only when
-	// `colCount < row.childNodes.length`, which never holds, so align="right"
-	// is ignored and every divider is "---".
 	it('converts a table with a header row to a markdown table', () => {
 		expect(
 			md(
@@ -226,11 +223,36 @@ describe('markdown conversion', () => {
 		).toBe(
 			[
 				'| Name | Qty |',
-				'| --- | --- |',
+				'| --- | ---: |',
 				'| apple | 3   |',
 				'| pear | 10  |',
 			].join('\n')
 		);
+	});
+
+	it('marks left, center, and right aligned columns in the divider', () => {
+		expect(
+			md(
+				'<table><thead><tr><th align="left">L</th><th align="CENTER">C</th>' +
+					'<th align="right">R</th><th>N</th></tr></thead>' +
+					'<tbody><tr><td>a</td><td>b</td><td>c</td><td>d</td></tr></tbody></table>'
+			)
+		).toBe(
+			[
+				'| L   | C   | R   | N   |',
+				'| :--- | :---: | ---: | --- |',
+				'| a   | b   | c   | d   |',
+			].join('\n')
+		);
+	});
+
+	it('uses plain dividers for header cells missing from a short heading row', () => {
+		expect(
+			md(
+				'<table><thead><tr><th align="right">A</th></tr></thead>' +
+					'<tbody><tr><td>1</td><td>2</td></tr></tbody></table>'
+			)
+		).toBe(['| A   |', '| ---: | --- |', '| 1   | 2   |'].join('\n'));
 	});
 
 	it('adds an empty header to a table without one', () => {

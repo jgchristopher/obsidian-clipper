@@ -163,16 +163,16 @@ export class MarkdownTables {
 
 					let borderCells = '';
 					const alignMap: any = {
-						left: ':--',
-						right: '--:',
-						center: ':-:',
+						left: ':---',
+						right: '---:',
+						center: ':---:',
 					};
 
 					if (MarkdownTablesHelper.isHeadingRow(node)) {
 						const colCount = MarkdownTablesHelper.tableColCount(parentTable);
 						for (let i = 0; i < colCount; i++) {
 							const childNode =
-								colCount >= node.childNodes.length ? null : node.childNodes[i];
+								i >= node.childNodes.length ? null : node.childNodes[i];
 							let border: any = '---';
 							const align = childNode
 								? (childNode.getAttribute('align') || '').toLowerCase()
@@ -208,7 +208,9 @@ export class MarkdownTables {
 					// If table has no heading, add an empty one so as to get a valid Markdown table
 					let secondLine = content.trim().split('\n');
 					if (secondLine.length >= 2) secondLine = secondLine[1];
-					const secondLineIsDivider = secondLine.indexOf('| ---') === 0;
+					// The divider may start with an alignment colon (`| :---`).
+					const secondLineIsDivider =
+						typeof secondLine === 'string' && /^\| :?---/.test(secondLine);
 
 					const columnCount = MarkdownTablesHelper.tableColCount(node);
 					let emptyHeader = '';
