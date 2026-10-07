@@ -169,11 +169,11 @@ describe('markdown conversion', () => {
 		expect(md('<h1>One</h1>', 2)).toBe('### One');
 	});
 
-	// Current behavior: h5 and h6 use the same offset as h4.
-	it('renders h4, h5, and h6 at the same depth', () => {
-		expect(md('<h4>4</h4><h5>5</h5><h6>6</h6>', 1)).toBe(
-			'##### 4 \n\n##### 5 \n\n##### 6'
+	it('shifts h5 and h6 by their own level', () => {
+		expect(md('<h4>4</h4><h5>5</h5><h6>6</h6>', 0)).toBe(
+			'#### 4 \n\n##### 5 \n\n###### 6'
 		);
+		expect(md('<h5>5</h5><h6>6</h6>', 1)).toBe('###### 5 \n\n####### 6');
 	});
 
 	it('converts inline formatting, lists, code, and rules', () => {

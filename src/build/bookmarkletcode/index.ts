@@ -49,13 +49,13 @@ import { MarkdownTables } from './markdown/tables';
 	markdownService.addRule('heading_5_update', {
 		filter: ['h5'],
 		replacement: function (content: string) {
-			return `${'#'.repeat(parseInt(headerLevelBase, 10) + 4)} ${content} \n\n`;
+			return `${'#'.repeat(parseInt(headerLevelBase, 10) + 5)} ${content} \n\n`;
 		},
 	});
 	markdownService.addRule('heading_6_update', {
 		filter: ['h6'],
 		replacement: function (content: string) {
-			return `${'#'.repeat(parseInt(headerLevelBase, 10) + 4)} ${content} \n\n`;
+			return `${'#'.repeat(parseInt(headerLevelBase, 10) + 6)} ${content} \n\n`;
 		},
 	});
 	markdownService.addRule('fix_relative_links', {
