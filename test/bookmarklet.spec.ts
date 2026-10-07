@@ -149,12 +149,32 @@ describe('bookmarklet URL', () => {
 		expect(params.get('highlightdata')).toBe('second');
 	});
 
-	// Current behavior: settings are spliced into "..." string literals without
-	// escaping, so a double quote in the vault name breaks the bookmarklet.
-	it('breaks when the vault name contains a double quote', () => {
-		expect(() => clip({ html: '<p>x</p>', vault: 'My "Vault"' })).toThrow(
-			SyntaxError
-		);
+	it('carries vault names and clipper ids with quotes, backslashes, and percent signs exactly', () => {
+		const vault = `My "Vault" it's C:\\notes\\ 100% & more`;
+		const clipperId = `id"with'\\odd%20chars`;
+		const { navigatedTo, params } = clip({
+			html: '<p>x</p>',
+			vault,
+			clipperId,
+		});
+		expect(navigatedTo).toBeDefined();
+		expect(params.get('vault')).toBe(vault);
+		expect(params.get('clipperId')).toBe(clipperId);
+		expect(params.get('highlightdata')).toBe('x');
+	});
+
+	it('percent-encodes spliced settings in the javascript: link', () => {
+		const link = new BookmarketlGenerator(
+			'cid',
+			`a "b" 'c' \\d 5%`,
+			'',
+			1,
+			'false'
+		).generateBookmarklet();
+		// Browsers percent-decode a javascript: URL before running it, so raw
+		// quotes, spaces, backslashes, and bare % signs must not survive.
+		const problems = link.match(/["\s\\]|%(?![0-9A-Fa-f]{2})/g);
+		expect(problems).toBeNull();
 	});
 });
 

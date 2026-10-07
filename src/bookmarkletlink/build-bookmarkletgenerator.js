@@ -30,65 +30,44 @@ constructor(clipperId: string, vaultName: string, notePath = '', headingLevel: n
  
 }`;
 
+/**
+ * The minified bookmarklet is already percent-encoded, and each placeholder
+ * sits inside a quoted string literal: `%22~VaultNameFiller~%22`. Replace the
+ * whole literal, quotes included, with an expression that builds a JS string
+ * literal with JSON.stringify and percent-encodes it. Browsers percent-decode
+ * a javascript: URL before running it, so the bookmarklet sees the exact value
+ * whatever quotes, backslashes, spaces, or % signs it contains.
+ */
+const placeholders = {
+	'~ClipperIdFiller~': 'this.clipperId',
+	'~VaultNameFiller~': 'this.vaultName',
+	'~HeaderLevelBase~': 'this.headingLevel',
+	'~CaptureComment~': 'this.captureComments',
+};
+
 try {
 	let bookmarkletData = fs.readFileSync(bookmarkletFilePath, 'utf8');
 
-	bookmarkletData = bookmarkletData.replace(
-		'~ClipperIdFiller~',
-		'${this.clipperId}'
-	);
-
-	bookmarkletData = bookmarkletData.replace(
-		'~VaultNameFiller~',
-		'${this.vaultName}'
-	);
-
-	bookmarkletData = bookmarkletData.replace(
-		'~HeaderLevelBase~',
-		'${this.headingLevel}'
-	);
-
-	bookmarkletData = bookmarkletData.replace(
-		'~H1Setting~',
-		'${"#".repeat(this.headingLevel + 1)}'
-	);
-
-	bookmarkletData = bookmarkletData.replace(
-		'~H2Setting~',
-		'${"#".repeat(this.headingLevel + 2)}'
-	);
-
-	bookmarkletData = bookmarkletData.replace(
-		'~H3Setting~',
-		'${"#".repeat(this.headingLevel + 3)}'
-	);
-
-	bookmarkletData = bookmarkletData.replace(
-		'~H4Setting~',
-		'${"#".repeat(this.headingLevel + 4)}'
-	);
-
-	bookmarkletData = bookmarkletData.replace(
-		'~H5Setting~',
-		'${"#".repeat(this.headingLevel + 5)}'
-	);
-
-	bookmarkletData = bookmarkletData.replace(
-		'~H6Setting~',
-		'${"#".repeat(this.headingLevel + 5)}'
-	);
-
-	bookmarkletData = bookmarkletData.replace(
-		'~CaptureComment~',
-		'${this.captureComments}'
-	);
+	for (const [placeholder, value] of Object.entries(placeholders)) {
+		const quotedLiteral = new RegExp(`(%22|%27|')${placeholder}\\1`, 'g');
+		if (!quotedLiteral.test(bookmarkletData)) {
+			throw new Error(
+				`${placeholder} not found as a quoted string literal in ${bookmarkletFilePath}`
+			);
+		}
+		bookmarkletData = bookmarkletData.replace(
+			quotedLiteral,
+			() => `\${encodeURIComponent(JSON.stringify(String(${value})))}`
+		);
+	}
 
 	const bookmarketGenerator = bookmarkletGeneratorTemplate.replaceAll(
 		'~BookmarkletReplace~',
-		bookmarkletData
+		() => bookmarkletData
 	);
 
 	fs.writeFileSync(bookmarkletGeneratorFilePath, bookmarketGenerator);
 } catch (err) {
 	console.error(err);
+	process.exitCode = 1;
 }
