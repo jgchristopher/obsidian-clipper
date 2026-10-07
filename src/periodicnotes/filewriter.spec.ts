@@ -113,8 +113,8 @@ describe('AppendWriter under a heading', () => {
 		expect(notices).toContain("Can't find heading");
 	});
 
-	// Current behavior: a same-named heading at a different level counts as
-	// missing, so a second heading is created.
+	// Intended: the configured level is strict. A same-named heading at a
+	// different level counts as missing, so a second heading is created.
 	it('treats a heading at a different level as missing', async () => {
 		expect(
 			await write(AppendWriter, lines('# Clips', 'x'), 'CLIP', 'Clips', 2)
