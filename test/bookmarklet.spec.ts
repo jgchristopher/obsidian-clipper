@@ -193,7 +193,13 @@ describe('markdown conversion', () => {
 		expect(md('<h4>4</h4><h5>5</h5><h6>6</h6>', 0)).toBe(
 			'#### 4 \n\n##### 5 \n\n###### 6'
 		);
-		expect(md('<h5>5</h5><h6>6</h6>', 1)).toBe('###### 5 \n\n####### 6');
+	});
+
+	// Markdown has no heading deeper than ######, and Obsidian renders
+	// ####### as plain text.
+	it('caps shifted headings at level 6', () => {
+		expect(md('<h5>5</h5><h6>6</h6>', 1)).toBe('###### 5 \n\n###### 6');
+		expect(md('<h1>One</h1><h4>Four</h4>', 5)).toBe('###### One \n\n###### Four');
 	});
 
 	it('converts inline formatting, lists, code, and rules', () => {

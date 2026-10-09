@@ -22,41 +22,17 @@ import { MarkdownTables } from './markdown/tables';
 	});
 	const tables = new MarkdownTables();
 	markdownService.use(tables.tables);
-	markdownService.addRule('heading_1_update', {
-		filter: ['h1'],
-		replacement: function (content: string) {
-			return `${'#'.repeat(parseInt(headerLevelBase, 10) + 1)} ${content} \n\n`;
-		},
-	});
-	markdownService.addRule('heading_2_update', {
-		filter: ['h2'],
-		replacement: function (content: string) {
-			return `${'#'.repeat(parseInt(headerLevelBase, 10) + 2)} ${content} \n\n`;
-		},
-	});
-	markdownService.addRule('heading_3_update', {
-		filter: ['h3'],
-		replacement: function (content: string) {
-			return `${'#'.repeat(parseInt(headerLevelBase, 10) + 3)} ${content} \n\n`;
-		},
-	});
-	markdownService.addRule('heading_4_update', {
-		filter: ['h4'],
-		replacement: function (content: string) {
-			return `${'#'.repeat(parseInt(headerLevelBase, 10) + 4)} ${content} \n\n`;
-		},
-	});
-	markdownService.addRule('heading_5_update', {
-		filter: ['h5'],
-		replacement: function (content: string) {
-			return `${'#'.repeat(parseInt(headerLevelBase, 10) + 5)} ${content} \n\n`;
-		},
-	});
-	markdownService.addRule('heading_6_update', {
-		filter: ['h6'],
-		replacement: function (content: string) {
-			return `${'#'.repeat(parseInt(headerLevelBase, 10) + 6)} ${content} \n\n`;
-		},
+	// Shift each heading down by the configured base, capped at ###### because
+	// Markdown has no deeper heading.
+	const headings = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const;
+	headings.forEach((tag, i) => {
+		const depth = Math.min(6, parseInt(headerLevelBase, 10) + i + 1);
+		markdownService.addRule(`heading_${i + 1}_update`, {
+			filter: [tag],
+			replacement: function (content: string) {
+				return `${'#'.repeat(depth)} ${content} \n\n`;
+			},
+		});
 	});
 	markdownService.addRule('fix_relative_links', {
 		filter: ['a'],
