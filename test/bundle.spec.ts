@@ -10,6 +10,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import * as obsidian from './mocks/obsidian';
 import { FakeApp, settle } from './fakes/fakeapp';
 import { clipper } from './fakes/clippers';
+import { ClipperType } from '../src/settings/types';
 import dailyData from '../src/utils/daily-data.json';
 
 const BUNDLE = path.resolve('main.js');
@@ -301,6 +302,54 @@ describe('built main.js', () => {
 		expect(reopened?.querySelector('select')?.value).toBe('');
 		expect(add()?.disabled).toBe(true);
 	});
+
+	// CanvasEntry writes only the clipped text, so the Base tab hides the
+	// note-only settings for canvas clippers.
+	const noteOnlySettings = [
+		'Header',
+		'Header Level',
+		'Position',
+		'Focus Note After Adding Clipping?',
+		'Clipped Entry Template',
+		'Tags',
+		'Time Format',
+		'Date Format',
+	];
+
+	it.each([
+		{ type: ClipperType.TOPIC, shown: true },
+		{ type: ClipperType.CANVAS, shown: false },
+	])(
+		'shows note-only settings on the Base tab: $type $shown',
+		async ({ type, shown }) => {
+			const plugin = await load(new FakeApp(), {
+				version: 2,
+				clippers: [clipper({ type, notePath: `clips.${type}` })],
+			});
+			const tab = plugin.settingTabs[0] as obsidian.PluginSettingTab & {
+				display(): void;
+			};
+			tab.display();
+			await settle();
+			tab.containerEl.querySelector<HTMLElement>('td .clickable-icon')?.click();
+			await settle();
+
+			const [modal] = obsidian.modals.slice(-1);
+			const names = Array.from(
+				modal.contentEl.querySelectorAll('.setting-item-name')
+			).map((el) => el.textContent?.trim());
+			for (const name of noteOnlySettings) {
+				expect(names.includes(name), name).toBe(shown);
+			}
+			const canvasNote =
+				'Canvas clippers add each clipping as a card under a card for its website.';
+			if (shown) {
+				expect(modal.contentEl.textContent).not.toContain(canvasNote);
+			} else {
+				expect(modal.contentEl.textContent).toContain(canvasNote);
+			}
+		}
+	);
 
 	// Obsidian 1.12+ ships `.vertical-tab-content h1 { display: none; }`, so an
 	// <h1> anywhere in a settings tab renders blank (issue #88). Headings use
