@@ -240,6 +240,34 @@ describe('markdown conversion', () => {
 		).toBe('[rel](https://example.com/other) [abs](https://x.org/p)');
 	});
 
+	it('leaves links with a scheme untouched', () => {
+		expect(
+			md(
+				'<a href="mailto:a@b.com">mail</a> <a href="tel:+15551234">call</a> ' +
+					'<a href="https://x.org/p?q=1#f">abs</a>'
+			)
+		).toBe(
+			'[mail](mailto:a@b.com) [call](tel:+15551234) [abs](https://x.org/p?q=1#f)'
+		);
+	});
+
+	it('resolves relative links against the page URL', () => {
+		// The page is https://example.com/articles/1
+		expect(
+			md(
+				'<a href="/root">root</a> <a href="page">page</a> ' +
+					'<a href="../up">up</a> <a href="#frag">frag</a>'
+			)
+		).toBe(
+			'[root](https://example.com/root) [page](https://example.com/articles/page) ' +
+				'[up](https://example.com/up) [frag](https://example.com/articles/1#frag)'
+		);
+	});
+
+	it('keeps the text of an anchor without an href', () => {
+		expect(md('<a name="here">plain</a>')).toBe('plain');
+	});
+
 	it('converts a table with a header row to a markdown table', () => {
 		expect(
 			md(

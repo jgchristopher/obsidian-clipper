@@ -34,22 +34,22 @@ import { MarkdownTables } from './markdown/tables';
 			},
 		});
 	});
+	// Resolve relative hrefs against the page. Leave any href that already has
+	// a scheme (https:, mailto:, tel:, data:, ...) as written.
 	markdownService.addRule('fix_relative_links', {
 		filter: ['a'],
 		replacement: function (content: string, node: HTMLAnchorElement) {
-			let href = node.href;
-			if (!href.includes('://')) {
-				href = window.location.protocol + '//' + window.location.host + href;
+			const rawHref = node.getAttribute('href');
+			if (rawHref === null) {
+				return content;
 			}
-			return `[${content}](${href})`;
-		},
-	});
-	markdownService.addRule('fix_relative_links', {
-		filter: ['a'],
-		replacement: function (content: string, node: HTMLAnchorElement) {
-			let href = node.href;
-			if (!href.includes('://')) {
-				href = window.location.protocol + '//' + window.location.host + href;
+			let href = rawHref.trim();
+			if (!/^[a-z][a-z0-9+.-]*:/i.test(href)) {
+				try {
+					href = new URL(href, document.baseURI).href;
+				} catch {
+					// Keep the href as written if it cannot be resolved.
+				}
 			}
 			return `[${content}](${href})`;
 		},
