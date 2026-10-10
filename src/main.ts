@@ -264,6 +264,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 
 	async loadSettings() {
 		const settingsData = await this.loadData();
+		let changed = false;
 
 		// Existing data
 		if (settingsData !== null) {
@@ -272,12 +273,32 @@ export default class ObsidianClipperPlugin extends Plugin {
 					"Settings exist and haven't been migrated to version 2 or higher"
 				);
 				this.settings = this.mergeExistingSetting(settingsData);
-				this.saveSettings();
+				changed = true;
 			} else {
 				this.settings = settingsData;
 			}
 		} else {
-			this.settings = Object.assign({}, DEFAULT_SETTINGS, null);
+			// Fresh install: save right away so the default clipper's ID
+			// survives a restart and its bookmarklet keeps working.
+			this.settings = structuredClone(DEFAULT_SETTINGS);
+			this.settings.clippers.forEach((clipper) => {
+				clipper.clipperId = crypto.randomUUID();
+			});
+			changed = true;
+		}
+
+		// Bookmarklets target the stored vault name, so an empty one never
+		// reaches Obsidian. Earlier fresh installs saved clippers without it.
+		const vaultName = this.app.vault.getName();
+		this.settings.clippers.forEach((clipper) => {
+			if (!clipper.vaultName) {
+				clipper.vaultName = vaultName;
+				changed = true;
+			}
+		});
+
+		if (changed) {
+			await this.saveSettings();
 		}
 	}
 

@@ -121,6 +121,53 @@ describe('loadSettings', () => {
 		});
 	});
 
+	it('targets the current vault and saves fresh installs right away', async () => {
+		const plugin = await loadPlugin(new FakeApp());
+		expect(plugin.settings.clippers[0].vaultName).toBe('TestVault');
+		expect(plugin.storedData).toBe(plugin.settings);
+	});
+
+	it('keeps the default clipper ID across restarts', async () => {
+		const fake = new FakeApp();
+		const first = await loadPlugin(fake);
+		const id = first.settings.clippers[0].clipperId;
+		const second = await loadPlugin(fake, first.storedData);
+		expect(second.settings.clippers[0].clipperId).toBe(id);
+	});
+
+	it('gives each fresh install its own default clipper', async () => {
+		const a = await loadPlugin(new FakeApp());
+		const b = await loadPlugin(new FakeApp());
+		expect(a.settings.clippers[0].clipperId).not.toBe(
+			b.settings.clippers[0].clipperId
+		);
+		a.settings.clippers[0].name = 'Changed';
+		expect(b.settings.clippers[0].name).toBe('Default Clipper');
+	});
+
+	it('fills in an empty vault name on saved clippers and saves', async () => {
+		const stored = settingsWith(
+			clipper({ clipperId: 'a', vaultName: '' }),
+			clipper({ clipperId: 'b', vaultName: 'Other' })
+		);
+		const plugin = await loadPlugin(new FakeApp(), stored);
+		expect(plugin.settings.clippers.map((c) => c.vaultName)).toEqual([
+			'TestVault',
+			'Other',
+		]);
+		expect(plugin.storedData).toBe(plugin.settings);
+	});
+
+	it('does not save versioned settings that need no changes', async () => {
+		const stored = settingsWith(clipper({ name: 'Mine' }));
+		const fake = new FakeApp();
+		const plugin = new ObsidianClipperPlugin(fake.app, {} as never) as Harness;
+		plugin.storedData = stored;
+		const save = vi.spyOn(plugin, 'saveData');
+		await plugin.onload();
+		expect(save).not.toHaveBeenCalled();
+	});
+
 	it('uses versioned settings as-is', async () => {
 		const stored = settingsWith(clipper({ name: 'Mine' }));
 		const plugin = await loadPlugin(new FakeApp(), stored);
