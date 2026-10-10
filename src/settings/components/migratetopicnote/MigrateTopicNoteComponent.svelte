@@ -1,5 +1,6 @@
 <script lang="ts">
 	export let notePath;
+	export let isCanvas = false;
 </script>
 
 <div class="clp-rounded-md clp-bg-yellow-50 clp-p-4">
@@ -28,10 +29,11 @@
 					Clipper plugin.
 				</p>
 				<p>
-					A new Topic clipper has been created for the <span
-						class="clp-font-bold clp-italic clp-text-red-900"
+					A new {isCanvas ? 'Canvas' : 'Topic'} clipper has been created for
+					the <span class="clp-font-bold clp-italic clp-text-red-900"
 						>{notePath}
-					</span> note and you can install the new bookmarklet shown on the next
+					</span>
+					{isCanvas ? 'canvas' : 'note'} and you can install the new bookmarklet shown on the next
 					screen.
 				</p>
 			</div>

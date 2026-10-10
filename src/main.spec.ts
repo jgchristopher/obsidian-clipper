@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import * as periodic from 'obsidian-daily-notes-interface';
-import { Modal, type Plugin as MockPlugin } from '../test/mocks/obsidian';
+import {
+	Modal,
+	modals,
+	type Plugin as MockPlugin,
+} from '../test/mocks/obsidian';
 import { FakeApp, notices, settle, tfile } from '../test/fakes/fakeapp';
 import { clipper } from '../test/fakes/clippers';
 import { mounted } from '../test/fakes/sveltestub';
@@ -86,6 +90,12 @@ async function clip(plugin: Harness, params: Record<string, string>) {
 		...params,
 	});
 	await settle();
+}
+
+// Obsidian calls onClose when the user dismisses a modal.
+function closeLastModal() {
+	const modal = modals[modals.length - 1] as unknown as { onClose(): void };
+	modal.onClose();
 }
 
 beforeEach(() => {
@@ -536,7 +546,39 @@ describe('obsidian://obsidian-clipper handler', () => {
 		expect(open).toHaveBeenCalledOnce();
 		expect(mounted).toContainEqual({
 			name: 'MigrateTopicNoteComponent',
-			props: { notePath: 'topics/old.md' },
+			props: { notePath: 'topics/old.md', isCanvas: false },
+		});
+	});
+
+	it('creates a topic clipper when the topic migration modal closes', async () => {
+		const plugin = await loadPlugin(new FakeApp(), settingsWith());
+		await clip(plugin, { notePath: 'topics/old.md' });
+		closeLastModal();
+		expect(mounted).toContainEqual({
+			name: 'AddNoteCommandComponent',
+			props: expect.objectContaining({
+				filePath: 'topics/old.md',
+				type: 'topic',
+			}),
+		});
+	});
+
+	// 0.x had an experimental canvas bookmarklet that sent the canvas path.
+	// A topic clipper there would append Markdown into the canvas JSON.
+	it('creates a canvas clipper when an old bookmarklet sent a canvas path', async () => {
+		const plugin = await loadPlugin(new FakeApp(), settingsWith());
+		await clip(plugin, { notePath: 'Boards/Research Board.canvas' });
+		expect(mounted).toContainEqual({
+			name: 'MigrateTopicNoteComponent',
+			props: { notePath: 'Boards/Research Board.canvas', isCanvas: true },
+		});
+		closeLastModal();
+		expect(mounted).toContainEqual({
+			name: 'AddNoteCommandComponent',
+			props: expect.objectContaining({
+				filePath: 'Boards/Research Board.canvas',
+				type: 'canvas',
+			}),
 		});
 	});
 

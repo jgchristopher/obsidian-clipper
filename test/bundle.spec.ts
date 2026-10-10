@@ -52,6 +52,11 @@ afterAll(() => {
 	loader._load = originalLoad;
 });
 
+// Rendered text with template whitespace collapsed, as the browser shows it.
+function text(el: HTMLElement) {
+	return (el.textContent ?? '').replace(/\s+/g, ' ');
+}
+
 async function load(fake: FakeApp, stored: unknown) {
 	const PluginClass = freshPluginClass();
 	const plugin = new PluginClass(fake.app, {});
@@ -104,6 +109,70 @@ describe('built main.js', () => {
 		expect(plugin.settings.version).toBe(2);
 		expect(plugin.settings.clippers).toEqual([
 			expect.objectContaining({ type: 'daily', name: 'Clipped 1' }),
+		]);
+	});
+
+	// 0.x had an experimental canvas bookmarklet that sent the canvas path and
+	// no clipperId. Migrating it must make the same clipper the Canvas
+	// Bookmarklet command makes, not a topic clipper that writes Markdown
+	// into the canvas JSON.
+	it('migrates an old canvas bookmarklet to a canvas clipper', async () => {
+		const canvasPath = 'Boards/Research Board.canvas';
+		const fake = new FakeApp({ [canvasPath]: '{"nodes":[],"edges":[]}' });
+		const plugin = await load(fake, { version: 2, clippers: [] });
+		await plugin.protocolHandlers['obsidian-clipper']({
+			notePath: canvasPath,
+			url: 'https://ex.com/page',
+			title: 'Page',
+			highlightdata: 'text',
+		});
+		await settle();
+
+		const [migration] = obsidian.modals.slice(-1);
+		expect(text(migration.modalEl)).toContain(
+			'A new Canvas clipper has been created for the'
+		);
+		expect(text(migration.modalEl)).toContain('canvas and you can');
+		(migration as unknown as { onClose(): void }).onClose();
+		await settle();
+		const [migrated] = plugin.settings.clippers;
+
+		const commandFake = new FakeApp({ [canvasPath]: '{}' });
+		const commandPlugin = await load(commandFake, { version: 2, clippers: [] });
+		commandFake.activeFile = canvasPath;
+		const canvasCommand = commandPlugin.commands.find(
+			(c) => c.id === 'copy-note-bookmarklet-address-canvas'
+		)?.checkCallback as (checking: boolean) => void;
+		canvasCommand(false);
+		await settle();
+		const [created] = commandPlugin.settings.clippers;
+
+		expect(migrated).toMatchObject({ type: 'canvas', notePath: canvasPath });
+		expect(migrated).toEqual({
+			...created,
+			clipperId: expect.any(String),
+			createdAt: expect.any(Date),
+		});
+	});
+
+	it('still migrates an old topic bookmarklet to a topic clipper', async () => {
+		const plugin = await load(new FakeApp({ 'topics/old.md': '' }), {
+			version: 2,
+			clippers: [],
+		});
+		await plugin.protocolHandlers['obsidian-clipper']({
+			notePath: 'topics/old.md',
+		});
+		await settle();
+		const [migration] = obsidian.modals.slice(-1);
+		expect(text(migration.modalEl)).toContain(
+			'A new Topic clipper has been created for the'
+		);
+		expect(text(migration.modalEl)).toContain('note and you can');
+		(migration as unknown as { onClose(): void }).onClose();
+		await settle();
+		expect(plugin.settings.clippers).toEqual([
+			expect.objectContaining({ type: 'topic', notePath: 'topics/old.md' }),
 		]);
 	});
 
