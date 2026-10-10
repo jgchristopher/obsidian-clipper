@@ -33,10 +33,6 @@
   margin-top: 0.5rem;
 }
 
-.clp-mt-3 {
-  margin-top: 0.75rem;
-}
-
 .clp-inline-block {
   display: inline-block;
 }
@@ -55,10 +51,6 @@
 
 .clp-min-w-full {
   min-width: 100%;
-}
-
-.clp-flex-1 {
-  flex: 1 1 0%;
 }
 
 .clp-flex-shrink-0 {
@@ -89,11 +81,6 @@
 
 .clp-rounded-md {
   border-radius: 0.375rem;
-}
-
-.clp-bg-blue-50 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(239 246 255 / var(--tw-bg-opacity, 1));
 }
 
 .clp-bg-yellow-50 {
@@ -173,16 +160,6 @@
   line-height: 1.5rem;
 }
 
-.clp-text-blue-400 {
-  --tw-text-opacity: 1;
-  color: rgb(96 165 250 / var(--tw-text-opacity, 1));
-}
-
-.clp-text-blue-700 {
-  --tw-text-opacity: 1;
-  color: rgb(29 78 216 / var(--tw-text-opacity, 1));
-}
-
 .clp-text-red-900 {
   --tw-text-opacity: 1;
   color: rgb(127 29 29 / var(--tw-text-opacity, 1));
@@ -211,6 +188,48 @@ div.clp_section_margin {
   margin: 0 0 20px 0 !important;
 }
 
+/* Docs banner at the top of the settings tab (Notice.svelte). Theme
+   variables keep it readable in light and dark themes. */
+
+.clipper-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--background-modifier-border);
+  border-left: 3px solid var(--interactive-accent);
+  border-radius: var(--radius-m);
+  background-color: var(--background-secondary);
+  color: var(--text-normal);
+  font-size: var(--font-ui-small);
+}
+
+.clipper-notice-icon {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--interactive-accent);
+}
+
+.clipper-notice p {
+  margin: 0;
+}
+
+.clipper-notice-text {
+  flex: 1 1 16rem;
+}
+
+.clipper-notice-link a {
+  color: var(--text-accent);
+  text-decoration: none;
+}
+
+.clipper-notice-link a:hover {
+  color: var(--text-accent-hover);
+  text-decoration: underline;
+}
+
 .internal-embed[alt='clipped'] h1 {
   display: none;
 }
@@ -237,11 +256,6 @@ body:not(.is-phone) .modal.clipper-settings-modal {
   min-height: 0;
 }
 
-.hover\:clp-text-blue-600:hover {
-  --tw-text-opacity: 1;
-  color: rgb(37 99 235 / var(--tw-text-opacity, 1));
-}
-
 @media (min-width: 640px) {
   .sm\:-clp-mx-6 {
     margin-left: -1.5rem;
@@ -251,24 +265,6 @@ body:not(.is-phone) .modal.clipper-settings-modal {
   .sm\:clp-px-6 {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .md\:clp-ml-6 {
-    margin-left: 1.5rem;
-  }
-
-  .md\:clp-mt-0 {
-    margin-top: 0px;
-  }
-
-  .md\:clp-flex {
-    display: flex;
-  }
-
-  .md\:clp-justify-between {
-    justify-content: space-between;
   }
 }
 

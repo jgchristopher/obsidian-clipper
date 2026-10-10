@@ -41,7 +41,7 @@
 	<span slot="calloutLink">
 		<a
 			href="https://docs.obsidianclipper.com"
-			class="clp-whitespace-nowrap clp-font-medium clp-text-blue-700 hover:clp-text-blue-600"
+			class="clp-whitespace-nowrap clp-font-medium"
 		>
 			Details
 			<span aria-hidden="true"> &rarr;</span>

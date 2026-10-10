@@ -9,6 +9,47 @@ div.clp_section_margin {
 	margin: 0 0 20px 0 !important;
 }
 
+/* Docs banner at the top of the settings tab (Notice.svelte). Theme
+   variables keep it readable in light and dark themes. */
+.clipper-notice {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem 0.75rem;
+	padding: 0.75rem 1rem;
+	border: 1px solid var(--background-modifier-border);
+	border-left: 3px solid var(--interactive-accent);
+	border-radius: var(--radius-m);
+	background-color: var(--background-secondary);
+	color: var(--text-normal);
+	font-size: var(--font-ui-small);
+}
+
+.clipper-notice-icon {
+	flex-shrink: 0;
+	width: 1.25rem;
+	height: 1.25rem;
+	color: var(--interactive-accent);
+}
+
+.clipper-notice p {
+	margin: 0;
+}
+
+.clipper-notice-text {
+	flex: 1 1 16rem;
+}
+
+.clipper-notice-link a {
+	color: var(--text-accent);
+	text-decoration: none;
+}
+
+.clipper-notice-link a:hover {
+	color: var(--text-accent-hover);
+	text-decoration: underline;
+}
+
 .internal-embed[alt='clipped'] h1 {
 	display: none;
 }
