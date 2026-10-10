@@ -3,7 +3,7 @@ import { FakeApp, notices, settle, tfile } from '../test/fakes/fakeapp';
 import { clipper } from '../test/fakes/clippers';
 import { ClippedData } from './clippeddata';
 import { SectionPosition } from './settings/types';
-import { TopicNoteEntry } from './topicnoteentry';
+import { TopicNoteEntry, canvasTopicNotice } from './topicnoteentry';
 
 describe('TopicNoteEntry', () => {
 	const entry = (fake: FakeApp) =>
@@ -61,6 +61,23 @@ describe('TopicNoteEntry', () => {
 		expect(notices).toContain(
 			"Obsidian Clipper couldn't find the note to append to"
 		);
+	});
+
+	// A topic clipper aimed at a canvas would append Markdown into the canvas
+	// JSON. Settings only offer Markdown files, but pre-1.0 migration once
+	// made such clippers and data.json can be edited by hand.
+	it('refuses to write into a canvas and shows a notice', async () => {
+		const canvas = '{"nodes":[],"edges":[]}';
+		const fake = new FakeApp({ 'Boards/board.canvas': canvas });
+		await new TopicNoteEntry(
+			fake.app,
+			false,
+			SectionPosition.APPEND,
+			''
+		).writeToNote(tfile('Boards/board.canvas'), entry(fake));
+		await settle();
+		expect(fake.read('Boards/board.canvas')).toBe(canvas);
+		expect(notices).toEqual([canvasTopicNotice('Boards/board.canvas')]);
 	});
 
 	it('rejects when the vault write fails', async () => {
