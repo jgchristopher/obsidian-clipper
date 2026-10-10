@@ -76,11 +76,14 @@ export interface ObsidianClipperMarkdownSettings {
 	h6: string;
 }
 
-export const DEFAULT_CLIPPER_SETTING: ObsidianClipperSettings = {
+// No clipperId or createdAt here: a module-level value would be shared by every
+// clipper made in a session. newClipper stamps fresh ones.
+export const DEFAULT_CLIPPER_SETTING: Omit<
+	ObsidianClipperSettings,
+	'clipperId' | 'createdAt'
+> = {
 	type: ClipperType.DAILY,
 	name: 'Default Clipper',
-	clipperId: crypto.randomUUID(),
-	createdAt: new Date(Date.now()),
 	vaultName: '',
 	notePath: '',
 	heading: '',
@@ -104,13 +107,17 @@ export const DEFAULT_CLIPPER_SETTING: ObsidianClipperSettings = {
 	captureComments: false,
 };
 
-const default_daily = structuredClone(DEFAULT_CLIPPER_SETTING);
-default_daily.type = ClipperType.DAILY;
-
-export const DEFAULT_SETTINGS: ObsidianClipperPluginSettings = {
-	clippers: [default_daily],
-	version: 2.0,
-};
+// Every new clipper starts here, so each gets its own ID and creation time.
+export function newClipper(
+	overrides: Partial<ObsidianClipperSettings> = {}
+): ObsidianClipperSettings {
+	return {
+		...structuredClone(DEFAULT_CLIPPER_SETTING),
+		clipperId: crypto.randomUUID(),
+		createdAt: new Date(),
+		...overrides,
+	};
+}
 
 export const DEFAULT_SETTINGS_EMPTY: ObsidianClipperPluginSettings = {
 	clippers: [],

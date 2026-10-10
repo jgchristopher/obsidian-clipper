@@ -20,9 +20,8 @@ import SettingsComponent from './settings/SettingsComponent.svelte';
 import { init } from './settings/settingsstore';
 import {
 	ClipperType,
-	DEFAULT_CLIPPER_SETTING,
-	DEFAULT_SETTINGS,
 	DEFAULT_SETTINGS_EMPTY,
+	newClipper,
 	type ObsidianClipperPluginSettings,
 	type ObsidianClipperSettings,
 	type OldClipperSettings,
@@ -300,10 +299,10 @@ export default class ObsidianClipperPlugin extends Plugin {
 		} else {
 			// Fresh install: save right away so the default clipper's ID
 			// survives a restart and its bookmarklet keeps working.
-			this.settings = structuredClone(DEFAULT_SETTINGS);
-			this.settings.clippers.forEach((clipper) => {
-				clipper.clipperId = crypto.randomUUID();
-			});
+			this.settings = {
+				...structuredClone(DEFAULT_SETTINGS_EMPTY),
+				clippers: [newClipper()],
+			};
 			changed = true;
 		}
 
@@ -333,10 +332,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 			DEFAULT_SETTINGS_EMPTY
 		) as ObsidianClipperPluginSettings;
 		if (settingsData.useDailyNote === true) {
-			const dailyTransfered = structuredClone(
-				DEFAULT_CLIPPER_SETTING
-			) as ObsidianClipperSettings;
-			dailyTransfered.clipperId = crypto.randomUUID();
+			const dailyTransfered = newClipper();
 			dailyTransfered.type = 'daily';
 			dailyTransfered.name = settingsData.dailyNoteHeading;
 			dailyTransfered.vaultName = this.app.vault.getName();
@@ -357,10 +353,7 @@ export default class ObsidianClipperPlugin extends Plugin {
 		}
 
 		if (settingsData.useWeeklyNote === true) {
-			const weeklyTransfered = structuredClone(
-				DEFAULT_CLIPPER_SETTING
-			) as ObsidianClipperSettings;
-			weeklyTransfered.clipperId = crypto.randomUUID();
+			const weeklyTransfered = newClipper();
 			weeklyTransfered.type = 'weekly';
 			weeklyTransfered.name = settingsData.weeklyNoteHeading;
 			weeklyTransfered.vaultName = this.app.vault.getName();

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as periodic from 'obsidian-daily-notes-interface';
 import {
 	Modal,
@@ -129,6 +129,43 @@ describe('loadSettings', () => {
 			name: 'Default Clipper',
 			headingLevel: 1,
 			position: 'append',
+		});
+	});
+
+	describe('createdAt', () => {
+		afterEach(() => {
+			vi.useRealTimers();
+		});
+
+		// The default clipper used to carry the time the plugin module loaded.
+		it('stamps the fresh-install clipper with the load time, not module load', async () => {
+			vi.useFakeTimers({ toFake: ['Date'] });
+			vi.setSystemTime(new Date('2030-05-06T07:08:09Z'));
+			const plugin = await loadPlugin(new FakeApp());
+			expect(plugin.settings.clippers[0].createdAt).toEqual(
+				new Date('2030-05-06T07:08:09Z')
+			);
+		});
+
+		it('stamps migrated pre-1.0 clippers with the migration time', async () => {
+			vi.useFakeTimers({ toFake: ['Date'] });
+			vi.setSystemTime(new Date('2030-05-06T07:08:09Z'));
+			const plugin = await loadPlugin(
+				new FakeApp(),
+				structuredClone(dailyWeeklyData)
+			);
+			expect(plugin.settings.clippers).toHaveLength(2);
+			for (const c of plugin.settings.clippers) {
+				expect(c.createdAt).toEqual(new Date('2030-05-06T07:08:09Z'));
+			}
+		});
+
+		it('keeps the createdAt of saved clippers', async () => {
+			const saved = clipper({ createdAt: new Date('2020-01-01T00:00:00Z') });
+			const plugin = await loadPlugin(new FakeApp(), settingsWith(saved));
+			expect(plugin.settings.clippers[0].createdAt).toEqual(
+				new Date('2020-01-01T00:00:00Z')
+			);
 		});
 	});
 

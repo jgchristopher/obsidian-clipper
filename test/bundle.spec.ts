@@ -6,7 +6,7 @@
 import { existsSync } from 'fs';
 import Module, { createRequire } from 'module';
 import * as path from 'path';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import * as obsidian from './mocks/obsidian';
 import { FakeApp, settle } from './fakes/fakeapp';
 import { clipper } from './fakes/clippers';
@@ -51,6 +51,10 @@ beforeAll(() => {
 
 afterAll(() => {
 	loader._load = originalLoad;
+});
+
+afterEach(() => {
+	vi.useRealTimers();
 });
 
 // Rendered text with template whitespace collapsed, as the browser shows it.
@@ -141,12 +145,18 @@ describe('built main.js', () => {
 		const commandFake = new FakeApp({ [canvasPath]: '{}' });
 		const commandPlugin = await load(commandFake, { version: 2, clippers: [] });
 		commandFake.activeFile = canvasPath;
+		vi.useFakeTimers({ toFake: ['Date'] });
+		vi.setSystemTime(new Date('2030-05-06T07:08:09Z'));
 		const canvasCommand = commandPlugin.commands.find(
 			(c) => c.id === 'copy-note-bookmarklet-address-canvas'
 		)?.checkCallback as (checking: boolean) => void;
 		canvasCommand(false);
 		await settle();
 		const [created] = commandPlugin.settings.clippers;
+		vi.useRealTimers();
+		expect((created as unknown as { createdAt: Date }).createdAt).toEqual(
+			new Date('2030-05-06T07:08:09Z')
+		);
 
 		expect(migrated).toMatchObject({ type: 'canvas', notePath: canvasPath });
 		expect(migrated).toEqual({
@@ -281,8 +291,15 @@ describe('built main.js', () => {
 
 		await setName('  Reading  ');
 		expect(add()?.disabled).toBe(false);
+		// Created on is the time of the click, not the time main.js loaded.
+		vi.useFakeTimers({ toFake: ['Date'] });
+		vi.setSystemTime(new Date('2030-05-06T07:08:09Z'));
 		add()?.click();
 		await settle();
+		vi.useRealTimers();
+		expect(
+			(plugin.settings.clippers[1] as unknown as { createdAt: Date }).createdAt
+		).toEqual(new Date('2030-05-06T07:08:09Z'));
 
 		expect(plugin.settings.clippers).toHaveLength(2);
 		expect(plugin.settings.clippers[1]).toMatchObject({
