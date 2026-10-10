@@ -43,7 +43,7 @@ Keep the developer console open (Cmd+Opt+I). Svelte errors show up there even wh
 
 - [ ] Headings, formatting, lists, code, quotes, and links convert to Markdown
 - [ ] The relative link becomes `http://localhost:8765/relative/path`
-- [ ] Tables arrive as Markdown tables (right alignment shows `---`: known bug)
+- [ ] Tables arrive as Markdown tables, with the right-aligned column as `---:`
 - [ ] The Reading List bookmarklet shows a comment box, and the comment lands in the note
 
 Clipper IDs are fixed in `testing/clipper-settings.json`, so bookmarks keep working after a reseed, as long as the vault name stays the same.

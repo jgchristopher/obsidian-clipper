@@ -44,8 +44,8 @@
 			<h2>Heading two</h2>
 			<h3>Heading three</h3>
 			<h4>Heading four</h4>
-			<h5>Heading five (renders at h4 depth: known quirk)</h5>
-			<h6>Heading six (renders at h4 depth: known quirk)</h6>
+			<h5>Heading five</h5>
+			<h6>Heading six (capped at ######)</h6>
 		</section>
 
 		<section id="inline">
@@ -110,8 +110,8 @@
 				</tbody>
 			</table>
 			<p>
-				Expected: a Markdown table. The Year column should be right-aligned
-				(<code>--:</code>) but shows <code>---</code>: known bug.
+				Expected: a Markdown table with the Year column right-aligned
+				(<code>---:</code>).
 			</p>
 			<table>
 				<tr>
@@ -139,9 +139,8 @@
 			<h2>Long selection (Chrome on Windows limit)</h2>
 			<p id="long-text"></p>
 			<p>
-				On Chrome for Windows, clipping this section shows an alert (twice:
-				known quirk) instead of opening Obsidian, because the URL passes 2000
-				characters.
+				On Chrome for Windows, clipping this section shows one alert instead of
+				opening Obsidian, because the URL passes 2000 characters.
 			</p>
 		</section>
 
