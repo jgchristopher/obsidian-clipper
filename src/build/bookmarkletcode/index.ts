@@ -118,15 +118,17 @@ import { MarkdownTables } from './markdown/tables';
 	}
 
 	function showCommentModal() {
-		const existingModal = document.getElementsByClassName(
-			'obsidian-clipper-modal-overlay'
-		)[0] as HTMLElement;
-		if (existingModal) {
-			existingModal.style.display = 'block';
-			return;
+		// A modal left from an earlier click has a Submit handler bound to that
+		// click's selection and clipper. Remove it and build a fresh one.
+		const existingModals = document.querySelectorAll(
+			'.obsidian-clipper-modal-overlay, #obsidian-clipper-modal-style'
+		);
+		for (let i = 0; i < existingModals.length; i++) {
+			existingModals[i].remove();
 		}
 
 		const s = document.createElement('style');
+		s.id = 'obsidian-clipper-modal-style';
 		const styles = document.createTextNode(
 			`
 .obsidian-clipper-modal {

@@ -360,8 +360,8 @@ describe('comment capture', () => {
 
 	it('sends the comment when the modal is submitted', () => {
 		const { code } = clip({ html: '<p>x</p>', captureComments: true });
-		// The Submit handler closes over the proxied document from the first
-		// run, so capture navigation by re-running and clicking.
+		// clip() ran with its own proxied document, so run again to capture
+		// where Submit navigates.
 		document.body.innerHTML = '<p>body</p>';
 		select();
 		const { run } = execute(code);
@@ -383,12 +383,42 @@ describe('comment capture', () => {
 		).toBe('none');
 	});
 
-	it('reuses the existing modal on a second click', () => {
-		const { code } = clip({ html: '<p>x</p>', captureComments: true });
-		execute(code);
+	it('builds a fresh modal for the current selection and clipper on a second click', () => {
+		document.head.innerHTML = '';
+		document.body.innerHTML = '<p id="a">first</p><p id="b">second</p>';
+		select('#a');
+		const first = execute(
+			bookmarkletCode({ html: '', clipperId: 'cid-A', captureComments: true })
+		);
+
+		// Leave the first modal open, select something else, and click a
+		// different clipper's bookmarklet.
+		select('#b');
+		const second = execute(
+			bookmarkletCode({ html: '', clipperId: 'cid-B', captureComments: true })
+		);
+
 		expect(
 			document.querySelectorAll('.obsidian-clipper-modal-overlay')
 		).toHaveLength(1);
+		expect(document.querySelectorAll('#obsidian-clipper-comment')).toHaveLength(1);
+		expect(document.querySelectorAll('.obsidian-clipper-modal button')).toHaveLength(
+			1
+		);
+		expect(document.querySelectorAll('head style')).toHaveLength(1);
+
+		(
+			document.getElementById('obsidian-clipper-comment') as HTMLTextAreaElement
+		).value = 'second thoughts';
+		document
+			.querySelector<HTMLButtonElement>('.obsidian-clipper-modal button')
+			?.click();
+
+		expect(first.run.navigatedTo).toBeUndefined();
+		const params = new URLSearchParams(second.run.navigatedTo?.split('?')[1]);
+		expect(params.get('clipperId')).toBe('cid-B');
+		expect(params.get('highlightdata')).toBe('second');
+		expect(params.get('comments')).toBe('second thoughts');
 	});
 });
 
