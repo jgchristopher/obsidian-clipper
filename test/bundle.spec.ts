@@ -368,6 +368,47 @@ describe('built main.js', () => {
 		}
 	);
 
+	it.each([
+		{
+			type: ClipperType.TOPIC,
+			label: 'Topic Note',
+			description: 'Choose the note to add clippings to.',
+		},
+		{
+			type: ClipperType.CANVAS,
+			label: 'Canvas',
+			description: 'Choose the canvas to add clippings to.',
+		},
+	])(
+		'labels the target picker for $type clippers',
+		async ({ type, label, description }) => {
+			const plugin = await load(new FakeApp(), {
+				version: 2,
+				clippers: [clipper({ type, notePath: `clips.${type}` })],
+			});
+			const tab = plugin.settingTabs[0] as obsidian.PluginSettingTab & {
+				display(): void;
+			};
+			tab.display();
+			await settle();
+			tab.containerEl.querySelector<HTMLElement>('td .clickable-icon')?.click();
+			await settle();
+
+			const [modal] = obsidian.modals.slice(-1);
+			const picker = Array.from(
+				modal.contentEl.querySelectorAll<HTMLElement>('.setting-item')
+			).find(
+				(el) =>
+					el.querySelector('.setting-item-name')?.textContent?.trim() === label
+			);
+			if (!picker) throw new Error(`No "${label}" picker`);
+			expect(
+				picker.querySelector('.setting-item-description')?.textContent?.trim()
+			).toBe(description);
+			expect(modal.contentEl.textContent).not.toContain('note/canvas');
+		}
+	);
+
 	// Obsidian 1.12+ ships `.vertical-tab-content h1 { display: none; }`, so an
 	// <h1> anywhere in a settings tab renders blank (issue #88). Headings use
 	// Obsidian's setting-item-heading markup instead, in the tab and the modal.

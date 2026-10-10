@@ -82,7 +82,7 @@
 	{#if $settings.type === ClipperType.TOPIC}
 		<Suggest
 			name="Topic Note"
-			description="Choose the note/canvas to add clipped entries to"
+			description="Choose the note to add clippings to."
 			initialValue={$settings.notePath}
 			dataProvider={() => app.vault.getMarkdownFiles()}
 			{onChange}
@@ -90,8 +90,8 @@
 	{/if}
 	{#if $settings.type === ClipperType.CANVAS}
 		<Suggest
-			name="Topic Note"
-			description="Choose the note/canvas to add clipped entries to"
+			name="Canvas"
+			description="Choose the canvas to add clippings to."
 			initialValue={$settings.notePath}
 			dataProvider={() => getCanvasFiles()}
 			{onChange}
