@@ -70,6 +70,25 @@ describe('applyTemplateTransformations', () => {
 		).toBe("[$']");
 	});
 
+	// Clipped text about templates can contain variables itself. Replacing
+	// one variable at a time used to expand those on a later pass.
+	it('leaves variables inside clipped values alone', () => {
+		expect(
+			applyTemplateTransformations(
+				'How {{date}} works',
+				'https://example.com/{{tags}}',
+				'#a',
+				'09:30',
+				'01/02/24',
+				'Write {{url}} or {{ title }}',
+				'see {{content}}',
+				'{{title}}|{{url}}|{{content}}|{{comment}}|{{date}}'
+			)
+		).toBe(
+			'How {{date}} works|https://example.com/{{tags}}|Write {{url}} or {{ title }}|see {{content}}|01/02/24'
+		);
+	});
+
 	it('defaults content and comment to empty strings', () => {
 		expect(
 			applyTemplateTransformations(
