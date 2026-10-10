@@ -235,6 +235,12 @@ function writeTestLinks() {
 			title: 'Old Topic Bookmarklet',
 			highlightdata: sample,
 		})}): opens the topic migration dialog, then the add-clipper dialog when closed`,
+		`- [Old canvas bookmarklet](${clipLink({
+			notePath: 'Boards/Research Board.canvas',
+			url: url('old-canvas'),
+			title: 'Old Canvas Bookmarklet',
+			highlightdata: sample,
+		})}): the dialog says a Canvas clipper was created, and closing it opens a canvas clipper for the board. The board is not changed`,
 		`- [Old daily bookmarklet](${clipLink({
 			url: url('old-daily'),
 			title: 'Old Daily Bookmarklet',

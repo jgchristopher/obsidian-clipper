@@ -52,6 +52,7 @@ Clipper IDs are fixed in `testing/clipper-settings.json`, so bookmarks keep work
 
 - [ ] `pnpm seed-vault --force --legacy`, open the vault: Settings → Clipper shows a daily and a weekly clipper converted from the old settings
 - [ ] "Capture comments" was on in the old settings and is still on for both converted clippers
+- [ ] The "Old canvas bookmarklet" link says a Canvas clipper was created. After closing the dialog, Settings → Clipper lists a canvas clipper for `Boards/Research Board.canvas` and the board still opens
 
 ## 5. Mobile
 
