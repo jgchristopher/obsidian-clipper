@@ -159,6 +159,80 @@ describe('built main.js', () => {
 		expect(modal.contentEl.textContent).toContain('Header');
 	});
 
+	it('adds a clipper only once it has a name and a type', async () => {
+		const plugin = await load(new FakeApp(), {
+			version: 2,
+			clippers: [clipper({ name: 'Research clipper' })],
+		});
+		const tab = plugin.settingTabs[0] as obsidian.PluginSettingTab & {
+			display(): void;
+		};
+		tab.display();
+		await settle();
+		const buttons = () =>
+			Array.from(tab.containerEl.querySelectorAll<HTMLButtonElement>('button'));
+		buttons()
+			.find((b) => b.textContent === '+')
+			?.click();
+		await settle();
+
+		const popup = tab.containerEl.querySelector<HTMLElement>('.addPopOver');
+		if (!popup) throw new Error('Add clipper popup did not open');
+		const name = popup.querySelector<HTMLInputElement>('input[type="text"]');
+		const type = popup.querySelector<HTMLSelectElement>('select');
+		const add = () =>
+			buttons().find((b) => b.textContent?.trim() === 'Add Clipper');
+		if (!name || !type) throw new Error('Add clipper fields missing');
+		const setName = async (value: string) => {
+			name.value = value;
+			name.dispatchEvent(new Event('input'));
+			await settle();
+		};
+		const setType = async (value: string) => {
+			type.value = value;
+			type.dispatchEvent(new Event('change'));
+			await settle();
+		};
+
+		expect(add()?.disabled).toBe(true);
+		expect(popup.textContent).toContain('Enter a name and choose a type');
+
+		await setName('Reading');
+		expect(add()?.disabled).toBe(true);
+
+		await setName('   ');
+		await setType('topic');
+		expect(add()?.disabled).toBe(true);
+
+		// Clicking a disabled button does nothing.
+		add()?.click();
+		await settle();
+		expect(plugin.settings.clippers).toHaveLength(1);
+
+		await setName('  Reading  ');
+		expect(add()?.disabled).toBe(false);
+		add()?.click();
+		await settle();
+
+		expect(plugin.settings.clippers).toHaveLength(2);
+		expect(plugin.settings.clippers[1]).toMatchObject({
+			name: 'Reading',
+			type: 'topic',
+			vaultName: 'TestVault',
+		});
+		expect(plugin.storedData).toEqual(plugin.settings);
+
+		// The popup closes. Reopened, its fields start empty.
+		buttons()
+			.find((b) => b.textContent === '+')
+			?.click();
+		await settle();
+		const reopened = tab.containerEl.querySelector<HTMLElement>('.addPopOver');
+		expect(reopened?.querySelector('input')?.value).toBe('');
+		expect(reopened?.querySelector('select')?.value).toBe('');
+		expect(add()?.disabled).toBe(true);
+	});
+
 	// Obsidian 1.12+ ships `.vertical-tab-content h1 { display: none; }`, so an
 	// <h1> anywhere in a settings tab renders blank (issue #88). Headings use
 	// Obsidian's setting-item-heading markup instead, in the tab and the modal.

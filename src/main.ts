@@ -44,6 +44,21 @@ export const missingCanvasNotice = (path: string) =>
 export const ambiguousCanvasNotice = (name: string) =>
 	`Obsidian Clipper found several canvases named "${name}". Choose the right one in the clipper's settings.`;
 
+export const missingTypeNotice = (clipperName: string) =>
+	`Obsidian Clipper: the clipper "${clipperName}" has no type. Choose one in Clipper settings.`;
+
+const CLIPPER_TYPES: readonly string[] = Object.values(ClipperType);
+
+// A clipper saved without a type matches no writer. Say so instead of
+// dropping the clip silently.
+function hasKnownType(clipper: ObsidianClipperSettings): boolean {
+	if (CLIPPER_TYPES.includes(clipper.type)) {
+		return true;
+	}
+	new Notice(missingTypeNotice(clipper.name));
+	return false;
+}
+
 export const writeFailedNotice = (clipperName: string, error: unknown) =>
 	`Obsidian Clipper couldn't save the clip for "${clipperName}": ${
 		error instanceof Error ? error.message : String(error)
@@ -205,6 +220,11 @@ export default class ObsidianClipperPlugin extends Plugin {
 				// A bookmarklet can outlive its clipper (deleted in settings).
 				if (!clipperSettings) {
 					new Notice(UNKNOWN_CLIPPER_NOTICE);
+					return;
+				}
+				// Check before advanced storage, which would otherwise write a
+				// per-domain note for a clip that never reaches a target note.
+				if (!hasKnownType(clipperSettings)) {
 					return;
 				}
 
@@ -416,6 +436,9 @@ export default class ObsidianClipperPlugin extends Plugin {
 		noteEntry: ClippedData
 	): Promise<void> {
 		const type = clipperSettings.type;
+		if (!hasKnownType(clipperSettings)) {
+			return;
+		}
 		if (type === ClipperType.TOPIC || type === ClipperType.CANVAS) {
 			const file = this.app.vault.getAbstractFileByPath(
 				clipperSettings.notePath

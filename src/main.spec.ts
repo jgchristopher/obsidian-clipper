@@ -8,6 +8,7 @@ import ObsidianClipperPlugin, {
 	UNKNOWN_CLIPPER_NOTICE,
 	ambiguousCanvasNotice,
 	missingCanvasNotice,
+	missingTypeNotice,
 	writeFailedNotice,
 } from './main';
 import {
@@ -423,6 +424,53 @@ describe('obsidian://obsidian-clipper handler', () => {
 		expect(fake.read('B/research.canvas')).toBe('');
 		expect(plugin.settings.clippers[0].notePath).toBe('research.canvas');
 		expect(notices).toEqual([ambiguousCanvasNotice('research.canvas')]);
+	});
+
+	it('shows a notice instead of writing for a clipper with no type', async () => {
+		const fake = new FakeApp({ 'n.md': 'N' });
+		const plugin = await loadPlugin(
+			fake,
+			settingsWith(
+				clipper({
+					name: 'Untyped',
+					type: '' as ClipperType,
+					notePath: 'n.md',
+				})
+			)
+		);
+		await clip(plugin, { clipperId: 'clipper-1', highlightdata: 'x' });
+		await settle();
+		expect(notices).toEqual([missingTypeNotice('Untyped')]);
+		expect(fake.read('n.md')).toBe('N');
+	});
+
+	it('skips advanced storage for a clipper with no type', async () => {
+		const fake = new FakeApp();
+		const plugin = await loadPlugin(
+			fake,
+			settingsWith(
+				clipper({
+					name: 'Untyped',
+					type: '' as ClipperType,
+					advancedStorage: true,
+					advancedStorageFolder: 'clippings',
+				})
+			)
+		);
+		const createFolder = vi.spyOn(plugin.app.vault, 'createFolder');
+		await clip(plugin, { clipperId: 'clipper-1', highlightdata: 'x' });
+		await settle();
+		expect(notices).toEqual([missingTypeNotice('Untyped')]);
+		expect(createFolder).not.toHaveBeenCalled();
+	});
+
+	it('writeNoteEntry shows a notice for an unknown type', async () => {
+		const plugin = await loadPlugin(new FakeApp());
+		await plugin.writeNoteEntry(
+			clipper({ name: 'Odd', type: 'monthly' as ClipperType }),
+			{} as never
+		);
+		expect(notices).toEqual([missingTypeNotice('Odd')]);
 	});
 
 	it('shows a notice and logs the error when the note write fails', async () => {

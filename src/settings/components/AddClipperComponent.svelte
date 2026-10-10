@@ -4,8 +4,8 @@
 	import { pluginSettings } from '../settingsstore';
 
 	export let vaultName: string;
-	let addClipperName: string;
-	let addClipperType: ClipperType;
+	let addClipperName = '';
+	let addClipperType: ClipperType | '' = '';
 	const ALL_TYPES = [
 		ClipperType.DAILY,
 		ClipperType.WEEKLY,
@@ -31,20 +31,28 @@
 
 	let showAddClipperPopup = false;
 
+	// A clipper without a type writes nothing, so require both fields.
+	$: canAddClipper = addClipperName.trim() !== '' && addClipperType !== '';
+
 	const plusButtonClicked = () => {
 		showAddClipperPopup = !showAddClipperPopup;
 	};
 
 	const addClipper = () => {
+		const name = addClipperName.trim();
+		if (name === '' || addClipperType === '') {
+			return;
+		}
 		let clipperPlaceholderSettings = structuredClone(DEFAULT_CLIPPER_SETTING);
 		clipperPlaceholderSettings.clipperId = crypto.randomUUID();
-		clipperPlaceholderSettings.name = addClipperName;
+		clipperPlaceholderSettings.name = name;
 		clipperPlaceholderSettings.type = addClipperType;
 		clipperPlaceholderSettings.vaultName = vaultName;
 		$pluginSettings.clippers.push(clipperPlaceholderSettings);
 		$pluginSettings = $pluginSettings;
 		showAddClipperPopup = false;
 		addClipperName = '';
+		addClipperType = '';
 	};
 </script>
 
@@ -91,8 +99,17 @@
 			</div>
 		</div>
 		<div class="setting-item">
+			<div class="setting-item-info">
+				{#if !canAddClipper}
+					<div class="setting-item-description">
+						Enter a name and choose a type to add a clipper.
+					</div>
+				{/if}
+			</div>
 			<div class="setting-item-control">
-				<button on:click={() => addClipper()}>Add Clipper</button>
+				<button disabled={!canAddClipper} on:click={() => addClipper()}
+					>Add Clipper</button
+				>
 			</div>
 		</div>
 
