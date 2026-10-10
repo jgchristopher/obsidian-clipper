@@ -31,9 +31,9 @@
 		<div class="setting-item-info">
 			<div class="setting-item-name">Store Clippings Per Domain</div>
 			<div class="setting-item-description">
-				Creates a note per top-level domain and stores all clippings from that
-				domain within it. It will add an embedded document link in your Daily
-				Note.
+				Saves each clipping to a note named after the site's host name (such as
+				www.example.com) and adds an embed of it to this clipper's note or
+				canvas.
 			</div>
 		</div>
 		<div class="setting-item-control">
@@ -49,8 +49,7 @@
 		<div in:slide|local={{ duration: 300 }} out:slide|local={{ duration: 300 }}>
 			<Suggest
 				name="Clipped Entry Storage Location"
-				description="Choose the folder to store all of your clippings. A note per domain
-						clipped from. Default is a `clippings`"
+				description="The folder for the per-site notes. Defaults to clippings."
 				initialValue={$settings.advancedStorageFolder}
 				dataProvider={() => getFolders(app.vault.getAllLoadedFiles())}
 				{onChange}

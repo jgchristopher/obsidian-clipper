@@ -31,9 +31,10 @@
 			<SettingItem>
 				<span slot="name">Header</span>
 				<span slot="description">
-					What header should highlight data be prepended/appended under? <br
-					/>(Don't include the '#'.) If the header doesn't exist, it will be
-					created and appeneded to the end of the document.
+					The heading to add clippings under, without the #. It must be at the
+					Header Level below. If it's missing, it is added at the end of the
+					note (append) or the top (prepend). Leave empty to add clippings at
+					the end or top of the note.
 				</span>
 				<input
 					slot="control"
