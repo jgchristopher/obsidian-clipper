@@ -47,14 +47,16 @@ export function applyTemplateTransformations(
 	comment = '',
 	rawTemplateContents: string
 ): string {
+	// Function replacers insert values literally. A string replacement would
+	// read $$, $&, $1, $` and $' in clipped text as patterns.
 	const templateContents = rawTemplateContents
-		.replace(/{{\s*title\s*}}/gi, title)
-		.replace(/{{\s*url\s*}}/gi, url)
-		.replace(/{{\s*tags\s*}}/gi, tags)
-		.replace(/{{\s*content\s*}}/gi, content)
-		.replace(/{{\s*comment\s*}}/gi, comment)
-		.replace(/{{\s*time\s*}}/gi, time)
-		.replace(/{{\s*date\s*}}/gi, date);
+		.replace(/{{\s*title\s*}}/gi, () => title)
+		.replace(/{{\s*url\s*}}/gi, () => url)
+		.replace(/{{\s*tags\s*}}/gi, () => tags)
+		.replace(/{{\s*content\s*}}/gi, () => content)
+		.replace(/{{\s*comment\s*}}/gi, () => comment)
+		.replace(/{{\s*time\s*}}/gi, () => time)
+		.replace(/{{\s*date\s*}}/gi, () => date);
 
 	return templateContents;
 }

@@ -41,6 +41,35 @@ describe('applyTemplateTransformations', () => {
 		expect(apply('{{author}}')).toBe('{{author}}');
 	});
 
+	// String.replace reads $$, $&, $1 and $` in a replacement string as
+	// patterns, which turned LaTeX $$x$$ into $x$.
+	it('inserts $ sequences in every variable literally', () => {
+		const dollars = '$$E=mc^2$$ $& $1 $`';
+		expect(
+			applyTemplateTransformations(
+				`t ${dollars}`,
+				`u ${dollars}`,
+				`g ${dollars}`,
+				`h ${dollars}`,
+				`d ${dollars}`,
+				`c ${dollars}`,
+				`m ${dollars}`,
+				'{{title}}|{{url}}|{{tags}}|{{time}}|{{date}}|{{content}}|{{comment}}'
+			)
+		).toBe(
+			['t', 'u', 'g', 'h', 'd', 'c', 'm'].map((p) => `${p} ${dollars}`).join('|')
+		);
+	});
+
+	// $' inserts the rest of the template, placeholders included, so each
+	// later replacement copied the template again. One variable keeps the old
+	// output small enough to fail instead of exhausting memory.
+	it("inserts $' literally", () => {
+		expect(
+			applyTemplateTransformations('', '', '', '', '', "$'", '', '[{{content}}]')
+		).toBe("[$']");
+	});
+
 	it('defaults content and comment to empty strings', () => {
 		expect(
 			applyTemplateTransformations(
