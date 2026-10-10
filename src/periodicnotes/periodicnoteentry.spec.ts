@@ -28,6 +28,8 @@ describe.each([
 		get: mocked.getDailyNote,
 		create: mocked.createDailyNote,
 		path: 'daily/2024-01-02.md',
+		disabledNotice:
+			'Obsidian Clipper: turn on the core Daily notes plugin, or daily notes in Periodic Notes, to use a daily clipper.',
 	},
 	{
 		name: 'weekly',
@@ -36,10 +38,12 @@ describe.each([
 		get: mocked.getWeeklyNote,
 		create: mocked.createWeeklyNote,
 		path: 'weekly/2024-W01.md',
+		disabledNotice:
+			'Obsidian Clipper: turn on the Calendar plugin, or weekly notes in Periodic Notes, to use a weekly clipper.',
 	},
 ])(
 	'$name periodic note entry',
-	({ name, Entry, enabled, get, create, path }) => {
+	({ name, Entry, enabled, get, create, path, disabledNotice }) => {
 		beforeEach(() => {
 			vi.clearAllMocks();
 			enabled.mockReturnValue(true);
@@ -111,9 +115,7 @@ describe.each([
 		it(`shows a notice when the ${name} note feature is disabled`, async () => {
 			enabled.mockReturnValue(false);
 			await write(new FakeApp());
-			expect(notices).toEqual([
-				`To use a ${name} note with Obsidian Clipper the ${name} note needs to be enabled from the periodic-notes plugin`,
-			]);
+			expect(notices).toEqual([disabledNotice]);
 			expect(get).not.toHaveBeenCalled();
 		});
 	}

@@ -19,7 +19,7 @@ export class DailyPeriodicNoteEntry extends PeriodicNoteEntry {
 		super(app, openFileOnWrite, sectionPosition, template);
 		this.periodName = 'daily';
 		this.notice =
-			'To use a daily note with Obsidian Clipper the daily note needs to be enabled from the periodic-notes plugin';
+			'Obsidian Clipper: turn on the core Daily notes plugin, or daily notes in Periodic Notes, to use a daily clipper.';
 	}
 
 	protected getPeriodicNote(
