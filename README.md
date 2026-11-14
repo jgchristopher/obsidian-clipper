@@ -9,20 +9,23 @@ The bookmarklet will have all needed dependencies and will not fail due to cross
 
 ## Installation and How to Use
 
-[Documentation Site](https://docs.obsidianclipper.com)
+Install Clipper from Obsidian's Community plugins. Clipper is an Obsidian plugin, not a browser extension.
 
-Check out the video about getting started [here.](https://youtu.be/kINRwNG2LCQ)
-
-[![Default Behaviour](https://img.youtube.com/vi/kINRwNG2LCQ/0.jpg)](https://youtu.be/kINRwNG2LCQ)
+- [Documentation Site](https://docs.obsidianclipper.com)
+- [Getting started](https://docs.obsidianclipper.com/docs/getting-started): your first clipper, from setup to the first clipping
+- [Upgrading from 0.x](https://docs.obsidianclipper.com/docs/upgrading): what changed in 1.0 and how to replace old bookmarklets
 
 ## Requirements
 
-[Periodic Notes Plugin](obsidian://show-plugin?id=periodic-notes) to clip to a weekly note.
+- Daily clippers need the core Daily notes plugin, or the [Periodic Notes Plugin](obsidian://show-plugin?id=periodic-notes) with daily notes turned on.
+- Weekly clippers need the Periodic Notes plugin with weekly notes turned on, or the [Calendar Plugin](obsidian://show-plugin?id=calendar).
+- Canvas clippers need the core Canvas plugin.
+- Topic clippers have no requirements.
 
 ## Network Use Notice
 
 This plugin can call out to an [external service](https://obsidianclipper.com) that creates a Chrome-based
-browser extension wrapper around the generated bookmarklet for your vault or note.
+browser extension wrapper around the generated bookmarklet for a clipper.
 The Chrome-based extension is the only way to interact with Obsidian Clipper
 in browsers like [Arc](https://arc.net/). The code for this external service is maintained by me and can be found on [Github](https://github.com/jgchristopher/obsidian_clipper_extension_maker)
 
